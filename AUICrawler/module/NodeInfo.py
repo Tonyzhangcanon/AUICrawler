@@ -93,5 +93,5 @@ class Node:
     def clear_recover_way(self):
         self.recoverWay = []
 
-    def update_operation(self, operatoioin):
-        self.crawlOperation = operatoioin
+    def update_operation(self, operation):
+        self.crawlOperation = operation
