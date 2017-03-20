@@ -46,6 +46,7 @@ class Node:
                          'bounds': self.bounds}
 
         self.isEditText = self.node_is_edittext()
+        self.crawlOperation = ''
 
         self.recoverWay = []
 
@@ -91,3 +92,6 @@ class Node:
 
     def clear_recover_way(self):
         self.recoverWay = []
+
+    def update_operation(self, operatoioin):
+        self.crawlOperation = operatoioin

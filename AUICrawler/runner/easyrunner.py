@@ -226,6 +226,12 @@ def click_point(device, x_point, y_point):
     os.popen(command)
 
 
+def long_click_point(device, x, y):
+    command = 'adb -s' + device.id + 'shell input swipe ' + x + ' ' + y + ' ' + x + ' ' + y + ' 1000'
+    SaveLog.save_crawler_log(device.logPath, 'long click screen :' + x + ',' + y)
+    os.popen(command)
+
+
 def keyboard_is_shown(device):
     SaveLog.save_crawler_log(device.logPath, "Step : check keyboard")
     command = 'adb -s ' + device.id + ' shell dumpsys input_method'
@@ -238,21 +244,6 @@ def keyboard_is_shown(device):
     else:
         SaveLog.save_crawler_log(device.logPath, "keyboard is not shown")
         return False
-
-
-def huawei_authorization(device, nodes):
-    SaveLog.save_crawler_log(device.logPath, "Step : check huawei authorization")
-    if len(nodes) != 0:
-        for node in nodes:
-            if node['package'] == 'com.huawei.systemmanager' \
-                    and node['resource_id'] == 'com.huawei.systemmanager:id/btn_allow' \
-                    and node['text'] == '允许':
-                location = get_node_location(node)
-                SaveLog.save_crawler_log(device.logPath, 'close huawei authorization View')
-                click_point(device, location[0], location[1])
-                get_uidump_xml_file(device)
-                nodes = get_clickable_nodes(device)
-    return nodes
 
 
 def close_sys_alert(plan, app, device, page_now):
@@ -352,6 +343,15 @@ def tap_node(app, device, node):
     if node.package == app.packageName:
         location = node.location
         click_point(device, location[0], location[1])
+        node.update_operation('tap')
+
+
+def long_click_node(app, device, node):
+    SaveLog.save_crawler_log(device.logPath, "long click node")
+    if node.package == app.packageName:
+        location = node.location
+        long_click_point(device, location[0], location[1])
+        node.update_operation('longclick')
 
 
 def page_is_crawlable(plan, app, device, page):
@@ -424,16 +424,19 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
     if r:
         for n in node.recoverWay:
             save_screen(device, n, False)
-            tap_node(app, device, n)
-            check_page_after_tap(plan, app, device)
+            if node.crawlOperation == 'tap':
+                tap_node(app, device, n)
+            elif node.crawlOperation == 'longclick':
+                long_click_node(app, device, n)
+            check_page_after_operation(plan, app, device)
     if t < 4:
         r = True
     return r
 
 
 # if jump out the test app, try to go back & return the final page
-def check_page_after_tap(plan, app, device):
-    SaveLog.save_crawler_log(device.logPath, "Step : Check activity after tap")
+def check_page_after_operation(plan, app, device):
+    SaveLog.save_crawler_log(device.logPath, "Step : Check activity after crawl")
     # if app crashed after crawl , save log & start app ,comtinue
     time.sleep(1)
     while True:
@@ -553,9 +556,9 @@ def no_uncrawled_clickable_nodes_now(plan, device, page_now):
             # if node_is_scrollable(node) and plan.is_in_uncrawled_nodes(node.nodeInfo):
             #     result = False
             #     break
-            # if node_is_longclickable(node) and plan.is_in_uncrawled_nodes(node.nodeInfo):
-            #     result = False
-            #     break
+        if node_is_longclickable(node) and plan.is_in_uncrawled_nodes(node.nodeInfo):
+            result = False
+            break
             # if node_is_edittext(node) and plan.is_in_uncrawled_nodes(node.nodeInfo):
             #     result = False
             #     break
@@ -666,7 +669,43 @@ def crawl_clickable_nodes(plan, app, device, page_before_run, page_now, init):
         plan.update_crawled_nodes(node.nodeInfo)
         plan.delete_uncrawled_nodes(node.nodeInfo)
         # if jump out the test app, try to go back & return the final page
-        page_after_tap = check_page_after_tap(plan, app, device)
+        page_after_tap = check_page_after_operation(plan, app, device)
+        if page_after_tap is None:
+            page_now = page_after_tap
+            break
+        # compare two pages before & after click .
+        # update the after page . leave the new clickable/scrollable/longclickable/edittext nodes only.
+        page_now = get_need_crawl_page(plan, app, device, page_before_run, page_after_tap)
+        if page_is_crawlable(plan, app, device, page_now):
+            page_now.add_last_page(page_before_run)
+            page_now.add_entry(node)
+            # deep run
+            if init:
+                page_now = crawl_init_nodes(plan, app, device, page_now)
+            else:
+                page_now = crawl_main_nodes(plan, app, device, page_now)
+        else:
+            page_now = page_after_tap
+        # if page no crawlable nodes , back to last Page, until has crawlable nodes, if back time >3, break
+        page_now = recover_page_to_crawlable(plan, app, device, page_now)
+    return page_now
+
+
+def crawl_longclickable_nodes(plan, app, device, page_before_run, page_now, init):
+    for node in get_random_nodes(page_before_run.longClickableNodes):
+        # if crash and not keep run , break from deep run .page_need_crawled will be None
+        if page_now is None:
+            break
+        # sometimes the need tap node is not shown after one deep run
+        if not recover_node_shown(plan, app, device, page_now, page_before_run, node):
+            continue
+        save_screen(device, node, True)
+        long_click_node(app, device, node)
+        plan.update_crawled_activity(node.currentActivity)
+        plan.update_crawled_nodes(node.nodeInfo)
+        plan.delete_uncrawled_nodes(node.nodeInfo)
+        # if jump out the test app, try to go back & return the final page
+        page_after_tap = check_page_after_operation(plan, app, device)
         if page_after_tap is None:
             page_now = page_after_tap
             break
@@ -694,6 +733,7 @@ def crawl_main_nodes(plan, app, device, page_before_run):
     if page_before_run.clickableNodesNum != 0:
         plan.update_crawl_page(page_before_run.nodesInfoList)
         page_need_crawled = crawl_clickable_nodes(plan, app, device, page_before_run, page_need_crawled, False)
+        page_need_crawled = crawl_longclickable_nodes(plan, app, device, page_before_run, page_need_crawled, False)
     return page_need_crawled
 
 
@@ -716,6 +756,7 @@ def crawl_init_nodes(plan, app, device, page_before_run):
         if page_before_run.clickableNodesNum != 0:
             plan.update_crawl_page(page_before_run.nodesInfoList)
             page_need_crawled = crawl_clickable_nodes(plan, app, device, page_before_run, page_need_crawled, True)
+            page_need_crawled = crawl_longclickable_nodes(plan, app, device, page_before_run, page_need_crawled, True)
         return page_need_crawled
     else:
         SaveLog.save_crawler_log_both(plan.logPath, device.logPath, 'Is in ' + app.mainActivity)
