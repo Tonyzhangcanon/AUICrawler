@@ -47,7 +47,7 @@ NodeInfo :  每个控件的获取时信息 & 遍历中相关状态&信息
 - [x] 3. 各模式的配置信息设计 
 - [ ] 4. 各模式的判断&执行框架 
 - [x] 5. 对Clickable的控件遍历 
-- [ ] 6. 对LongClickable的控件遍历
+- [x] 6. 对LongClickable的控件遍历
 - [ ] 7. 对EditText的遍历
 - [ ] 8. 对Scrollable的控件的遍历 
 - [ ] 9. 执行结果收集&统计&展示

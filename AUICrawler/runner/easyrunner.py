@@ -554,15 +554,6 @@ def no_uncrawled_clickable_nodes_now(plan, device, page_now):
         if node_is_clickable(node) and plan.is_in_uncrawled_nodes(node.nodeInfo):
             result = False
             break
-            # if node_is_scrollable(node) and plan.is_in_uncrawled_nodes(node.nodeInfo):
-            #     result = False
-            #     break
-        if node_is_longclickable(node) and plan.is_in_uncrawled_nodes(node.nodeInfo):
-            result = False
-            break
-            # if node_is_edittext(node) and plan.is_in_uncrawled_nodes(node.nodeInfo):
-            #     result = False
-            #     break
     if result:
         SaveLog.save_crawler_log(device.logPath, "no uncrawled  clickable nodes in this page now")
         return True
@@ -626,7 +617,8 @@ def no_uncrawled_edit_text_now(plan, device, page_now):
 # if page no crawlable nodes , back to last Page, until has crawlable nodes, if back time >3, break
 def recover_page_to_crawlable(plan, app, device, page_now):
     t = 1
-    while no_uncrawled_clickable_nodes_now(plan, device, page_now):
+    while no_uncrawled_clickable_nodes_now(plan, device, page_now) \
+            and no_uncrawled_longclickable_nodes_now(plan, device, page_now):
         if page_now.backBtn is not None \
                 and node_is_shown_in_page(device, page_now.backBtn, page_now):
             SaveLog.save_crawler_log(device.logPath, "Step : find the back btn and tap ")
@@ -660,6 +652,7 @@ def crawl_clickable_nodes(plan, app, device, page_before_run, page_now, init):
     for node in get_random_nodes(page_before_run.clickableNodes):
         # if crash and not keep run , break from deep run .page_need_crawled will be None
         if page_now is None:
+            print 'page is none'
             break
         # sometimes the need tap node is not shown after one deep run
         if not recover_node_shown(plan, app, device, page_now, page_before_run, node):
@@ -672,6 +665,7 @@ def crawl_clickable_nodes(plan, app, device, page_before_run, page_now, init):
         # if jump out the test app, try to go back & return the final page
         page_after_tap = check_page_after_operation(plan, app, device)
         if page_after_tap is None:
+            print 'app is crash'
             page_now = page_after_tap
             break
         # compare two pages before & after click .
@@ -729,7 +723,7 @@ def crawl_longclickable_nodes(plan, app, device, page_before_run, page_now, init
 
 
 def crawl_edittext(plan, app, device, page_before_run, page_now, init):
-    for node in get_random_nodes(page_before_run.longClickableNodes):
+    for node in get_random_nodes(page_before_run.editTexts):
         # if crash and not keep run , break from deep run .page_need_crawled will be None
         if page_now is None:
             break
