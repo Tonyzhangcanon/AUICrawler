@@ -435,15 +435,6 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
 def check_page_after_tap(plan, app, device):
     SaveLog.save_crawler_log(device.logPath, "Step : Check activity after tap")
     # if app crashed after crawl , save log & start app ,comtinue
-    if not app_is_running(device, app):
-        save_logcat(plan, device, False)
-        clean_device_logcat(device)
-        if Setting.KeepRun:
-            start_activity(device, app.packageName, app.mainActivity)
-        else:
-            SaveLog.save_crawler_log_both(plan.logPath, device.logPath,
-                                          "Step : crawl app " + device.crawlStatue + ' finish crawl , break crawling..')
-            return None
     time.sleep(1)
     while True:
         info = get_top_activity_info(device)
@@ -452,6 +443,15 @@ def check_page_after_tap(plan, app, device):
             break
     times = 0
     while package != app.packageName:
+        if not app_is_running(device, app):
+            save_logcat(plan, device, False)
+            clean_device_logcat(device)
+            if Setting.KeepRun:
+                start_activity(device, app.packageName, app.mainActivity)
+            else:
+                SaveLog.save_crawler_log_both(plan.logPath, device.logPath,
+                                              "Step : crawl app " + device.crawlStatue + ' finish crawl , break crawling..')
+                return None
         SaveLog.save_crawler_log(device.logPath, 'back to ' + app.packageName)
         activity = info['activity']
         save_screen_jump_out(device, package, activity)
