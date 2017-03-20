@@ -3,6 +3,7 @@ import os
 import time
 from AUICrawler.script import Setting
 from AUICrawler.module.DeviceInfo import Device
+from AUICrawler.script import SaveLog
 import sys
 
 reload(sys)
@@ -12,7 +13,6 @@ sys.setdefaultencoding('utf-8')
 class Plan:
     def __init__(self):
         self.product = Setting.AppProduct
-        self.deviceList = []
         self.coverageLevel = Setting.CoverageLevel
         self.runCaseTime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
         self.unCrawledNodes = []
@@ -20,6 +20,7 @@ class Plan:
         self.hasCrawlPage = []
         self.hasCrawledActivities = []
         self.logPath = self.create_this_time_folder()
+        self.deviceList = self.get_device_list()
 
     # change the node info ,because the same type nodes has difference bounds.
     # the same type nodes need crawl once only
@@ -29,7 +30,7 @@ class Plan:
 
     def update_uncrawled_nodes(self, node_info):
         if node_info not in self.unCrawledNodes:
-            self.unCrawledNodes.append(node_info) 
+            self.unCrawledNodes.append(node_info)
 
     def update_crawled_activity(self, activity):
         if activity not in self.hasCrawledActivities:
@@ -37,7 +38,7 @@ class Plan:
 
     def delete_uncrawled_nodes(self, node_info):
         if node_info in self.unCrawledNodes:
-            self.unCrawledNodes.remove(node_info) 
+            self.unCrawledNodes.remove(node_info)
 
     def is_in_uncrawled_nodes(self, node_info):
         if node_info in self.unCrawledNodes:

@@ -16,8 +16,8 @@ CrawlModel = 'Normal'  # Random (crawl in random) ， Normal ， Activity (crawl
 CoverageLevel = 1  # 0 < level <= 1 , Exp level = 0.6 , if there are 10 points in one page , coverage click 6 points .
 
 #  - * Apk Install Setting * -
-UnInstallApk = False  # True (uninstall app & testApp) , False
-InstallApk = False  # True (install app & testApp) ,False
+UnInstallApk = True  # True (uninstall app & testApp) , False
+InstallApk = True  # True (install app & testApp) ,False
 ApkPath = '/Users/admin/Downloads/Kuaiya-china-debug.apk'
 TestApkPath = '/Users/admin/Downloads/Kuaiya-china-debug-androidTest.apk'
 
