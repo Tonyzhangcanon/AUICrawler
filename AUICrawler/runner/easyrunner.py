@@ -279,12 +279,14 @@ def clean_device_logcat(device):
 def get_page_info(plan, app, device):
     SaveLog.save_crawler_log(device.logPath, "get all nodes in this page")
     page = Page()
-    try:
-        get_uidump_xml_file(device)
-        dom = xml.dom.minidom.parse(device.logPath + '/Uidump.xml')
-    except:
-        get_uidump_xml_file(device)
-        dom = xml.dom.minidom.parse(device.logPath + '/Uidump.xml')
+    result = False
+    while not result:
+        try:
+            get_uidump_xml_file(device)
+            dom = xml.dom.minidom.parse(device.logPath + '/Uidump.xml')
+            result = True
+        except:
+            result = False
     root = dom.documentElement
     nodes = root.getElementsByTagName('node')
     SaveLog.save_crawler_log(device.logPath, len(nodes))
@@ -358,12 +360,16 @@ def long_click_node(device, node):
     node.update_operation('longclick')
 
 
-def type_text(device, edittext, length):
-    tap_node(device, edittext)
+def get_random_text(length):
     text = ''
     chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
     for i in range(length):
         text += chars[random.randint(0, len(chars) - 1)]
+    return text
+
+
+def type_text(device, edittext, text):
+    tap_node(device, edittext)
     command = 'adb -s ' + device.id + ' shell input text ' + text
     os.popen(command)
     edittext.update_operation('type')
@@ -445,7 +451,8 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
             elif n.crawlOperation == 'longclick':
                 long_click_node(device, n)
             elif n.crawlOperation == 'type':
-                type_text(device, n, 8)
+                t = get_random_text(8)
+                type_text(device, n, t)
             check_page_after_operation(plan, app, device)
     if t < 4:
         r = True
@@ -507,6 +514,21 @@ def check_page_after_operation(plan, app, device):
         save_screen_jump_out(device, page.package, page.currentActivity)
         click_back(device)
         page = get_page_info(plan, app, device)
+    if page.currentActivity == Setting.AppLoginActivity and Setting.Login:
+        accountView = app.loginViews[0]
+        passwordView = app.loginViews[1]
+        loginBtn = app.loginViews[2]
+        account = device.accountInfo[0]
+        password = device.accountInfo[1]
+        save_screen(device, accountView, True)
+        type_text(device, accountView, account)
+        if keyboard_is_shown(device):
+            click_back(device)
+        type_text(device, passwordView, password)
+        if keyboard_is_shown(device):
+            click_back(device)
+        tap_node(device, loginBtn)
+        page = check_page_after_operation(plan, app, device)
     return page
 
 
@@ -747,7 +769,8 @@ def crawl_edittext(plan, app, device, page_before_run, page_now, init):
         if not recover_node_shown(plan, app, device, page_now, page_before_run, node):
             continue
         save_screen(device, node, True)
-        type_text(device, node, 8)
+        text = get_random_text(8)
+        type_text(device, node, text)
         plan.update_crawled_activity(node.currentActivity)
         plan.update_crawled_nodes(node.nodeInfo)
         plan.delete_uncrawled_nodes(node.nodeInfo)

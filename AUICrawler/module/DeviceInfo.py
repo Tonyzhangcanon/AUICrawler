@@ -16,6 +16,7 @@ class Device:
         self.name = self.get_device_name()
         self.model = self.get_device_model()
         self.version = self.get_device_sys_version()
+        self.accountInfo = []
         self.screenResolution = self.get_screen_resolution()
         self.screenshotPath = self.create_screenshot_folder()
         self.crawlStatue = "Inited"
@@ -81,3 +82,7 @@ class Device:
     def update_crawl_statue(self, statue):
         SaveLog.save_crawler_log(self.logPath, "Step : Update crawl statue from " + self.crawlStatue + ' to ' + statue)
         self.crawlStatue = statue
+
+    def update_device_account(self, account):
+        SaveLog.save_crawler_log(self.logPath, "Step : Update account : " + str(account))
+        self.accountInfo = account

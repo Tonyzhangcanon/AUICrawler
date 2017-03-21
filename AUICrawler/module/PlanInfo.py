@@ -69,8 +69,10 @@ class Plan:
         outLine = os.popen('adb devices').readlines()
         for line in outLine:
             if string in line:
-                last_string = line[0:line.index(string)]
-                device = Device(self, last_string)
+                device_id = line[0:line.index(string)]
+                device = Device(self, device_id)
                 device_list.append(device)
+                index = device_list.index(device)
+                device.update_device_account(Setting.AccountList[index])
         SaveLog.save_crawler_log(self.logPath, device_list)
         return device_list

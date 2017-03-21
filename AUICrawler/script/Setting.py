@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import sys
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -37,8 +38,6 @@ TestRunner = 'com.android.test.runner.MultiDexTestRunner'
 #  - * Login Setting * -
 Login = False  # True (if crawl to the loginActivity, login & continue crawl)
 AppLoginActivity = 'com.dewmobile.kuaiya.es.ui.activity.LoginActivity'
-AccountViewID = 'username'
-PasswordViewID = 'password'
-LoginBtnId = 'btn_login'
-Account = '15210614522'
-Password = '123456'
+LoginViewList = ['username', 'password', 'btn_login']  # [AccountViewID, PasswordViewID, LoginBtnId]
+AccountList = [['15210614522', '123456'],
+               ['15600900870', '123456']]

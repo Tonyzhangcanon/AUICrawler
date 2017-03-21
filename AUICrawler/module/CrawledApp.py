@@ -29,6 +29,9 @@ class App:
         self.mainActivity = Setting.AppMainActivity
         SaveLog.save_crawler_log(plan.logPath, 'MainActivity : ' + self.mainActivity)
 
+        self.loginActivity = Setting.AppLoginActivity
+        SaveLog.save_crawler_log(plan.logPath, 'LoginActivity : ' + self.mainActivity)
+
         self.testApkPath = Setting.TestApkPath
         SaveLog.save_crawler_log(plan.logPath, 'Test Apk Path : ' + self.testApkPath)
 
@@ -46,6 +49,9 @@ class App:
 
         self.unClickViews = self.get_view_list(Setting.UnClickViews)
         SaveLog.save_crawler_log(plan.logPath, 'UnClickViews : ' + str(self.unClickViews))
+
+        self.loginViews = self.get_view_list(Setting.LoginViewList)
+        SaveLog.save_crawler_log(plan.logPath, 'UnClickViews : ' + str(self.loginViews))
 
         self.testRunner = Setting.TestRunner
         SaveLog.save_crawler_log(plan.logPath, 'TestRunner : ' + self.testRunner)
