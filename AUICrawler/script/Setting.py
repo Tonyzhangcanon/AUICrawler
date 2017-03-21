@@ -30,7 +30,7 @@ AuthorizationAlert = [['com.huawei.systemmanager', 'com.huawei.systemmanager:id/
 
 #  - * Run Init Robotium Case Setting * -
 RunInitNodes = True  # True (run init nodes before run init Robotium Case) , False
-RunInitCase = True  # True (run init Robotium case) , False
+RunInitCase = False  # True (run init Robotium case) , False
 InitCases = ['com.dewmobile.kuaiya.test.cases.host.initcase.RunGuidePage']
 TestRunner = 'com.android.test.runner.MultiDexTestRunner'
 

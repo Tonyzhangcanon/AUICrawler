@@ -25,7 +25,7 @@ class Page:
         self.lastPage = None
         self.lastPageNum = 0
 
-    def add_node(self, plan, app, device, node):
+    def add_node(self, plan, app, node):
         self.nodesList.append(node)
         if node is not None and node.bounds != '[0,0][0,0]':
             self.nodesList.append(node)
