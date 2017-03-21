@@ -89,7 +89,7 @@ NodeInfo :  每个控件的获取时信息 & 遍历中相关状态&信息
 #### 主执行脚本： 
 - AUICrawler
   - runner
-    - easyrunner.py
+    - runner.py
 
 ### 开发进度:
 - [x] 1.  对象架构设计
