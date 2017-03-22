@@ -50,7 +50,6 @@ class Device:
         return path
 
     def get_device_name(self):
-        SaveLog.save_crawler_log(self.logPath, "Step : get device name")
         # linux:
         # adb shell cat /system/build.prop | grep "product"
         # windows
@@ -62,17 +61,16 @@ class Device:
             if key in line:
                 device_name = line[line.find(key) + len(key):-2]
                 break
+        SaveLog.save_crawler_log(self.logPath, device_name)
         return device_name
 
     def get_device_model(self):
-        SaveLog.save_crawler_log(self.logPath, "Step : get device model")
         command = 'adb -s ' + self.id + ' shell getprop ro.product.model'
         model = os.popen(command).read()
         SaveLog.save_crawler_log(self.logPath, model)
         return model
 
     def get_device_sys_version(self):
-        SaveLog.save_crawler_log(self.logPath, "Step : get device sys version")
         command = 'adb -s ' + self.id + ' shell getprop ro.build.version.release'
         result = os.popen(command).read()
         SaveLog.save_crawler_log(self.logPath, result)

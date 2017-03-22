@@ -473,7 +473,10 @@ def check_page_after_operation(plan, app, device):
 
     if Setting.TimeModel == 'Limit':
         time_now = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
-        if (time_now - plan.beginCrawlTime) > Setting.LimitTime:
+        print time_now
+        print time_now - plan.beginCrawlTime
+        print Setting.LimitTime * 100
+        if (time_now - plan.beginCrawlTime) > (Setting.LimitTime * 100):
             SaveLog.save_crawler_log_both(plan.logPath, device.logPath, "Step : crawl time out , finish crawl.")
             return None
     while True:
@@ -546,61 +549,69 @@ def check_page_after_operation(plan, app, device):
 
 def save_screen(device, node, model):
     if Setting.SaveScreen:
-        global screenshot_num
-        SaveLog.save_crawler_log(device.logPath, "Step : save screenshot ")
-        get_screenshot_command = 'adb -s ' + device.id + ' shell /system/bin/screencap -p /sdcard/screenshot.png'
-        activity = node.currentActivity
-        resource_id = node.resource_id
-        resource_id = resource_id[resource_id.find('/') + 1:]
-        location = node.location
-        if model:
-            local_png = device.screenshotPath + '/' + str(screenshot_num) + '-' + str(activity) + '-' + str(
-                resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
-        else:
-            local_png = device.screenshotPath + '/' + str(screenshot_num) + '-' + 'unCrawl' + '-' + str(
-                activity) + '-' + str(
-                resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
-        pull_screenshot_command = 'adb -s ' + device.id + ' pull /sdcard/screenshot.png ' + local_png
-        os.popen(get_screenshot_command)
-        os.popen(pull_screenshot_command)
-        screenshot_num += 1
-        # command = 'adb shell screencap -p | gsed s/' + '\r' + '$//> ' + local_png
-        # os.popen(command)
-        bounds = node.bounds
-        image = pl.array(Image.open(local_png))
-        pl.figure(figsize=(float(device.screenResolution[0]) / 100, float(device.screenResolution[1]) / 100),
-                  dpi=100)
-        pl.imshow(image)
-        x = [bounds[0], bounds[0], bounds[2], bounds[2], bounds[0]]
-        y = [bounds[1], bounds[3], bounds[3], bounds[1], bounds[1]]
-        pl.axis('off')
-        pl.axis('scaled')
-        pl.axis([0, int(device.screenResolution[0]), int(device.screenResolution[1]), 0])
-        pl.plot(x[:5], y[:5], 'r', linewidth=2)
-        pl.savefig(local_png)
-        im = Image.open(local_png)
-        box = (float(device.screenResolution[0]) / 8, float(device.screenResolution[1]) / 9,
-               float(device.screenResolution[0]) * 65 / 72, float(device.screenResolution[1]) * 8 / 9)
-        region = im.crop(box)
-        region.save(local_png)
-        pl.close()
+        try:
+            global screenshot_num
+            SaveLog.save_crawler_log(device.logPath, "Step : save screenshot ")
+            get_screenshot_command = 'adb -s ' + device.id + ' shell /system/bin/screencap -p /sdcard/screenshot.png'
+            activity = node.currentActivity
+            resource_id = node.resource_id
+            resource_id = resource_id[resource_id.find('/') + 1:]
+            location = node.location
+            if model:
+                local_png = device.screenshotPath + '/' + str(screenshot_num) + '-' + str(activity) + '-' + str(
+                    resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
+            else:
+                local_png = device.screenshotPath + '/' + str(screenshot_num) + '-' + 'unCrawl' + '-' + str(
+                    activity) + '-' + str(
+                    resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
+            pull_screenshot_command = 'adb -s ' + device.id + ' pull /sdcard/screenshot.png ' + local_png
+            os.popen(get_screenshot_command)
+            os.popen(pull_screenshot_command)
+            screenshot_num += 1
+            # command = 'adb shell screencap -p | gsed s/' + '\r' + '$//> ' + local_png
+            # os.popen(command)
+            bounds = node.bounds
+            image = pl.array(Image.open(local_png))
+            pl.figure(figsize=(float(device.screenResolution[0]) / 100, float(device.screenResolution[1]) / 100),
+                      dpi=100)
+            pl.imshow(image)
+            x = [bounds[0], bounds[0], bounds[2], bounds[2], bounds[0]]
+            y = [bounds[1], bounds[3], bounds[3], bounds[1], bounds[1]]
+            pl.axis('off')
+            pl.axis('scaled')
+            pl.axis([0, int(device.screenResolution[0]), int(device.screenResolution[1]), 0])
+            pl.plot(x[:5], y[:5], 'r', linewidth=2)
+            pl.savefig(local_png)
+            im = Image.open(local_png)
+            box = (float(device.screenResolution[0]) / 8, float(device.screenResolution[1]) / 9,
+                   float(device.screenResolution[0]) * 65 / 72, float(device.screenResolution[1]) * 8 / 9)
+            region = im.crop(box)
+            region.save(local_png)
+            pl.close()
+        except:
+            SaveLog.save_crawler_log(device.logPath, "save screen error")
 
 
 def save_screen_jump_out(device, package, activity):
     if Setting.SaveJumpOutScreen:
-        global jump_out_time, screenshot_num
-        SaveLog.save_crawler_log(device.logPath, "Step : jump out . save screenshot ")
-        get_screenshot_command = 'adb -s ' + device.id + ' shell /system/bin/screencap -p /sdcard/screenshot.png'
-        local_png = device.screenshotPath + '/' + str(screenshot_num) + '-' + str(package) + '-' + str(
-            activity) + '-Jump' + str(jump_out_time) + '.png'
-        pull_screenshot_command = 'adb -s ' + device.id + ' pull /sdcard/screenshot.png ' + local_png
-        os.popen(get_screenshot_command)
-        os.popen(pull_screenshot_command)
-        screenshot_num += 1
-        jump_out_time += 1
+        try:
+            global jump_out_time, screenshot_num
+            SaveLog.save_crawler_log(device.logPath, "Step : jump out . save screenshot ")
+            get_screenshot_command = 'adb -s ' + device.id + ' shell /system/bin/screencap -p /sdcard/screenshot.png'
+            local_png = device.screenshotPath + '/' + str(screenshot_num) + '-' + str(package) + '-' + str(
+                activity) + '-Jump' + str(jump_out_time) + '.png'
+            pull_screenshot_command = 'adb -s ' + device.id + ' pull /sdcard/screenshot.png ' + local_png
+            os.popen(get_screenshot_command)
+            os.popen(pull_screenshot_command)
+            screenshot_num += 1
+            jump_out_time += 1
+        except:
+            SaveLog.save_crawler_log(device, "save screen error")
 
 
 def no_uncrawled_clickable_nodes_now(plan, device, page_now):
+    if page_now is None:
+        return False
     SaveLog.save_crawler_log(device.logPath, "Step : Check there are uncCrawled clickable Nodes in the page now or not")
     result = True
     for node in page_now.nodesList:
