@@ -208,9 +208,16 @@ def get_node_location(node_info):
 
 def drag_screen_to_left(device):
     SaveLog.save_crawler_log(device.logPath, "Step : drag screen to left")
-    x_max = str(int(device.screenResolution[0]) - 50)
+    # x_max = str(int(device.screenResolution[0]) - 50)
     # x_min = str(int(resolution[0]) * 0.5)[:str(int(resolution[0]) * 0.5).index('.')]
-    command = 'adb -s ' + device.id + ' shell input swipe ' + x_max + ' 100 ' + '20' + ' 100'
+    # command = 'adb -s ' + device.id + ' shell input swipe ' + x_max + ' 100 ' + '20' + ' 100'
+    command = 'adb -s ' + device.id + ' shell input keyevent 22'
+    os.popen(command)
+
+
+def drag_screen_to_right(device):
+    SaveLog.save_crawler_log(device.logPath, "Step : drag screen to right")
+    command = 'adb -s ' + device.id + ' shell input keyevent 21'
     os.popen(command)
 
 
@@ -463,7 +470,12 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
 def check_page_after_operation(plan, app, device):
     SaveLog.save_crawler_log(device.logPath, "Step : Check activity after crawl")
     # if app crashed after crawl , save log & start app ,comtinue
-    time.sleep(1)
+
+    if Setting.TimeModel == 'Limit':
+        time_now = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+        if (time_now - plan.beginCrawlTime) > Setting.LimitTime:
+            SaveLog.save_crawler_log_both(plan.logPath, device.logPath, "Step : crawl time out , finish crawl.")
+            return None
     while True:
         info = get_top_activity_info(device)
         package = info['packagename']
@@ -703,7 +715,7 @@ def crawl_clickable_nodes(plan, app, device, page_before_run, page_now, init):
         # if jump out the test app, try to go back & return the final page
         page_after_operation = check_page_after_operation(plan, app, device)
         if page_after_operation is None:
-            SaveLog.save_crawler_log(device.logPath, 'Step : App is crash !!!!!!')
+            SaveLog.save_crawler_log(device.logPath, 'Jump out to crawl')
             page_now = page_after_operation
             break
         # compare two pages before & after click .
@@ -728,6 +740,7 @@ def crawl_longclickable_nodes(plan, app, device, page_before_run, page_now, init
     for node in get_random_nodes(page_before_run.longClickableNodes):
         # if crash and not keep run , break from deep run .page_need_crawled will be None
         if page_now is None:
+            SaveLog.save_crawler_log(device.logPath, 'Jump out to crawl')
             break
         # sometimes the need tap node is not shown after one deep run
         if not recover_node_shown(plan, app, device, page_now, page_before_run, node):
@@ -740,6 +753,7 @@ def crawl_longclickable_nodes(plan, app, device, page_before_run, page_now, init
         # if jump out the test app, try to go back & return the final page
         page_after_operation = check_page_after_operation(plan, app, device)
         if page_after_operation is None:
+            SaveLog.save_crawler_log(device.logPath, 'Jump out to crawl')
             page_now = page_after_operation
             break
         # compare two pages before & after click .
@@ -764,6 +778,7 @@ def crawl_edittext(plan, app, device, page_before_run, page_now, init):
     for node in get_random_nodes(page_before_run.editTexts):
         # if crash and not keep run , break from deep run .page_need_crawled will be None
         if page_now is None:
+            SaveLog.save_crawler_log(device.logPath, 'Jump out to crawl')
             break
         # sometimes the need tap node is not shown after one deep run
         if not recover_node_shown(plan, app, device, page_now, page_before_run, node):
@@ -777,6 +792,7 @@ def crawl_edittext(plan, app, device, page_before_run, page_now, init):
         # if jump out the test app, try to go back & return the final page
         page_after_operation = check_page_after_operation(plan, app, device)
         if page_after_operation is None:
+            SaveLog.save_crawler_log(device.logPath, 'Jump out to crawl')
             page_now = page_after_operation
             break
         # compare two pages before & after click .
@@ -880,7 +896,7 @@ def run_test(plan, app, device):
     start_activity(device, app.packageName, app.mainActivity)
     time.sleep(5)
     page = get_page_info(plan, app, device)
-    print page.clickableNodesNum
+    plan.update_begin_crawl_time()
     crawl_main_nodes(plan, app, device, page)
 
     # clean unusable files

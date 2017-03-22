@@ -15,6 +15,7 @@ class Plan:
         self.product = Setting.AppProduct
         self.coverageLevel = Setting.CoverageLevel
         self.runCaseTime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+        self.beginCrawlTime = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
         self.unCrawledNodes = []
         self.hasCrawledNodes = []
         self.hasCrawlPage = []
@@ -76,3 +77,7 @@ class Plan:
                 device.update_device_account(Setting.AccountList[index])
         SaveLog.save_crawler_log(self.logPath, device_list)
         return device_list
+
+    def update_begin_crawl_time(self):
+        self.beginCrawlTime = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+
