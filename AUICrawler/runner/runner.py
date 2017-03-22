@@ -6,7 +6,7 @@ import os
 import time
 import sys
 import xml.dom.minidom
-from AUICrawler.script import SaveLog
+from AUICrawler.script import Saver
 from PIL import Image
 from AUICrawler.module.PageInfo import Page
 from AUICrawler.module.NodeInfo import Node
@@ -26,24 +26,24 @@ jump_out_time = 1
 
 
 def install_app(device, apk_path):
-    SaveLog.save_crawler_log(device.logPath, 'Step : install app : ' + apk_path)
+    Saver.save_crawler_log(device.logPath, 'Step : install app : ' + apk_path)
     command = 'adb -s ' + "\"" + device.id + "\"" + " install -r " + apk_path
     os.system(command)
 
 
 def uninstall_app(device, package_name):
-    SaveLog.save_crawler_log(device.logPath, 'Step : uninstall app : ' + package_name)
+    Saver.save_crawler_log(device.logPath, 'Step : uninstall app : ' + package_name)
     command = 'adb -s ' + "\"" + device.id + "\"" + " uninstall " + package_name
     os.system(command)
 
 
 def start_activity(device, packagename, activity):
-    SaveLog.save_crawler_log(device.logPath, 'Step : start up activity : ' + activity)
+    Saver.save_crawler_log(device.logPath, 'Step : start up activity : ' + activity)
     time1 = time.time()
     result = True
     while result:
         command = 'adb -s ' + device.id + ' shell am start -n ' + packagename + '/' + activity
-        SaveLog.save_crawler_log(device.logPath, 'start up activity: ' + activity)
+        Saver.save_crawler_log(device.logPath, 'start up activity: ' + activity)
         os.popen(command)
         if time.time() - time1 < 10:
             top_activity_info = get_top_activity_info(device)
@@ -55,7 +55,7 @@ def start_activity(device, packagename, activity):
 
 
 def save_logcat(plan, device, finish):
-    SaveLog.save_crawler_log(plan.logPath, "Step : save device log : " + device.id)
+    Saver.save_crawler_log(plan.logPath, "Step : save device log : " + device.id)
     if not os.path.exists(os.getcwd()):
         os.makedirs(os.getcwd())
     command = 'adb -s ' + device.id + ' logcat -d >> ' + device.logPath + '/logcat.txt'
@@ -71,7 +71,7 @@ def save_logcat(plan, device, finish):
 
 
 def get_top_activity_info(device):
-    SaveLog.save_crawler_log(device.logPath, "Step : get top activity info")
+    Saver.save_crawler_log(device.logPath, "Step : get top activity info")
     # linux:
     # adb shell dumpsys activity | grep "mFocusedActivity"
     # windows:
@@ -97,8 +97,8 @@ def get_top_activity_info(device):
     info['packagename'] = packagename
     info['activity'] = activity
 
-    SaveLog.save_crawler_log(device.logPath, 'Top activity is :' + activity)
-    SaveLog.save_crawler_log(device.logPath, 'Top package is :' + packagename)
+    Saver.save_crawler_log(device.logPath, 'Top activity is :' + activity)
+    Saver.save_crawler_log(device.logPath, 'Top package is :' + packagename)
     return info
 
 
@@ -112,13 +112,13 @@ def get_uidump_xml_file(device):
 
 
 def remove_uidump_xml_file(device):
-    SaveLog.save_crawler_log(device.logPath, "Step : remove uidunp xml")
+    Saver.save_crawler_log(device.logPath, "Step : remove uidunp xml")
     remove_xml_file = device.logPath + '/Uidump.xml'
     os.remove(remove_xml_file)
 
 
 def get_nodes_list(device):
-    SaveLog.save_crawler_log(device.logPath, "Step : get nodes list")
+    Saver.save_crawler_log(device.logPath, "Step : get nodes list")
     try:
         dom = xml.dom.minidom.parse(device.logPath + '/Uidump.xml')
         root = dom.documentElement
@@ -170,7 +170,7 @@ def node_has_child(node):
 
 
 def get_clickable_nodes(device):
-    SaveLog.save_crawler_log(device.logPath, "Step : get clickable nodes")
+    Saver.save_crawler_log(device.logPath, "Step : get clickable nodes")
     nodes = get_nodes_list(device)
     clickable_nodes = []
     if not len(nodes) == 0:
@@ -184,10 +184,10 @@ def get_clickable_nodes(device):
                              'bounds': node.getAttribute('bounds'),
                              'content_desc': node.getAttribute('content-desc')}
                 clickable_nodes.append(node_info)
-        SaveLog.save_crawler_log(device.logPath, clickable_nodes)
-        SaveLog.save_crawler_log(device.logPath, len(clickable_nodes))
+        Saver.save_crawler_log(device.logPath, clickable_nodes)
+        Saver.save_crawler_log(device.logPath, len(clickable_nodes))
     else:
-        SaveLog.save_crawler_log(device.logPath, "no clickable nodes ...")
+        Saver.save_crawler_log(device.logPath, "no clickable nodes ...")
     return clickable_nodes
 
 
@@ -207,7 +207,7 @@ def get_node_location(node_info):
 
 
 def drag_screen_to_left(device):
-    SaveLog.save_crawler_log(device.logPath, "Step : drag screen to left")
+    Saver.save_crawler_log(device.logPath, "Step : drag screen to left")
     # x_max = str(int(device.screenResolution[0]) - 50)
     # x_min = str(int(resolution[0]) * 0.5)[:str(int(resolution[0]) * 0.5).index('.')]
     # command = 'adb -s ' + device.id + ' shell input swipe ' + x_max + ' 100 ' + '20' + ' 100'
@@ -216,48 +216,50 @@ def drag_screen_to_left(device):
 
 
 def drag_screen_to_right(device):
-    SaveLog.save_crawler_log(device.logPath, "Step : drag screen to right")
+    Saver.save_crawler_log(device.logPath, "Step : drag screen to right")
     command = 'adb -s ' + device.id + ' shell input keyevent 21'
     os.popen(command)
 
 
 def click_back(device):
-    SaveLog.save_crawler_log(device.logPath, "Step : click back btn on device")
+    Saver.save_crawler_log(device.logPath, "Step : click back btn on device")
     command = 'adb -s ' + device.id + ' shell input keyevent 4'
     os.popen(command)
 
 
 def click_point(device, x_point, y_point):
     command = 'adb -s ' + device.id + ' shell input tap ' + x_point + ' ' + y_point
-    SaveLog.save_crawler_log(device.logPath, 'click screen :' + x_point + ',' + y_point)
+    Saver.save_crawler_log(device.logPath, 'click screen :' + x_point + ',' + y_point)
     os.popen(command)
 
 
 def long_click_point(device, x, y):
     command = 'adb -s' + device.id + 'shell input swipe ' + x + ' ' + y + ' ' + x + ' ' + y + ' 1000'
-    SaveLog.save_crawler_log(device.logPath, 'long click screen :' + x + ',' + y)
+    Saver.save_crawler_log(device.logPath, 'long click screen :' + x + ',' + y)
     os.popen(command)
 
 
 def keyboard_is_shown(device):
-    SaveLog.save_crawler_log(device.logPath, "Step : check keyboard")
+    Saver.save_crawler_log(device.logPath, "Step : check keyboard")
     command = 'adb -s ' + device.id + ' shell dumpsys input_method'
     result = os.popen(command).read()
     key = 'mInputShown='
     keyboard_status = result[result.index(key) + len(key):result.index(key) + len(key) + 5]
     if keyboard_status == 'true':
-        SaveLog.save_crawler_log(device.logPath, "keyboard is shown ")
+        Saver.save_crawler_log(device.logPath, "keyboard is shown ")
         return True
     else:
-        SaveLog.save_crawler_log(device.logPath, "keyboard is not shown")
+        Saver.save_crawler_log(device.logPath, "keyboard is not shown")
         return False
 
 
 def close_sys_alert(plan, app, device, page_now):
+    if page_now is None:
+        return page_now
     for node in page_now.clickableNodes:
         info = [node.package, node.resource_id, node.text]
         if info in Setting.AuthorizationAlert:
-            SaveLog.save_crawler_log(device.logPath, "Step : close sys alert")
+            Saver.save_crawler_log(device.logPath, "Step : close sys alert")
             save_screen(device, node, False)
             tap_node(device, node)
             page_now = get_page_info(plan, app, device)
@@ -265,26 +267,34 @@ def close_sys_alert(plan, app, device, page_now):
 
 
 def app_is_running(device, app):
-    SaveLog.save_crawler_log(device.logPath, "Step : check app is running or not")
+    Saver.save_crawler_log(device.logPath, "Step : check app is running or not")
     command = "adb -s " + device.id + " shell top -n 1 | grep " + app.packageName
     output = os.popen(command)
     lines = output.readlines()
     if len(lines) == 0:
-        SaveLog.save_crawler_log(device.logPath, "app is not running")
+        Saver.save_crawler_log(device.logPath, "app is not running")
         return False
     else:
-        SaveLog.save_crawler_log(device.logPath, "app is running")
+        Saver.save_crawler_log(device.logPath, "app is running")
         return True
 
 
 def clean_device_logcat(device):
-    SaveLog.save_crawler_log(device.logPath, "Step : clean device logcat cache")
+    Saver.save_crawler_log(device.logPath, "Step : clean device logcat cache")
     command = 'adb -s ' + device.id + ' logcat -c'
     os.popen(command)
 
 
 def get_page_info(plan, app, device):
-    SaveLog.save_crawler_log(device.logPath, "get all nodes in this page")
+    if Setting.TimeModel == 'Limit':
+        time_now = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+        print time_now
+        print time_now - device.beginCrawlTime
+        print Setting.LimitTime * 100
+        if (time_now - device.beginCrawlTime) > (Setting.LimitTime * 100):
+            Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : crawl time out , finish crawl.")
+            return None
+    Saver.save_crawler_log(device.logPath, "get all nodes in this page")
     page = Page()
     result = False
     while not result:
@@ -296,7 +306,7 @@ def get_page_info(plan, app, device):
             result = False
     root = dom.documentElement
     nodes = root.getElementsByTagName('node')
-    SaveLog.save_crawler_log(device.logPath, len(nodes))
+    Saver.save_crawler_log(device.logPath, len(nodes))
     info = get_top_activity_info(device)
     for node in nodes:
         n = Node(node)
@@ -305,8 +315,9 @@ def get_page_info(plan, app, device):
             save_screen(device, n, False)
             tap_node(device, n)
             page = get_page_info(plan, app, device)
-            page.add_entry(n)
-        page.add_node(plan, app, n)
+            if page is not None:
+                page.add_entry(n)
+        page.add_node(device, app, n)
     page = close_sys_alert(plan, app, device, page)
     return page
 
@@ -314,10 +325,10 @@ def get_page_info(plan, app, device):
 # compare two pages before & after click .
 # update the after page . leave the new clickable/scrollable/longclickable/edittext nodes only.
 def get_need_crawl_page(plan, app, device, page_before_run, page_after_run):
-    SaveLog.save_crawler_log(device.logPath, "Step : get need crawl page now ...")
+    Saver.save_crawler_log(device.logPath, "Step : get need crawl page now ...")
     if len(page_after_run.nodesList) == 0:
         page_after_run = get_page_info(plan, app, device)
-    if len(page_after_run.nodesList) != 0:
+    if page_after_run is not None and len(page_after_run.nodesList) != 0:
         for node in page_after_run.nodesList:
             if node in page_before_run.nodesList:
                 page_after_run.remove_clickable_node(node)
@@ -346,22 +357,22 @@ def find_node_by_info(app, device, classname, resourceid, contentdesc, page):
 
 def node_is_shown_in_page(device, node, page):
     if node in page.nodesList:
-        SaveLog.save_crawler_log(device.logPath, "node is shown in page now")
+        Saver.save_crawler_log(device.logPath, "node is shown in page now")
         return True
     else:
-        SaveLog.save_crawler_log(device.logPath, "node is not shown in page now")
+        Saver.save_crawler_log(device.logPath, "node is not shown in page now")
         return False
 
 
 def tap_node(device, node):
-    SaveLog.save_crawler_log(device.logPath, "tap node ")
+    Saver.save_crawler_log(device.logPath, "tap node ")
     location = node.location
     click_point(device, location[0], location[1])
     node.update_operation('tap')
 
 
 def long_click_node(device, node):
-    SaveLog.save_crawler_log(device.logPath, "long click node")
+    Saver.save_crawler_log(device.logPath, "long click node")
     location = node.location
     long_click_point(device, location[0], location[1])
     node.update_operation('longclick')
@@ -383,74 +394,75 @@ def type_text(device, edittext, text):
 
 
 def page_is_crawlable(plan, app, device, page):
-    SaveLog.save_crawler_log(device.logPath, "Step : check page is crawlable or not")
-    if page.nodesInfoList not in plan.hasCrawlPage \
+    Saver.save_crawler_log(device.logPath, "Step : check page is crawlable or not")
+    if page.nodesInfoList not in device.hasCrawlPage \
             and page.package == app.packageName \
             and (page.clickableNodesNum != 0
                  or page.scrollableNodesNum != 0
                  or page.longClickableNodesNum != 0
                  or page.editTextsNum != 0):
-        SaveLog.save_crawler_log(device.logPath, "page is crawlable")
+        Saver.save_crawler_log(device.logPath, "page is crawlable")
         return True
     else:
-        SaveLog.save_crawler_log(device.logPath, "page is not crawlable")
+        Saver.save_crawler_log(device.logPath, "page is not crawlable")
         return False
 
 
 def pages_are_different(device, page1, page2):
     if page1.nodesList == page2.nodesList:
-        SaveLog.save_crawler_log(device.logPath, "pages are same ")
+        Saver.save_crawler_log(device.logPath, "pages are same ")
         return False
     else:
-        SaveLog.save_crawler_log(device.logPath, "pages are different ")
+        Saver.save_crawler_log(device.logPath, "pages are different ")
         return True
 
 
 def get_node_recover_way(device, page_now, page_before_run, node, way):
-    SaveLog.save_crawler_log(device.logPath, "Step : get node recover way ,node info : " + str(node.nodeInfo))
+    Saver.save_crawler_log(device.logPath, "Step : get node recover way ,node info : " + str(node.nodeInfo))
     way_this_deep = way
     result = False
-    if page_before_run.entryNum != 0:
+    if page_before_run is not None and page_before_run.entryNum != 0:
         for entry in page_before_run.entry:
-            SaveLog.save_crawler_log(device.logPath, entry.resource_id)
-            if entry.nodeInfo in page_now.nodesInfoList:
+            Saver.save_crawler_log(device.logPath, entry.resource_id)
+            if page_now is not None and entry.nodeInfo in page_now.nodesInfoList:
                 way_this_deep.insert(0, entry)
                 node.update_recover_way(way_this_deep)
-                SaveLog.save_crawler_log(device.logPath, "get the node recover way success. ")
-                SaveLog.save_crawler_log(device.logPath, str(way_this_deep))
+                Saver.save_crawler_log(device.logPath, "get the node recover way success. ")
+                Saver.save_crawler_log(device.logPath, str(way_this_deep))
                 result = True
                 break
     if not result:
-        if page_before_run.lastPageNum != 0:
-            SaveLog.save_crawler_log(device.logPath, "have " + str(page_before_run.lastPageNum) + ' entries')
+        if page_before_run is not None and page_before_run.lastPageNum != 0:
+            Saver.save_crawler_log(device.logPath, "have " + str(page_before_run.lastPageNum) + ' entries')
             p = page_before_run.lastPage
             for e in page_before_run.entry:
-                SaveLog.save_crawler_log(device.logPath, e.resource_id)
+                Saver.save_crawler_log(device.logPath, e.resource_id)
                 way_this_deep.insert(page_before_run.entry.index(e), e)
             result = get_node_recover_way(device, page_now, p, node, way_this_deep)
     if result:
         return True
     else:
-        SaveLog.save_crawler_log(device.logPath, "get the node recover way false. ")
+        Saver.save_crawler_log(device.logPath, "get the node recover way false. ")
+        return False
 
 
 def recover_node_shown(plan, app, device, page_now, page_before_run, node):
     t = 1
     r = False
-    while page_now.nodesNum != 0 and node.nodeInfo not in page_now.nodesInfoList:
+    while page_now is not None and page_now.nodesNum != 0 and node.nodeInfo not in page_now.nodesInfoList:
         if get_node_recover_way(device, page_now, page_before_run, node, []):
             r = True
             break
-        SaveLog.save_crawler_log(device.logPath, "Step : no recover way , click back")
+        Saver.save_crawler_log(device.logPath, "Step : no recover way , click back")
         save_screen_jump_out(device, page_now.package, page_now.currentActivity)
         click_back(device)
         page_now = get_page_info(plan, app, device)
         t += 1
         if t > 3:
-            SaveLog.save_crawler_log(device.logPath, "can't find the node after back 3 times.")
+            Saver.save_crawler_log(device.logPath, "can't find the node after back 3 times.")
             break
     if r:
-        SaveLog.save_crawler_log(device.logPath, "Step : recover node shown")
+        Saver.save_crawler_log(device.logPath, "Step : recover node shown")
         for n in node.recoverWay:
             save_screen(device, n, False)
             if n.crawlOperation == 'tap':
@@ -468,16 +480,16 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
 
 # if jump out the test app, try to go back & return the final page
 def check_page_after_operation(plan, app, device):
-    SaveLog.save_crawler_log(device.logPath, "Step : Check activity after crawl")
+    Saver.save_crawler_log(device.logPath, "Step : Check activity after crawl")
     # if app crashed after crawl , save log & start app ,comtinue
 
     if Setting.TimeModel == 'Limit':
         time_now = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
         print time_now
-        print time_now - plan.beginCrawlTime
+        print time_now - device.beginCrawlTime
         print Setting.LimitTime * 100
-        if (time_now - plan.beginCrawlTime) > (Setting.LimitTime * 100):
-            SaveLog.save_crawler_log_both(plan.logPath, device.logPath, "Step : crawl time out , finish crawl.")
+        if (time_now - device.beginCrawlTime) > (Setting.LimitTime * 100):
+            Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : crawl time out , finish crawl.")
             return None
     while True:
         info = get_top_activity_info(device)
@@ -493,10 +505,10 @@ def check_page_after_operation(plan, app, device):
             if Setting.KeepRun:
                 start_activity(device, app.packageName, app.mainActivity)
             else:
-                SaveLog.save_crawler_log_both(plan.logPath, device.logPath,
+                Saver.save_crawler_log_both(plan.logPath, device.logPath,
                                               "Step : crawl app " + device.crawlStatue + ', break crawling..')
                 return None
-        SaveLog.save_crawler_log(device.logPath, 'back to ' + app.packageName)
+        Saver.save_crawler_log(device.logPath, 'back to ' + app.packageName)
         save_screen_jump_out(device, package, activity)
         click_back(device)
         times += 1
@@ -504,7 +516,7 @@ def check_page_after_operation(plan, app, device):
         package = top_activity_info['packagename']
         activity = info['activity']
         if times > 3:
-            SaveLog.save_crawler_log(device.logPath,
+            Saver.save_crawler_log(device.logPath,
                                      "can't back to " + app.packageName + " after click back 3 times , Restart app")
             start_activity(device, app.packageName, app.mainActivity)
             top_activity_info = get_top_activity_info(device)
@@ -515,21 +527,21 @@ def check_page_after_operation(plan, app, device):
     if keyboard_is_shown(device):
         click_back(device)
     if activity == 'com.mob.tools.MobUIShell':
-        SaveLog.save_crawler_log(device.logPath, "close login web QQ/Weibo")
+        Saver.save_crawler_log(device.logPath, "close login web QQ/Weibo")
         click_back(device)
     page = get_page_info(plan, app, device)
-    if find_node_by_info(app, device, 'android.widget.Button', '', '下载QQ', page):
-        SaveLog.save_crawler_log(device.logPath, 'close qq download  page')
+    if page is not None and find_node_by_info(app, device, 'android.widget.Button', '', '下载QQ', page):
+        Saver.save_crawler_log(device.logPath, 'close qq download  page')
         save_screen_jump_out(device, page.package, page.currentActivity)
         click_back(device)
         page = get_page_info(plan, app, device)
-    if find_node_by_info(app, device, 'android.widget.RelativeLayout', app.packageName + ':id/umeng_socialize_titlebar',
+    if page is not None and find_node_by_info(app, device, 'android.widget.RelativeLayout', app.packageName + ':id/umeng_socialize_titlebar',
                          '', page):
-        SaveLog.save_crawler_log(device.logPath, 'close weibo web')
+        Saver.save_crawler_log(device.logPath, 'close weibo web')
         save_screen_jump_out(device, page.package, page.currentActivity)
         click_back(device)
         page = get_page_info(plan, app, device)
-    if page.currentActivity == Setting.AppLoginActivity and Setting.Login:
+    if page is not None and page.currentActivity == Setting.AppLoginActivity and Setting.Login:
         accountView = app.loginViews[0]
         passwordView = app.loginViews[1]
         loginBtn = app.loginViews[2]
@@ -551,7 +563,7 @@ def save_screen(device, node, model):
     if Setting.SaveScreen:
         try:
             global screenshot_num
-            SaveLog.save_crawler_log(device.logPath, "Step : save screenshot ")
+            Saver.save_crawler_log(device.logPath, "Step : save screenshot ")
             get_screenshot_command = 'adb -s ' + device.id + ' shell /system/bin/screencap -p /sdcard/screenshot.png'
             activity = node.currentActivity
             resource_id = node.resource_id
@@ -589,14 +601,14 @@ def save_screen(device, node, model):
             region.save(local_png)
             pl.close()
         except:
-            SaveLog.save_crawler_log(device.logPath, "save screen error")
+            Saver.save_crawler_log(device.logPath, "save screen error")
 
 
 def save_screen_jump_out(device, package, activity):
     if Setting.SaveJumpOutScreen:
         try:
             global jump_out_time, screenshot_num
-            SaveLog.save_crawler_log(device.logPath, "Step : jump out . save screenshot ")
+            Saver.save_crawler_log(device.logPath, "Step : jump out . save screenshot ")
             get_screenshot_command = 'adb -s ' + device.id + ' shell /system/bin/screencap -p /sdcard/screenshot.png'
             local_png = device.screenshotPath + '/' + str(screenshot_num) + '-' + str(package) + '-' + str(
                 activity) + '-Jump' + str(jump_out_time) + '.png'
@@ -606,89 +618,95 @@ def save_screen_jump_out(device, package, activity):
             screenshot_num += 1
             jump_out_time += 1
         except:
-            SaveLog.save_crawler_log(device, "save screen error")
+            Saver.save_crawler_log(device, "save screen error")
 
 
 def no_uncrawled_clickable_nodes_now(plan, device, page_now):
     if page_now is None:
-        return False
-    SaveLog.save_crawler_log(device.logPath, "Step : Check there are uncCrawled clickable Nodes in the page now or not")
+        return True
+    Saver.save_crawler_log(device.logPath, "Step : Check there are uncCrawled clickable Nodes in the page now or not")
     result = True
     for node in page_now.nodesList:
-        if node_is_clickable(node) and plan.is_in_uncrawled_nodes(node.nodeInfo):
+        if node_is_clickable(node) and device.is_in_uncrawled_nodes(node.nodeInfo):
             result = False
             break
     if result:
-        SaveLog.save_crawler_log(device.logPath, "no uncrawled  clickable nodes in this page now")
+        Saver.save_crawler_log(device.logPath, "no uncrawled  clickable nodes in this page now")
         return True
     else:
-        SaveLog.save_crawler_log(device.logPath, "have some uncrawled clickable nodes in this page now")
+        Saver.save_crawler_log(device.logPath, "have some uncrawled clickable nodes in this page now")
         return False
 
 
 def no_uncrawled_scrollable_nodes_now(plan, device, page_now):
-    SaveLog.save_crawler_log(device.logPath,
+    if page_now is None:
+        return True
+    Saver.save_crawler_log(device.logPath,
                              "Step : Check there are uncCrawled scrollable Nodes in the page now or not")
     result = True
     for node in page_now.scrollableNodes:
-        if plan.is_in_uncrawled_nodes(node.nodeInfo):
+        if device.is_in_uncrawled_nodes(node.nodeInfo):
             result = False
             break
     if result:
-        SaveLog.save_crawler_log(device.logPath, "no uncrawled  scrollable nodes in this page now")
+        Saver.save_crawler_log(device.logPath, "no uncrawled  scrollable nodes in this page now")
         return True
     else:
-        SaveLog.save_crawler_log(device.logPath, "have some uncrawled scrollable nodes in this page now")
+        Saver.save_crawler_log(device.logPath, "have some uncrawled scrollable nodes in this page now")
         return False
 
 
 def no_uncrawled_longclickable_nodes_now(plan, device, page_now):
-    SaveLog.save_crawler_log(device.logPath,
+    if page_now is None:
+        return True
+    Saver.save_crawler_log(device.logPath,
                              "Step : Check there are uncCrawled longClickable Nodes in the page now or not")
     result = True
     for node in page_now.longClickableNodes:
-        if plan.is_in_uncrawled_nodes(node.nodeInfo):
+        if device.is_in_uncrawled_nodes(node.nodeInfo):
             result = False
             break
     if result:
-        SaveLog.save_crawler_log(device.logPath, "no uncrawled  longClickable nodes in this page now")
+        Saver.save_crawler_log(device.logPath, "no uncrawled  longClickable nodes in this page now")
         return True
     else:
-        SaveLog.save_crawler_log(device.logPath, "have some uncrawled longClickable nodes in this page now")
+        Saver.save_crawler_log(device.logPath, "have some uncrawled longClickable nodes in this page now")
         return False
 
 
 def no_uncrawled_edit_text_now(plan, device, page_now):
-    SaveLog.save_crawler_log(device.logPath,
+    if page_now is None:
+        return True
+    Saver.save_crawler_log(device.logPath,
                              "Step : Check there are uncCrawled editTexts in the page now or not")
     result = True
     for node in page_now.editTexts:
-        if plan.is_in_uncrawled_nodes(node.nodeInfo):
+        if device.is_in_uncrawled_nodes(node.nodeInfo):
             result = False
             break
     if result:
-        SaveLog.save_crawler_log(device.logPath, "no uncrawled  editTexts in this page now")
+        Saver.save_crawler_log(device.logPath, "no uncrawled  editTexts in this page now")
         return True
     else:
-        SaveLog.save_crawler_log(device.logPath, "have some uncrawled editTexts in this page now")
+        Saver.save_crawler_log(device.logPath, "have some uncrawled editTexts in this page now")
         return False
 
 
 # if page no crawlable nodes , back to last Page, until has crawlable nodes, if back time >3, break
 def recover_page_to_crawlable(plan, app, device, page_now):
     t = 1
-    while no_uncrawled_clickable_nodes_now(plan, device, page_now) \
+    while page_now is not None and no_uncrawled_clickable_nodes_now(plan, device, page_now) \
             and no_uncrawled_longclickable_nodes_now(plan, device, page_now) \
             and no_uncrawled_edit_text_now(plan, device, page_now):
         if page_now.backBtn is not None \
                 and node_is_shown_in_page(device, page_now.backBtn, page_now):
-            SaveLog.save_crawler_log(device.logPath, "Step : find the back btn and tap ")
+            Saver.save_crawler_log(device.logPath, "Step : find the back btn and tap ")
             save_screen(device, page_now.backBtn, False)
             tap_node(device, page_now.backBtn)
             t += 1
             page_now = get_page_info(plan, app, device)
         else:
-            SaveLog.save_crawler_log(device.logPath, "Step : no back btn , click back")
+            Saver.save_crawler_log(device.logPath, "Step : no back btn , click back")
             save_screen_jump_out(device, page_now.package, page_now.currentActivity)
             click_back(device)
             page_now = get_page_info(plan, app, device)
@@ -713,20 +731,20 @@ def crawl_clickable_nodes(plan, app, device, page_before_run, page_now, init):
     for node in get_random_nodes(page_before_run.clickableNodes):
         # if crash and not keep run , break from deep run .page_need_crawled will be None
         if page_now is None:
-            SaveLog.save_crawler_log(device.logPath, 'Jump out to crawl')
+            Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
             break
         # sometimes the need tap node is not shown after one deep run
         if not recover_node_shown(plan, app, device, page_now, page_before_run, node):
             continue
         save_screen(device, node, True)
         tap_node(device, node)
-        plan.update_crawled_activity(node.currentActivity)
-        plan.update_crawled_nodes(node.nodeInfo)
-        plan.delete_uncrawled_nodes(node.nodeInfo)
+        device.update_crawled_activity(node.currentActivity)
+        device.update_crawled_nodes(node.nodeInfo)
+        device.delete_uncrawled_nodes(node.nodeInfo)
         # if jump out the test app, try to go back & return the final page
         page_after_operation = check_page_after_operation(plan, app, device)
         if page_after_operation is None:
-            SaveLog.save_crawler_log(device.logPath, 'Jump out to crawl')
+            Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
             page_now = page_after_operation
             break
         # compare two pages before & after click .
@@ -751,20 +769,20 @@ def crawl_longclickable_nodes(plan, app, device, page_before_run, page_now, init
     for node in get_random_nodes(page_before_run.longClickableNodes):
         # if crash and not keep run , break from deep run .page_need_crawled will be None
         if page_now is None:
-            SaveLog.save_crawler_log(device.logPath, 'Jump out to crawl')
+            Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
             break
         # sometimes the need tap node is not shown after one deep run
         if not recover_node_shown(plan, app, device, page_now, page_before_run, node):
             continue
         save_screen(device, node, True)
         long_click_node(device, node)
-        plan.update_crawled_activity(node.currentActivity)
-        plan.update_crawled_nodes(node.nodeInfo)
-        plan.delete_uncrawled_nodes(node.nodeInfo)
+        device.update_crawled_activity(node.currentActivity)
+        device.update_crawled_nodes(node.nodeInfo)
+        device.delete_uncrawled_nodes(node.nodeInfo)
         # if jump out the test app, try to go back & return the final page
         page_after_operation = check_page_after_operation(plan, app, device)
         if page_after_operation is None:
-            SaveLog.save_crawler_log(device.logPath, 'Jump out to crawl')
+            Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
             page_now = page_after_operation
             break
         # compare two pages before & after click .
@@ -789,7 +807,7 @@ def crawl_edittext(plan, app, device, page_before_run, page_now, init):
     for node in get_random_nodes(page_before_run.editTexts):
         # if crash and not keep run , break from deep run .page_need_crawled will be None
         if page_now is None:
-            SaveLog.save_crawler_log(device.logPath, 'Jump out to crawl')
+            Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
             break
         # sometimes the need tap node is not shown after one deep run
         if not recover_node_shown(plan, app, device, page_now, page_before_run, node):
@@ -797,13 +815,13 @@ def crawl_edittext(plan, app, device, page_before_run, page_now, init):
         save_screen(device, node, True)
         text = get_random_text(8)
         type_text(device, node, text)
-        plan.update_crawled_activity(node.currentActivity)
-        plan.update_crawled_nodes(node.nodeInfo)
-        plan.delete_uncrawled_nodes(node.nodeInfo)
+        device.update_crawled_activity(node.currentActivity)
+        device.update_crawled_nodes(node.nodeInfo)
+        device.delete_uncrawled_nodes(node.nodeInfo)
         # if jump out the test app, try to go back & return the final page
         page_after_operation = check_page_after_operation(plan, app, device)
         if page_after_operation is None:
-            SaveLog.save_crawler_log(device.logPath, 'Jump out to crawl')
+            Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
             page_now = page_after_operation
             break
         # compare two pages before & after click .
@@ -828,7 +846,7 @@ def crawl_main_nodes(plan, app, device, page_before_run):
     global page_need_crawled
     page_need_crawled = Page()
     if page_is_crawlable(plan, app, device, page_before_run):
-        plan.update_crawl_page(page_before_run.nodesInfoList)
+        device.update_crawl_page(page_before_run.nodesInfoList)
         page_need_crawled = crawl_clickable_nodes(plan, app, device, page_before_run, page_need_crawled, False)
         page_need_crawled = crawl_longclickable_nodes(plan, app, device, page_before_run, page_need_crawled, False)
         page_need_crawled = crawl_edittext(plan, app, device, page_before_run, page_need_crawled, False)
@@ -836,56 +854,56 @@ def crawl_main_nodes(plan, app, device, page_before_run):
 
 
 def run_init_cases(plan, app, device):
-    SaveLog.save_crawler_log_both(plan.logPath, device.logPath, "Step : run init cases")
+    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : run init cases")
     for case in app.initCasesList:
         command = 'adb -s ' + device.id + ' shell am instrument -w -e class ' + case + ' ' + app.testPackageName + '/' + app.testRunner
-        SaveLog.save_crawler_log_both(plan.logPath, device.logPath, command)
+        Saver.save_crawler_log_both(plan.logPath, device.logPath, command)
         os.popen(command)
-    SaveLog.save_crawler_log_both(plan.logPath, device.logPath, "Run novice guide finish ...")
+    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Run novice guide finish ...")
 
 
 def crawl_init_nodes(plan, app, device, page_before_run):
-    SaveLog.save_crawler_log_both(plan.logPath, device.logPath, "Step : run init nodes")
+    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : run init nodes")
     print page_before_run.currentActivity
     print app.mainActivity
     if page_before_run.currentActivity != app.mainActivity or page_before_run.package != app.packageName:
         global page_need_crawled
         page_need_crawled = Page()
         if page_before_run.clickableNodesNum != 0:
-            plan.update_crawl_page(page_before_run.nodesInfoList)
+            device.update_crawl_page(page_before_run.nodesInfoList)
             page_need_crawled = crawl_clickable_nodes(plan, app, device, page_before_run, page_need_crawled, True)
             page_need_crawled = crawl_longclickable_nodes(plan, app, device, page_before_run, page_need_crawled, True)
             page_need_crawled = crawl_edittext(plan, app, device, page_before_run, page_need_crawled, False)
         return page_need_crawled
     else:
-        SaveLog.save_crawler_log_both(plan.logPath, device.logPath, 'Is in ' + app.mainActivity)
+        Saver.save_crawler_log_both(plan.logPath, device.logPath, 'Is in ' + app.mainActivity)
         return page_before_run
 
 
 def init_application(plan, app, device):
-    SaveLog.save_crawler_log_both(plan.logPath, device.logPath, "Step : init application")
+    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : init application")
     if Setting.RunInitNodes:
         start_activity(device, app.packageName, app.launcherActivity)
         launcherPage = Page()
         while True:
             launcherPage = get_page_info(plan, app, device)
             if launcherPage.clickableNodesNum == 0:
-                SaveLog.save_crawler_log_both(plan.logPath, device.logPath, 'scroll to left')
+                Saver.save_crawler_log_both(plan.logPath, device.logPath, 'scroll to left')
                 drag_screen_to_left(device)
             if launcherPage.clickableNodesNum != 0:
-                SaveLog.save_crawler_log_both(plan.logPath, device.logPath, 'stop scroll')
+                Saver.save_crawler_log_both(plan.logPath, device.logPath, 'stop scroll')
                 break
-        SaveLog.save_crawler_log_both(plan.logPath, device.logPath, 'Step : init nodes run begin')
+        Saver.save_crawler_log_both(plan.logPath, device.logPath, 'Step : init nodes run begin')
         crawl_init_nodes(plan, app, device, launcherPage)
     if Setting.RunInitCase:
         run_init_cases(plan, app, device)
-    # when go in mainActivity, will add the nodes in MainActivity to plan.uncrawledNodes
+    # when go in mainActivity, will add the nodes in MainActivity to device.unCrawledNodes
     # if crawl main Nodes , after start mainActivity, these nodes can't be added to the page, will get unCrawlable page
-    plan.unCrawledNodes = []
+    device.unCrawledNodes = []
 
 
 def run_test(plan, app, device):
-    SaveLog.save_crawler_log_both(plan.logPath, device.logPath, "Step : run test ")
+    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : run test ")
     device.update_crawl_statue("Running")
 
     # init device
@@ -903,22 +921,19 @@ def run_test(plan, app, device):
     init_application(plan, app, device)
 
     # begin crawl
-    SaveLog.save_crawler_log_both(plan.logPath, device.logPath, "Step : begin to crawl main nodes")
+    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : begin to crawl main nodes")
     start_activity(device, app.packageName, app.mainActivity)
     time.sleep(5)
     page = get_page_info(plan, app, device)
-    plan.update_begin_crawl_time()
+    device.update_begin_crawl_time()
     crawl_main_nodes(plan, app, device, page)
 
     # clean unusable files
     remove_uidump_xml_file(device)
 
     # update & save result
-    SaveLog.save_crawler_log_both(plan.logPath, device.logPath,
-                                  "Step : has Crawled " + str(len(plan.hasCrawledNodes)) + " nodes.")
-    SaveLog.save_crawler_log_both(plan.logPath, device.logPath,
-                                  "Step : there are " + str(len(plan.unCrawledNodes)) + " unCrawled nodes .")
-    SaveLog.save_crawler_log_both(plan.logPath, device.logPath,
-                                  "Step : has Crawled " + str(len(plan.hasCrawledActivities)) + " activities .")
+    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " has Crawled " + str(len(device.hasCrawledNodes)) + " nodes.")
+    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " there are " + str(len(device.unCrawledNodes)) + " unCrawled nodes .")
+    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " has Crawled " + str(len(device.hasCrawledActivities)) + " activities .")
     if device.crawlStatue == 'Running':
         device.update_crawl_statue('Passed')

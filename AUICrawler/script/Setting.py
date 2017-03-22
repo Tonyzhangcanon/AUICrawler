@@ -12,7 +12,7 @@ KeepRun = True  # True (Resume run when app Crash), False (Finish run when app C
 
 #  - * Crawl model* -
 TimeModel = 'Limit'  # Limit (Exp crawl in 5 minutes ) , Normal
-LimitTime = 3  # minutes . (set the crawl time)
+LimitTime = 15  # minutes . (set the crawl time)
 CrawlModel = 'Normal'  # Random (crawl in random) ， Normal ， Activity (crawl all activities)
 CoverageLevel = 1  # 0 < level <= 1 , Exp level = 0.6 , if there are 10 points in one page , coverage click 6 points .
 

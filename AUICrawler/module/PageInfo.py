@@ -25,14 +25,14 @@ class Page:
         self.lastPage = None
         self.lastPageNum = 0
 
-    def add_node(self, plan, app, node):
+    def add_node(self, device, app, node):
         self.nodesList.append(node)
         if node is not None and node.bounds != '[0,0][0,0]':
             self.nodesList.append(node)
             self.nodesInfoList.append(node.nodeInfo)
             self.nodesNum += 1
-            if not plan.is_in_hascrawled_nodes(node.nodeInfo) \
-                    and not plan.is_in_uncrawled_nodes(node.nodeInfo) \
+            if not device.is_in_hascrawled_nodes(node.nodeInfo) \
+                    and not device.is_in_uncrawled_nodes(node.nodeInfo) \
                     and not self.has_added(node.nodeInfo):
                 if len(self.currentActivity) == 0:
                     self.currentActivity = node.currentActivity
@@ -42,20 +42,20 @@ class Page:
                 elif node.isEditText:
                     self.editTexts.append(node)
                     self.editTextsNum += 1
-                    plan.update_uncrawled_nodes(node.nodeInfo)
+                    device.update_uncrawled_nodes(node.nodeInfo)
                 else:
                     if (node.clickable == 'true' or node.checkable == 'true') and not node.isEditText:
                         self.clickableNodes.append(node)
                         self.clickableNodesNum += 1
-                        plan.update_uncrawled_nodes(node.nodeInfo)
+                        device.update_uncrawled_nodes(node.nodeInfo)
                     if node.scrollable == 'true':
                         self.scrollableNodes.append(node)
                         self.scrollableNodesNum += 1
-                        plan.update_uncrawled_nodes(node.nodeInfo)
+                        device.update_uncrawled_nodes(node.nodeInfo)
                     if node.longClickable == 'true':
                         self.longClickableNodes.append(node)
                         self.longClickableNodesNum += 1
-                        plan.update_uncrawled_nodes(node.nodeInfo)
+                        device.update_uncrawled_nodes(node.nodeInfo)
 
     def update_back_btn(self, back_btn_node):
         if back_btn_node is not None:

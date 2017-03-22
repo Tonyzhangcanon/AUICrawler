@@ -3,7 +3,7 @@ import os
 import time
 from AUICrawler.script import Setting
 from AUICrawler.module.DeviceInfo import Device
-from AUICrawler.script import SaveLog
+from AUICrawler.script import Saver
 import sys
 
 reload(sys)
@@ -15,47 +15,11 @@ class Plan:
         self.product = Setting.AppProduct
         self.coverageLevel = Setting.CoverageLevel
         self.runCaseTime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
-        self.beginCrawlTime = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
-        self.unCrawledNodes = []
-        self.hasCrawledNodes = []
-        self.hasCrawlPage = []
-        self.hasCrawledActivities = []
         self.logPath = self.create_this_time_folder()
         self.deviceList = self.get_device_list()
 
     # change the node info ,because the same type nodes has difference bounds.
     # the same type nodes need crawl once only
-    def update_crawled_nodes(self, node_info):
-        if node_info not in self.hasCrawledNodes:
-            self.hasCrawledNodes.append(node_info)
-
-    def update_uncrawled_nodes(self, node_info):
-        if node_info not in self.unCrawledNodes:
-            self.unCrawledNodes.append(node_info)
-
-    def update_crawled_activity(self, activity):
-        if activity not in self.hasCrawledActivities:
-            self.hasCrawledActivities.append(activity)
-
-    def delete_uncrawled_nodes(self, node_info):
-        if node_info in self.unCrawledNodes:
-            self.unCrawledNodes.remove(node_info)
-
-    def is_in_uncrawled_nodes(self, node_info):
-        if node_info in self.unCrawledNodes:
-            return True
-        else:
-            return False
-
-    def is_in_hascrawled_nodes(self, node_info):
-        if node_info in self.hasCrawledNodes:
-            return True
-        else:
-            return False
-
-    def update_crawl_page(self, nodes_info_list):
-        if nodes_info_list not in self.hasCrawlPage:
-            self.hasCrawlPage.append(nodes_info_list)
 
     def create_this_time_folder(self):
         path = os.getcwd() + '/result/' + self.runCaseTime
@@ -75,9 +39,8 @@ class Plan:
                 device_list.append(device)
                 index = device_list.index(device)
                 device.update_device_account(Setting.AccountList[index])
-        SaveLog.save_crawler_log(self.logPath, device_list)
+        Saver.save_crawler_log(self.logPath, device_list)
         return device_list
 
-    def update_begin_crawl_time(self):
-        self.beginCrawlTime = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+
 

@@ -27,3 +27,7 @@ def save_crawler_log(log_path, log):
 def save_crawler_log_both(plan_log_path, device_log_path, log):
     save_crawler_log(plan_log_path, log)
     save_crawler_log(device_log_path, log)
+
+
+def save_crawl_result(plan):
+    result_file = open(plan.log_path + '/Result.txt', 'a')

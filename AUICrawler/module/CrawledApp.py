@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 import os
-from AUICrawler.script import SaveLog
+from AUICrawler.script import Saver
 from AUICrawler.script import Setting
 import sys
 reload(sys)
@@ -9,52 +9,52 @@ sys.setdefaultencoding('utf-8')
 
 class App:
     def __init__(self, plan):
-        SaveLog.save_crawler_log(plan.logPath, "Step : Init App ...")
+        Saver.save_crawler_log(plan.logPath, "Step : Init App ...")
 
         self.apkPath = Setting.ApkPath
-        SaveLog.save_crawler_log(plan.logPath, 'Apk Path : ' + self.apkPath)
+        Saver.save_crawler_log(plan.logPath, 'Apk Path : ' + self.apkPath)
 
         self.versionCode = self.get_version_code()
-        SaveLog.save_crawler_log(plan.logPath, 'VersionCode : ' + self.versionCode)
+        Saver.save_crawler_log(plan.logPath, 'VersionCode : ' + self.versionCode)
 
         self.versionName = self.get_version_name()
-        SaveLog.save_crawler_log(plan.logPath, 'VersionName : ' + self.versionName)
+        Saver.save_crawler_log(plan.logPath, 'VersionName : ' + self.versionName)
 
         self.packageName = self.get_package_name(self.apkPath)
-        SaveLog.save_crawler_log(plan.logPath, 'PackageName : ' + self.packageName)
+        Saver.save_crawler_log(plan.logPath, 'PackageName : ' + self.packageName)
 
         self.launcherActivity = self.get_launcher_activity()
-        SaveLog.save_crawler_log(plan.logPath, 'LauncherActivity : ' + self.launcherActivity)
+        Saver.save_crawler_log(plan.logPath, 'LauncherActivity : ' + self.launcherActivity)
 
         self.mainActivity = Setting.AppMainActivity
-        SaveLog.save_crawler_log(plan.logPath, 'MainActivity : ' + self.mainActivity)
+        Saver.save_crawler_log(plan.logPath, 'MainActivity : ' + self.mainActivity)
 
         self.loginActivity = Setting.AppLoginActivity
-        SaveLog.save_crawler_log(plan.logPath, 'LoginActivity : ' + self.mainActivity)
+        Saver.save_crawler_log(plan.logPath, 'LoginActivity : ' + self.mainActivity)
 
         self.testApkPath = Setting.TestApkPath
-        SaveLog.save_crawler_log(plan.logPath, 'Test Apk Path : ' + self.testApkPath)
+        Saver.save_crawler_log(plan.logPath, 'Test Apk Path : ' + self.testApkPath)
 
         self.testPackageName = self.get_package_name(self.testApkPath)
-        SaveLog.save_crawler_log(plan.logPath, 'Test Apk PackageName : ' + self.testPackageName)
+        Saver.save_crawler_log(plan.logPath, 'Test Apk PackageName : ' + self.testPackageName)
 
         self.initCasesList = Setting.InitCases
-        SaveLog.save_crawler_log(plan.logPath, 'InitCaseList : ' + str(self.initCasesList))
+        Saver.save_crawler_log(plan.logPath, 'InitCaseList : ' + str(self.initCasesList))
 
         self.firstClickViews = self.get_view_list(Setting.FirstClickViews)
-        SaveLog.save_crawler_log(plan.logPath, 'FirstClickViews : ' + str(self.firstClickViews))
+        Saver.save_crawler_log(plan.logPath, 'FirstClickViews : ' + str(self.firstClickViews))
 
         self.backBtnViews = self.get_view_list(Setting.BackBtnViews)
-        SaveLog.save_crawler_log(plan.logPath, 'BackBtnViews : ' + str(self.backBtnViews))
+        Saver.save_crawler_log(plan.logPath, 'BackBtnViews : ' + str(self.backBtnViews))
 
         self.unClickViews = self.get_view_list(Setting.UnClickViews)
-        SaveLog.save_crawler_log(plan.logPath, 'UnClickViews : ' + str(self.unClickViews))
+        Saver.save_crawler_log(plan.logPath, 'UnClickViews : ' + str(self.unClickViews))
 
         self.loginViews = self.get_view_list(Setting.LoginViewList)
-        SaveLog.save_crawler_log(plan.logPath, 'UnClickViews : ' + str(self.loginViews))
+        Saver.save_crawler_log(plan.logPath, 'UnClickViews : ' + str(self.loginViews))
 
         self.testRunner = Setting.TestRunner
-        SaveLog.save_crawler_log(plan.logPath, 'TestRunner : ' + self.testRunner)
+        Saver.save_crawler_log(plan.logPath, 'TestRunner : ' + self.testRunner)
 
     def get_view_list(self, id_list):
         views = []
