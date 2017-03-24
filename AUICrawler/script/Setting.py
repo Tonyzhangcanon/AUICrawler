@@ -11,14 +11,14 @@ SaveJumpOutScreen = True  # True , False
 KeepRun = True  # True (Resume run when app Crash), False (Finish run when app Crash)
 
 #  - * Crawl model* -
-TimeModel = 'Limit'  # Limit (Exp crawl in 5 minutes ) , Normal
+TimeModel = 'Normal'  # Limit (Exp crawl in 5 minutes ) , Normal
 LimitTime = 15  # minutes . (set the crawl time)
-CrawlModel = 'Normal'  # Random (crawl in random) ， Normal ， Activity (crawl all activities)
+CrawlModel = 'Activity'  # Random (crawl in random) ， Normal ， Activity (crawl all activities)
 CoverageLevel = 1  # 0 < level <= 1 , Exp level = 0.6 , if there are 10 points in one page , coverage click 6 points .
 
 #  - * Apk Install Setting * -
-UnInstallApk = True  # True (uninstall app & testApp) , False
-InstallApk = True  # True (install app & testApp) ,False
+UnInstallApk = False  # True (uninstall app & testApp) , False
+InstallApk = False  # True (install app & testApp) ,False
 ApkPath = '/Users/admin/Downloads/Kuaiya-china-debug.apk'
 TestApkPath = '/Users/admin/Downloads/Kuaiya-china-debug-androidTest.apk'
 
@@ -30,7 +30,7 @@ UnClickViews = ['play_click', 'fullscreen']
 AuthorizationAlert = [['com.huawei.systemmanager', 'com.huawei.systemmanager:id/btn_allow', '允许']]
 
 #  - * Run Init Robotium Case Setting * -
-RunInitNodes = True  # True (run init nodes before run init Robotium Case) , False
+RunInitNodes = False  # True (run init nodes before run init Robotium Case) , False
 RunInitCase = False  # True (run init Robotium case) , False
 InitCases = ['com.dewmobile.kuaiya.test.cases.host.initcase.RunGuidePage']
 TestRunner = 'com.android.test.runner.MultiDexTestRunner'

@@ -56,6 +56,8 @@ class App:
         self.testRunner = Setting.TestRunner
         Saver.save_crawler_log(plan.logPath, 'TestRunner : ' + self.testRunner)
 
+        self.activities = self.get_all_activities()
+
     def get_view_list(self, id_list):
         views = []
         if len(id_list) != 0:
@@ -106,3 +108,15 @@ class App:
             if activity_head in line:
                 activity_name = line[line.index(activity_head) + len(activity_head):line.index(end)]
                 return activity_name
+
+    def get_all_activities(self):
+        activity_list = []
+        command = 'aapt dump xmlstrings ' + self.apkPath + ' AndroidManifest.xml'
+        result = os.popen(command).readlines()
+        for line in result:
+            if 'Activity' in line:
+                index = line.index('com.')
+                activity = line[index:len(line) - 1]
+                if activity != self.launcherActivity and activity not in activity_list:
+                    activity_list.append(activity)
+        return activity_list
