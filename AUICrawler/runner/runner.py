@@ -84,24 +84,41 @@ def get_top_activity_info(device):
     info = {}
     # command = 'adb -s ' + device.id + ' shell dumpsys activity | grep "mFocusedActivity"'
     # sometime mResumedActivity is Right
-    command = 'adb -s ' + device.id + ' shell dumpsys activity | grep "mResumedActivity"'
-    result = os.popen(command).read()
-    packagename = ''
-    activity = ''
-    if 'u0' not in result and ' com.' not in result:
+    try:
+        command = 'adb -s ' + device.id + ' shell dumpsys activity | grep "mResumedActivity"'
         result = os.popen(command).read()
+        packagename = ''
+        activity = ''
+        if 'u0' not in result and ' com.' not in result:
+            result = os.popen(command).read()
 
-    if 'u0 ' in result:
-        packagename = result[result.find('u0 ') + len('u0 '):result.find('/')]
-    elif ' com.' in result:
-        packagename = result[result.find(' com.') + 1:result.find('/')]
-    if ' t' in result:
-        activity = result[result.find('/') + len('/'):result.find(' t')]
-    elif '}' in result:
-        activity = result[result.find('/') + len('/'):result.find('}')]
+        if 'u0 ' in result:
+            packagename = result[result.find('u0 ') + len('u0 '):result.find('/')]
+        elif ' com.' in result:
+            packagename = result[result.find(' com.') + 1:result.find('/')]
+        if ' t' in result:
+            activity = result[result.find('/') + len('/'):result.find(' t')]
+        elif '}' in result:
+            activity = result[result.find('/') + len('/'):result.find('}')]
+    except:
+        command = 'adb -s ' + device.id + ' shell dumpsys activity | findstr "mResumedActivity"'
+        result = os.popen(command).read()
+        packagename = ''
+        activity = ''
+        if 'u0' not in result and ' com.' not in result:
+            result = os.popen(command).read()
+
+        if 'u0 ' in result:
+            packagename = result[result.find('u0 ') + len('u0 '):result.find('/')]
+        elif ' com.' in result:
+            packagename = result[result.find(' com.') + 1:result.find('/')]
+        if ' t' in result:
+            activity = result[result.find('/') + len('/'):result.find(' t')]
+        elif '}' in result:
+            activity = result[result.find('/') + len('/'):result.find('}')]
+
     info['packagename'] = packagename
     info['activity'] = activity
-
     Saver.save_crawler_log(device.logPath, 'Top activity is :' + activity)
     Saver.save_crawler_log(device.logPath, 'Top package is :' + packagename)
     return info

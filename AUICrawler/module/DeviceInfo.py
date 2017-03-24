@@ -61,14 +61,25 @@ class Device:
         # adb shell cat /system/build.prop | grep "product"
         # windows
         # adb -s 84B5T15A10010101 shell cat /system/build.prop | findstr "product"
-        command = 'adb -s ' + self.id + ' shell cat /system/build.prop | grep "product" '
-        result = os.popen(command).readlines()
-        for line in result:
-            key = 'ro.product.model='
-            if key in line:
-                device_name = line[line.find(key) + len(key):-2]
-                break
-        Saver.save_crawler_log(self.logPath, "device name : " + device_name)
+        device_name = ''
+        try:
+            command = 'adb -s ' + self.id + ' shell cat /system/build.prop | grep "product" '
+            result = os.popen(command).readlines()
+            for line in result:
+                key = 'ro.product.model='
+                if key in line:
+                    device_name = line[line.find(key) + len(key):-2]
+                    break
+            Saver.save_crawler_log(self.logPath, "device name : " + device_name)
+        except:
+            command = 'adb -s ' + self.id + ' shell cat /system/build.prop | findstr "product" '
+            result = os.popen(command).readlines()
+            for line in result:
+                key = 'ro.product.model='
+                if key in line:
+                    device_name = line[line.find(key) + len(key):-2]
+                    break
+            Saver.save_crawler_log(self.logPath, "device name : " + device_name)
         return device_name
 
     def get_device_model(self):
