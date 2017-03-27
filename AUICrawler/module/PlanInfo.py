@@ -40,7 +40,7 @@ class Plan:
                 index = device_list.index(device)
                 device.update_device_account(Setting.AccountList[index])
         Saver.save_crawler_log(self.logPath, device_list)
-        return device_list
+        self.deviceList = device_list
 
     def update_device_lit(self, id_list):
         device_list = []
