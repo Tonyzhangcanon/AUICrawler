@@ -6,11 +6,11 @@ import os
 import time
 import sys
 import xml.dom.minidom
-from AUICrawler.script import Saver
+from script import Saver
 from PIL import Image
-from AUICrawler.module.PageInfo import Page
-from AUICrawler.module.NodeInfo import Node
-from AUICrawler.script import Setting
+from module import PageInfo
+from module import NodeInfo
+from script import Setting
 import pylab as pl
 
 reload(sys)
@@ -134,9 +134,12 @@ def get_uidump_xml_file(device):
 
 
 def remove_uidump_xml_file(device):
-    Saver.save_crawler_log(device.logPath, "Step : remove uidunp xml")
-    remove_xml_file = device.logPath + '/Uidump.xml'
-    os.remove(remove_xml_file)
+    try:
+        Saver.save_crawler_log(device.logPath, "Step : remove uidunp xml")
+        remove_xml_file = device.logPath + '/Uidump.xml'
+        os.remove(remove_xml_file)
+    except:
+        Saver.save_crawler_log(device.logPath, "no uidump xml")
 
 
 def get_nodes_list(device):
@@ -301,7 +304,7 @@ def get_page_info(plan, app, device):
             Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : crawl time out , finish crawl.")
             return None
     Saver.save_crawler_log(device.logPath, "get all nodes in this page")
-    page = Page()
+    page = PageInfo.Page()
     result = False
     while not result:
         try:
@@ -315,7 +318,7 @@ def get_page_info(plan, app, device):
     Saver.save_crawler_log(device.logPath, len(nodes))
     info = get_top_activity_info(device)
     for node in nodes:
-        n = Node(node)
+        n = NodeInfo.Node(node)
         n.update_current_activity(info['activity'])
         if n.resource_id in app.firstClickViews:
             save_screen(device, n, False)
@@ -529,9 +532,13 @@ def check_activity_after_operation(plan, app, device, crawl_activity):
 def check_page_after_operation(plan, app, device):
     Saver.save_crawler_log(device.logPath, "Step : Check page after operation")
     # if app crashed after crawl , save log & start app ,comtinue
-
+    print Setting.TimeModel
     if Setting.TimeModel == 'Limit':
         time_now = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+        print time_now
+        print device.beginCrawlTime
+        print Setting.LimitTime * 100
+        print (time_now - device.beginCrawlTime) > (Setting.LimitTime * 100)
         if (time_now - device.beginCrawlTime) > (Setting.LimitTime * 100):
             Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : crawl time out , finish crawl.")
             return None
@@ -992,14 +999,14 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
 
 def crawl_main_nodes(plan, app, device, page_before_run):
     global page_need_crawled
-    page_need_crawled = Page()
+    page_need_crawled = PageInfo.Page()
     if page_is_crawlable(app, device, page_before_run):
         device.update_crawl_page(page_before_run.nodesInfoList)
-        if page_need_crawled.clickableNodesNum > 0:
+        if page_before_run.clickableNodesNum > 0:
             page_need_crawled = crawl_clickable_nodes(plan, app, device, page_before_run, page_need_crawled, False)
-        if page_need_crawled.longClickableNodesNum > 0:
+        if page_before_run.longClickableNodesNum > 0:
             page_need_crawled = crawl_longclickable_nodes(plan, app, device, page_before_run, page_need_crawled, False)
-        if page_need_crawled.editTextsNum > 0:
+        if page_before_run.editTextsNum > 0:
             page_need_crawled = crawl_edittext(plan, app, device, page_before_run, page_need_crawled, False)
     return page_need_crawled
 
@@ -1017,14 +1024,14 @@ def crawl_init_nodes(plan, app, device, page_before_run):
     Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : run init nodes")
     if page_before_run.currentActivity != app.mainActivity or page_before_run.package != app.packageName:
         global page_need_crawled
-        page_need_crawled = Page()
+        page_need_crawled = PageInfo.Page()
         if page_before_run.clickableNodesNum != 0:
             device.update_crawl_page(page_before_run.nodesInfoList)
-            if page_need_crawled.clickableNodesNum > 0:
+            if page_before_run.clickableNodesNum > 0:
                 page_need_crawled = crawl_clickable_nodes(plan, app, device, page_before_run, page_need_crawled, True)
-            if page_need_crawled.longClickableNodesNum > 0:
+            if page_before_run.longClickableNodesNum > 0:
                 page_need_crawled = crawl_longclickable_nodes(plan, app, device, page_before_run, page_need_crawled, True)
-            if page_need_crawled.editTextsNum > 0:
+            if page_before_run.editTextsNum > 0:
                 page_need_crawled = crawl_edittext(plan, app, device, page_before_run, page_need_crawled, False)
         return page_need_crawled
     else:
@@ -1036,7 +1043,7 @@ def init_application(plan, app, device):
     Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : init application")
     if Setting.RunInitNodes:
         start_activity(device, app.packageName, app.launcherActivity)
-        launcherPage = Page()
+        launcherPage = PageInfo.Page()
         while True:
             launcherPage = get_page_info(plan, app, device)
             if launcherPage.clickableNodesNum == 0:
@@ -1073,7 +1080,7 @@ def run_test(plan, app, device):
     init_application(plan, app, device)
 
     # begin crawl
-    if Setting.CrawlModel == 'Normal':
+    if Setting.CrawlModel == 'Normal' or Setting.CrawlModel == 'Random':
         Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : begin to crawl main nodes")
         start_activity(device, app.packageName, app.mainActivity)
         time.sleep(5)

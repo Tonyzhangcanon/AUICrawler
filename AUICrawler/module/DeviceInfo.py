@@ -3,7 +3,7 @@
 import os
 import re
 import time
-from AUICrawler.script import Saver
+from script import Saver
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')

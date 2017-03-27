@@ -6,14 +6,14 @@ sys.setdefaultencoding('utf-8')
 
 #  - * Plan Setting * -
 AppProduct = 1  # Exp : kuaiya:1 ,kuaina:2 , omnivideo:3 , freewifi:4 , kuaiya_lite:5 , leya:6 ,kuaiya_ios:8
-SaveScreen = True  # True ， False
-SaveJumpOutScreen = True  # True , False
-KeepRun = True  # True (Resume run when app Crash), False (Finish run when app Crash)
+SaveScreen = False  # True ， False
+SaveJumpOutScreen = False  # True , False
+KeepRun = False  # True (Resume run when app Crash), False (Finish run when app Crash)
 
 #  - * Crawl model* -
 TimeModel = 'Normal'  # Limit (Exp crawl in 5 minutes ) , Normal
 LimitTime = 15  # minutes . (set the crawl time)
-CrawlModel = 'Activity'  # Random (crawl in random) ， Normal ， Activity (crawl all activities)
+CrawlModel = 'Normal'  # Random (crawl in random) ， Normal ， Activity (crawl all activities)
 CoverageLevel = 1  # 0 < level <= 1 , Exp level = 0.6 , if there are 10 points in one page , coverage click 6 points .
 
 #  - * Apk Install Setting * -

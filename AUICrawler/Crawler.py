@@ -1,14 +1,55 @@
 # -*- coding:utf-8 -*-
 import threading
-from AUICrawler.module.CrawledApp import App
-from AUICrawler.module.PlanInfo import Plan
-from AUICrawler.runner import runner
-import sys
+from module.CrawledApp import App
+from module.PlanInfo import Plan
+from runner import runner
+from script import Setting
+import getopt, sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 plan = Plan()
 app = App(plan)
+
+opts, args = getopt.getopt(sys.argv[1:], "auicsjkld:t:r:")
+for op, value in opts:
+    if op == "-a":
+        Setting.CrawlModel = 'Activity'
+    elif op == "-u":
+        Setting.UnInstallApk = True
+        Setting.InstallApk = True
+    elif op == "-i":
+        Setting.RunInitNodes = True
+    elif op == '-c':
+        Setting.RunInitCase = True
+    elif op == '-s':
+        Setting.SaveScreen = True
+    elif op == '-j':
+        Setting.SaveJumpOutScreen = True
+    elif op == '-k':
+        Setting.KeepRun = True
+    elif op == '-l':
+        Setting.Login = True
+    elif op == '-d':
+        device_list = []
+        if ',' in value:
+            device_list = value.split(',')
+        else:
+            device_list.append(value)
+        plan.update_device_lit(device_list)
+        print plan.deviceList
+    elif op == '-t':
+        Setting.TimeModel = 'Limit'
+        Setting.LimitTime = int(value)
+    elif op == '-r':
+        Setting.CoverageLevel = float(value)
+        if Setting.CrawlModel == 'Normal':
+            Setting.CrawlModel = 'Random'
+
+if len(plan.deviceList) == 0:
+    plan.get_device_list()
+
+
 threads = []
 
 for device in plan.deviceList:

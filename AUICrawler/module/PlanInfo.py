@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
 import os
 import time
-from AUICrawler.script import Setting
-from AUICrawler.module.DeviceInfo import Device
-from AUICrawler.script import Saver
+from script import Setting
+from DeviceInfo import Device
+from script import Saver
 import sys
 
 reload(sys)
@@ -16,7 +16,7 @@ class Plan:
         self.coverageLevel = Setting.CoverageLevel
         self.runCaseTime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
         self.logPath = self.create_this_time_folder()
-        self.deviceList = self.get_device_list()
+        self.deviceList = []
 
     # change the node info ,because the same type nodes has difference bounds.
     # the same type nodes need crawl once only
@@ -41,6 +41,15 @@ class Plan:
                 device.update_device_account(Setting.AccountList[index])
         Saver.save_crawler_log(self.logPath, device_list)
         return device_list
+
+    def update_device_lit(self, id_list):
+        device_list = []
+        for id in id_list:
+            device = Device(self, id)
+            device_list.append(device)
+            index = device_list.index(device)
+            device.update_device_account(Setting.AccountList[index])
+        self.deviceList = device_list
 
 
 

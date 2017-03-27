@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import os
-from AUICrawler.script import Saver
-from AUICrawler.script import Setting
+from script import Saver
+from script import Setting
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')

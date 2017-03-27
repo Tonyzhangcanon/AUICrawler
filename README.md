@@ -50,6 +50,37 @@ AccountList : 账号密码列表，执行前请保证账号足够设备1对1分�
 #### 执行脚本:
 - AUICrawler
   - Crawler.py
+#### 参数执行:
+#####参数：
+```
+-d xxxx     : 指定单设备
+-t 30       : 开启限时模式 & 调整遍历限时时间 ，单位分钟
+-r 0.8      : 开启随机遍历 & 设置覆盖程度
+-a          : Activity遍历模式
+-u          : 卸载&安装
+-i          : 执行初始化 & 遍历主页面前的页面
+-c          : 执行初始化Robotium Case
+-s          : 只保存有效遍历操作截图
+-j          : 保存还原控件显示 & 跳出App等非有效遍历截图
+-k          : keepRun （Crash/ANR 后继续执行）
+-l          : 遍历过程中登录
+```
+#####示例场景：
+1.指定单个设备、重新安装App、初始化App、执行Robotium Case、按序遍历10分钟 、不保存截图
+
+`python Crawler.py -d deviceid -t 10 -uic` 
+
+2.指定多个设备，不重新安装App、不初始化、覆盖程度0.5随机遍历5分钟、保存有效遍历截图、Crash后重启继续执行、遍历过程中登录
+
+`python Crawler.py -d deviceid1,deviceid2,deviceid3 -t 5 -r 0.5 -skl`
+
+3.使用当前连接的所有设备、重新安装App、初始化App、不执行Robotium Case、遍历所有无参数Activity、不限时、保存所有截图
+
+`python Crawler.py -uisj`
+
+* 自由组合参数执行，默认执行模式：所有设备、不重新安装、不初始化、按序执行所有控件、不截图、Crash／ANR就停止、过程中不登录
+* 可以修改Setting调整默认的执行模式
+
 #### 执行方案:
 ```
 1. 支持多设备同时执行（多线程执行，每个设备单个线程）
