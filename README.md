@@ -51,7 +51,7 @@ AccountList : 账号密码列表，执行前请保证账号足够设备1对1分�
 - AUICrawler
   - Crawler.py
 #### 参数执行:
-#####参数：
+##### 参数：
 ```
 -d xxxx     : 指定单设备
 -t 30       : 开启限时模式 & 调整遍历限时时间 ，单位分钟
@@ -65,7 +65,7 @@ AccountList : 账号密码列表，执行前请保证账号足够设备1对1分�
 -k          : keepRun （Crash/ANR 后继续执行）
 -l          : 遍历过程中登录
 ```
-#####示例场景：
+##### 示例场景：
 1.指定单个设备、重新安装App、初始化App、执行Robotium Case、按序遍历10分钟 、不保存截图
 
 `python Crawler.py -d deviceid -t 10 -uic` 
