@@ -294,6 +294,10 @@ def save_crawl_result(plan, app):
             "        </tr>\n"
     device_result = ""
     for device in plan.deviceList:
+        if device.name == device.model:
+            name = device.name
+        else:
+            name = device.name + " " + device.model
         crawlActNum = str(len(device.hasCrawledActivities))
         actCover = str(float(crawlActNum)/float(app.activityNum))
         if len(actCover) == 3:
@@ -340,7 +344,7 @@ def save_crawl_result(plan, app):
                      "                   " + device.crawlStatue + \
                      "\n                   </span>\n"
         result_body = "       <tr valign=\"top\" class=\"Failure\">\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + device.name + "</td>\n" \
+                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + name + "</td>\n" \
                       "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + device.id + "</td>\n" \
                       "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + device.version + "</td>\n" \
                       "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + crawlActNum + "</td>\n" \
