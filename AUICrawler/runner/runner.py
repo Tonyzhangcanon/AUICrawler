@@ -535,10 +535,6 @@ def check_page_after_operation(plan, app, device):
     print Setting.TimeModel
     if Setting.TimeModel == 'Limit':
         time_now = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
-        print time_now
-        print device.beginCrawlTime
-        print Setting.LimitTime * 100
-        print (time_now - device.beginCrawlTime) > (Setting.LimitTime * 100)
         if (time_now - device.beginCrawlTime) > (Setting.LimitTime * 100):
             Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : crawl time out , finish crawl.")
             return None

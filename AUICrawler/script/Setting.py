@@ -26,7 +26,9 @@ TestApkPath = '/Users/admin/Downloads/Kuaiya-china-debug-androidTest.apk'
 AppMainActivity = 'com.dewmobile.kuaiya.act.MainActivity'
 FirstClickViews = ['iv_transfer_to', 'guide_i_know', 'ok', 'edit_ok', 'button1', 'iv_back']
 BackBtnViews = ['back', 'iv_title_left', 'back_iv', 'iv_btn_back', 'iv_back']  # finally tap in the page
-UnClickViews = ['play_click', 'fullscreen']
+UnCrawlViews = {'id': 'play_click',
+                'id': 'fullscreen',
+                'text': u'我的'}
 AuthorizationAlert = [['com.huawei.systemmanager', 'com.huawei.systemmanager:id/btn_allow', '允许']]
 
 #  - * Run Init Robotium Case Setting * -

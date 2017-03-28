@@ -36,8 +36,7 @@ for op, value in opts:
             device_list = value.split(',')
         else:
             device_list.append(value)
-        plan.update_device_lit(device_list)
-        print plan.deviceList
+        plan.update_device_list(device_list)
     elif op == '-t':
         Setting.TimeModel = 'Limit'
         Setting.LimitTime = int(value)

@@ -33,7 +33,9 @@ class Page:
             self.nodesNum += 1
             if not device.is_in_hascrawled_nodes(node.nodeInfo) \
                     and not device.is_in_uncrawled_nodes(node.nodeInfo) \
-                    and not self.has_added(node.nodeInfo):
+                    and not self.has_added(node.nodeInfo) \
+                    and node.resource_id not in app.unCrawlViews \
+                    and node.text not in app.unCrawlViews:
                 if len(self.currentActivity) == 0:
                     self.currentActivity = node.currentActivity
                     self.package = node.package

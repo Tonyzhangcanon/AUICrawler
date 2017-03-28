@@ -47,11 +47,11 @@ class App:
         self.backBtnViews = self.get_view_list(Setting.BackBtnViews)
         Saver.save_crawler_log(plan.logPath, 'BackBtnViews : ' + str(self.backBtnViews))
 
-        self.unClickViews = self.get_view_list(Setting.UnClickViews)
-        Saver.save_crawler_log(plan.logPath, 'UnClickViews : ' + str(self.unClickViews))
+        self.unCrawlViews = self.get_unCrawlViews()
+        Saver.save_crawler_log(plan.logPath, 'UnClickViews : ' + str(self.unCrawlViews))
 
         self.loginViews = self.get_view_list(Setting.LoginViewList)
-        Saver.save_crawler_log(plan.logPath, 'UnClickViews : ' + str(self.loginViews))
+        Saver.save_crawler_log(plan.logPath, 'LoginViews : ' + str(self.loginViews))
 
         self.testRunner = Setting.TestRunner
         Saver.save_crawler_log(plan.logPath, 'TestRunner : ' + self.testRunner)
@@ -66,16 +66,29 @@ class App:
                 views.append(resource_id)
         return views
 
+    def get_unCrawlViews(self):
+        unCrawlViews = []
+        for key, value in Setting.UnClickViews:
+            if key == 'id':
+                resource_id = self.packageName + ':id/' + value
+                unCrawlViews.append(resource_id)
+            if key == 'text':
+                unCrawlViews.append(value)
+        return unCrawlViews
+
     @staticmethod
     def get_package_name(apk_path):
-        command = 'aapt dump badging ' + apk_path
-        result = os.popen(command).readlines()
-        for line in result:
-            package_head = "package: name='"
-            end = "' "
-            if package_head in line:
-                package_name = line[line.index(package_head) + len(package_head):line.index(end)]
-                return package_name
+        try:
+            command = 'aapt dump badging ' + apk_path
+            result = os.popen(command).readlines()
+            for line in result:
+                package_head = "package: name='"
+                end = "' "
+                if package_head in line:
+                    package_name = line[line.index(package_head) + len(package_head):line.index(end)]
+                    return package_name
+        except:
+            return ""
 
     def get_version_code(self):
         command = 'aapt dump badging ' + self.apkPath

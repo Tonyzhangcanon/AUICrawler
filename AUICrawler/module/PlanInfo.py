@@ -42,7 +42,7 @@ class Plan:
         Saver.save_crawler_log(self.logPath, device_list)
         self.deviceList = device_list
 
-    def update_device_lit(self, id_list):
+    def update_device_list(self, id_list):
         device_list = []
         for id in id_list:
             device = Device(self, id)
