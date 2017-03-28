@@ -145,8 +145,8 @@ class App:
         result = os.popen(command).readlines()
         for line in result:
             if 'Activity' in line:
-                index = line.index('com.')
-                activity = line[index:len(line) - 1]
+                index = line.index(': ')
+                activity = line[index+len(': '):len(line) - 1]
                 if activity != self.launcherActivity and activity not in activity_list:
                     activity_list.append(activity)
         return activity_list
