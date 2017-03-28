@@ -6,7 +6,7 @@ from runner import runner
 from script import Setting
 from script import Saver
 import getopt, sys
-import time
+import datetime
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -61,5 +61,5 @@ for th in threads:
 for th in threads:
     th.join()
 
-plan.endTime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+plan.endTime = datetime.datetime.now()
 Saver.save_crawl_result(plan, app)

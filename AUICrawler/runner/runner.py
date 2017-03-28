@@ -3,7 +3,7 @@ __author__ = 'Zhang.zhiyang'
 
 import random
 import os
-import time
+import datetime, time
 import sys
 import xml.dom.minidom
 from script import Saver
@@ -35,12 +35,12 @@ def uninstall_app(device, package_name):
 
 def start_activity(device, packagename, activity):
     Saver.save_crawler_log(device.logPath, 'Step : start up activity : ' + activity)
-    time1 = time.time()
+    time1 = datetime.datetime.now()
     result = False
     while not result:
         command = 'adb -s ' + device.id + ' shell am start -n ' + packagename + '/' + activity
         os.popen(command)
-        if time.time() - time1 < 10:
+        if (datetime.datetime.now() - time1).seconds < 10:
             top_activity_info = get_top_activity_info(device)
             top_packagename = top_activity_info['packagename']
             top_activity = top_activity_info['activity']
@@ -297,8 +297,8 @@ def clean_device_logcat(device):
 
 def get_page_info(plan, app, device):
     if Setting.TimeModel == 'Limit':
-        time_now = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
-        if (time_now - device.beginCrawlTime) > (Setting.LimitTime * 100):
+        time_now = datetime.datetime.now()
+        if (time_now - device.beginCrawlTime).seconds > (Setting.LimitTime * 60):
             Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : crawl time out , finish crawl.")
             return None
     Saver.save_crawler_log(device.logPath, "get all nodes in this page")
@@ -486,8 +486,8 @@ def check_activity_after_operation(plan, app, device, crawl_activity):
     Saver.save_crawler_log(device.logPath, "Step : Check page after operation")
     # if app crashed after crawl , save log & start app ,comtinue
     if Setting.TimeModel == 'Limit':
-        time_now = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
-        if (time_now - device.beginCrawlTime) > (Setting.LimitTime * 100):
+        time_now = datetime.datetime.now()
+        if (time_now - device.beginCrawlTime).seconds > (Setting.LimitTime * 60):
             Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : crawl time out , finish crawl.")
             return None
     while True:
@@ -531,8 +531,8 @@ def check_page_after_operation(plan, app, device):
     Saver.save_crawler_log(device.logPath, "Step : Check page after operation")
     # if app crashed after crawl , save log & start app ,comtinue
     if Setting.TimeModel == 'Limit':
-        time_now = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
-        if (time_now - device.beginCrawlTime) > (Setting.LimitTime * 100):
+        time_now = datetime.datetime.now()
+        if (time_now - device.beginCrawlTime).seconds > (Setting.LimitTime * 60):
             Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : crawl time out , finish crawl.")
             return None
     while True:
@@ -1080,7 +1080,7 @@ def run_test(plan, app, device):
         crawl_main_nodes(plan, app, device, page)
 
     crawl_activities(plan, app, device)
-    device.endCrawlTime = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+    device.endCrawlTime = datetime.datetime.now()
     save_logcat(plan, device, True)
     # clean unusable files
     remove_uidump_xml_file(device)

@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import os
-import time
+import datetime
 import types
 import sys
 import Setting
@@ -16,11 +16,11 @@ def save_crawler_log(log_path, log):
     log_file = open(log_path + '/CrawlerLog.txt', 'a')
     if type(log) is types.StringType:
         if "Step" in log:
-            log_str = log_tag + " : " + str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + "  " + log
+            log_str = log_tag + " : " + str(datetime.datetime.now()) + "  " + log
         else:
-            log_str = log_tag + " : " + str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + "       - " + log
+            log_str = log_tag + " : " + str(datetime.datetime.now()) + "       - " + log
     else:
-        log_str = log_tag + " : " + str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + "       - " + str(log)
+        log_str = log_tag + " : " + str(datetime.datetime.now()) + "       - " + str(log)
     print log_str
     log_file.write(log_str + '\n')
     log_file.close()
@@ -324,9 +324,7 @@ def save_crawl_result(plan, app):
             if nodesCover[0] == '0':
                 nodesCover = nodesCover[1:]
         failedNum = str(device.failedTime)
-        crawlTime = str(device.endCrawlTime - device.beginCrawlTime)
-        second = str(float(crawlTime[len(crawlTime)-2:])/float(60))[2]
-        crawlTime = crawlTime[:len(crawlTime)-2] + "." + second
+        crawlTime = (device.endCrawlTime - device.beginCrawlTime).seconds
         if device.crawlStatue == "Passed":
             result = "                   <span style ='color: green;'>\n" \
                      "                   " + "Passed" + \
@@ -353,7 +351,7 @@ def save_crawl_result(plan, app):
                       "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + unCrawlNodeNum + "</td>\n" \
                       "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + nodesCover + "</td>\n" \
                       "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + failedNum + "</td>\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + crawlTime + "分钟</td>\n" \
+                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + crawlTime + "秒</td>\n" \
                       "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">\n" \
                       "               <a href=" + device.logPath + "/CrawlerLog.txt" + ">\n" + \
                                         result + \

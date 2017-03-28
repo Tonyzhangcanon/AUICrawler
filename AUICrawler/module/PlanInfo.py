@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 import os
-import time
+import datetime
 from script import Setting
 from DeviceInfo import Device
 from script import Saver
@@ -13,7 +13,7 @@ sys.setdefaultencoding('utf-8')
 class Plan:
     def __init__(self):
         self.coverageLevel = Setting.CoverageLevel
-        self.runCaseTime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+        self.runCaseTime = datetime.datetime.now()
         self.logPath = self.create_this_time_folder()
         self.deviceList = []
         self.deviceNum = str(len(self.deviceList))
@@ -25,7 +25,7 @@ class Plan:
     # the same type nodes need crawl once only
 
     def create_this_time_folder(self):
-        path = os.getcwd() + '/result/' + self.runCaseTime
+        path = os.getcwd() + '/result/' + self.runCaseTime.strftime('%Y%m%d%H%M%S')
         print path
         if not os.path.exists(path):
             os.makedirs(path)

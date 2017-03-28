@@ -2,7 +2,7 @@
 
 import os
 import re
-import time
+import datetime
 from script import Saver
 import sys
 reload(sys)
@@ -21,8 +21,8 @@ class Device:
         self.accountInfo = []
         self.screenResolution = self.get_screen_resolution()
         self.screenshotPath = self.create_screenshot_folder()
-        self.beginCrawlTime = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
-        self.endCrawlTime = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+        self.beginCrawlTime = datetime.datetime.now()
+        self.endCrawlTime = datetime.datetime.now()
         self.unCrawledNodes = []
         self.hasCrawledNodes = []
         self.hasCrawlPage = []
@@ -139,4 +139,4 @@ class Device:
             self.hasCrawlPage.append(nodes_info_list)
 
     def update_begin_crawl_time(self):
-        self.beginCrawlTime = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+        self.beginCrawlTime = datetime.datetime.now()
