@@ -68,7 +68,7 @@ class App:
 
     def get_unCrawlViews(self):
         unCrawlViews = []
-        for key, value in Setting.UnClickViews:
+        for key, value in Setting.UnCrawlViews:
             if key == 'id':
                 resource_id = self.packageName + ':id/' + value
                 unCrawlViews.append(resource_id)
