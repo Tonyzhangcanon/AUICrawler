@@ -14,6 +14,9 @@ class App:
         self.apkPath = Setting.ApkPath
         Saver.save_crawler_log(plan.logPath, 'Apk Path : ' + self.apkPath)
 
+        self.appName = self.get_app_name()
+        Saver.save_crawler_log(plan.logPath, 'App Name : ' + self.appName)
+
         self.versionCode = self.get_version_code()
         Saver.save_crawler_log(plan.logPath, 'VersionCode : ' + self.versionCode)
 
@@ -58,6 +61,8 @@ class App:
 
         self.activities = self.get_all_activities()
 
+        self.activityNum = str(len(self.activities))
+
     def get_view_list(self, id_list):
         views = []
         if len(id_list) != 0:
@@ -75,6 +80,18 @@ class App:
             if key == 'text':
                 unCrawlViews.append(value)
         return unCrawlViews
+
+    def get_app_name(self):
+        try:
+            command = 'aapt dump badging ' + self.apkPath
+            result = os.popen(command).readlines()
+            for line in result:
+                name_head = "application-label-zh-CN:'"
+                if name_head in line:
+                    name = line[line.index(name_head) + len(name_head):len(line)-2]
+                    return name
+        except:
+            return ""
 
     @staticmethod
     def get_package_name(apk_path):

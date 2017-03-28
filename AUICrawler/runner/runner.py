@@ -19,10 +19,6 @@ sys.setdefaultencoding('utf-8')
 curPath = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(curPath)
 global page_need_crawled
-global screenshot_num
-global jump_out_time
-screenshot_num = 1
-jump_out_time = 1
 
 
 def install_app(device, apk_path):
@@ -71,8 +67,10 @@ def save_logcat(plan, device, finish):
         for line in log:
             if line.find('System.err') != -1:
                 device.update_crawl_statue('HasCrashed')
+                device.failedTime += 1
             elif line.find('ANR') != -1:
                 device.update_crawl_statue('HasANR')
+                device.failedTime += 1
 
 
 def get_top_activity_info(device):
@@ -532,7 +530,6 @@ def check_activity_after_operation(plan, app, device, crawl_activity):
 def check_page_after_operation(plan, app, device):
     Saver.save_crawler_log(device.logPath, "Step : Check page after operation")
     # if app crashed after crawl , save log & start app ,comtinue
-    print Setting.TimeModel
     if Setting.TimeModel == 'Limit':
         time_now = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
         if (time_now - device.beginCrawlTime) > (Setting.LimitTime * 100):
@@ -598,7 +595,6 @@ def check_page_after_operation(plan, app, device):
 def save_screen(device, node, model):
     if Setting.SaveScreen:
         try:
-            global screenshot_num
             Saver.save_crawler_log(device.logPath, "Step : save screenshot ")
             get_screenshot_command = 'adb -s ' + device.id + ' shell /system/bin/screencap -p /sdcard/screenshot.png'
             activity = node.currentActivity
@@ -606,16 +602,16 @@ def save_screen(device, node, model):
             resource_id = resource_id[resource_id.find('/') + 1:]
             location = node.location
             if model:
-                local_png = device.screenshotPath + '/' + str(screenshot_num) + '-' + str(activity) + '-' + str(
+                local_png = device.screenshotPath + '/' + str(device.saveScreenNum) + '-' + str(activity) + '-' + str(
                     resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
             else:
-                local_png = device.screenshotPath + '/' + str(screenshot_num) + '-' + 'unCrawl' + '-' + str(
+                local_png = device.screenshotPath + '/' + str(device.saveScreenNum) + '-' + 'unCrawl' + '-' + str(
                     activity) + '-' + str(
                     resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
             pull_screenshot_command = 'adb -s ' + device.id + ' pull /sdcard/screenshot.png ' + local_png
             os.popen(get_screenshot_command)
             os.popen(pull_screenshot_command)
-            screenshot_num += 1
+            device.saveScreenNum += 1
             # command = 'adb shell screencap -p | gsed s/' + '\r' + '$//> ' + local_png
             # os.popen(command)
             bounds = node.bounds
@@ -643,16 +639,15 @@ def save_screen(device, node, model):
 def save_screen_jump_out(device, package, activity):
     if Setting.SaveJumpOutScreen:
         try:
-            global jump_out_time, screenshot_num
             Saver.save_crawler_log(device.logPath, "Step : jump out . save screenshot ")
             get_screenshot_command = 'adb -s ' + device.id + ' shell /system/bin/screencap -p /sdcard/screenshot.png'
-            local_png = device.screenshotPath + '/' + str(screenshot_num) + '-' + str(package) + '-' + str(
-                activity) + '-Jump' + str(jump_out_time) + '.png'
+            local_png = device.screenshotPath + '/' + str(device.saveScreenNum) + '-' + str(package) + '-' + str(
+                activity) + '-Jump' + str(device.jump_out_time) + '.png'
             pull_screenshot_command = 'adb -s ' + device.id + ' pull /sdcard/screenshot.png ' + local_png
             os.popen(get_screenshot_command)
             os.popen(pull_screenshot_command)
-            screenshot_num += 1
-            jump_out_time += 1
+            device.saveScreenNum += 1
+            device.jump_out_time += 1
         except:
             Saver.save_crawler_log(device, "save screen error")
 
@@ -1085,7 +1080,8 @@ def run_test(plan, app, device):
         crawl_main_nodes(plan, app, device, page)
 
     crawl_activities(plan, app, device)
-
+    device.endCrawlTime = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+    save_logcat(plan, device, True)
     # clean unusable files
     remove_uidump_xml_file(device)
 
@@ -1098,3 +1094,7 @@ def run_test(plan, app, device):
         len(device.hasCrawledActivities)) + " activities .")
     if device.crawlStatue == 'Running':
         device.update_crawl_statue('Passed')
+    if device.crawlStatue == "Passed":
+        plan.passedDevice += 1
+    else:
+        plan.failedDevice += 1

@@ -5,7 +5,6 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 #  - * Plan Setting * -
-AppProduct = 1  # Exp : kuaiya:1 ,kuaina:2 , omnivideo:3 , freewifi:4 , kuaiya_lite:5 , leya:6 ,kuaiya_ios:8
 SaveScreen = False  # True ， False
 SaveJumpOutScreen = False  # True , False
 KeepRun = False  # True (Resume run when app Crash), False (Finish run when app Crash)

@@ -4,7 +4,10 @@ from module.CrawledApp import App
 from module.PlanInfo import Plan
 from runner import runner
 from script import Setting
+from script import Saver
 import getopt, sys
+import time
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -48,7 +51,6 @@ for op, value in opts:
 if len(plan.deviceList) == 0:
     plan.get_device_list()
 
-
 threads = []
 
 for device in plan.deviceList:
@@ -58,3 +60,6 @@ for th in threads:
     th.start()
 for th in threads:
     th.join()
+
+plan.endTime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+Saver.save_crawl_result(plan, app)

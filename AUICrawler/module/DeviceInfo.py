@@ -22,11 +22,15 @@ class Device:
         self.screenResolution = self.get_screen_resolution()
         self.screenshotPath = self.create_screenshot_folder()
         self.beginCrawlTime = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+        self.endCrawlTime = int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
         self.unCrawledNodes = []
         self.hasCrawledNodes = []
         self.hasCrawlPage = []
         self.hasCrawledActivities = []
+        self.saveScreenNum = 0
+        self.jump_out_time = 0
         self.crawlStatue = "Inited"
+        self.failedTime = 0
 
     def create_device_folder(self, plan):
         path = plan.logPath + '/' + self.id
@@ -92,8 +96,7 @@ class Device:
         command = 'adb -s ' + self.id + ' shell getprop ro.build.version.release'
         result = os.popen(command).read()
         Saver.save_crawler_log(self.logPath, "sys version : " + result)
-        version = int(result.replace('.', ''))
-        return version
+        return result
 
     def update_crawl_statue(self, statue):
         Saver.save_crawler_log(self.logPath, "Step : Update crawl statue from " + self.crawlStatue + ' to ' + statue)

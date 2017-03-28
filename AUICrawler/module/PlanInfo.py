@@ -12,11 +12,14 @@ sys.setdefaultencoding('utf-8')
 
 class Plan:
     def __init__(self):
-        self.product = Setting.AppProduct
         self.coverageLevel = Setting.CoverageLevel
         self.runCaseTime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
         self.logPath = self.create_this_time_folder()
         self.deviceList = []
+        self.deviceNum = str(len(self.deviceList))
+        self.passedDevice = 0
+        self.failedDevice = 0
+        self.endTime = None
 
     # change the node info ,because the same type nodes has difference bounds.
     # the same type nodes need crawl once only
@@ -41,6 +44,7 @@ class Plan:
                 device.update_device_account(Setting.AccountList[index])
         Saver.save_crawler_log(self.logPath, device_list)
         self.deviceList = device_list
+        self.deviceNum = str(len(device_list))
 
     def update_device_list(self, id_list):
         device_list = []
@@ -50,6 +54,7 @@ class Plan:
             index = device_list.index(device)
             device.update_device_account(Setting.AccountList[index])
         self.deviceList = device_list
+        self.deviceNum = str(len(device_list))
 
 
 
