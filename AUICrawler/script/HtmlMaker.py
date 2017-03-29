@@ -81,7 +81,7 @@ def mack_crawl_result_html(plan, app):
             "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
             "        <tr>\n" \
             "            <td>\n" \
-            "            <h1 style = font-size:18px;>测试结果</h1>\n" \
+            "            <h1 style = font-size:15px;>测试结果</h1>\n" \
             "            </td>\n" \
             "            <Td colspan=\"6\"></Td>\n" \
             "        </tr>\n" \
@@ -106,22 +106,22 @@ def mack_crawl_result_html(plan, app):
             "            </th>\n" \
             "        </tr>\n" \
             "       <tr valign=\"top\" class=\"Failure\">\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + plan.deviceNum + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\"><span style =\"color: green;\">" + str(plan.passedDevice) + "</span></td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\"><span style =\"color: red;\">" + str(plan.failedDevice) + "</span></td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + str(plan.runCaseTime) + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + str(plan.endTime) + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + plan.deviceNum + "</td>\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\"><span style =\"color: green;\">" + str(plan.passedDevice) + "</span></td>\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\"><span style =\"color: red;\">" + str(plan.failedDevice) + "</span></td>\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.runCaseTime) + "</td>\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.endTime) + "</td>\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
             "               <a href=" + plan.logPath + "/CrawlerLog.txt" + ">\n" \
             "                   " + "CrawlerLog" + \
             "\n               </a>\n" \
             "            </td>\n" \
             "        </tr>\n" \
-            "</table>\n" \
+            "    </table>\n" \
             "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
             "        <tr>\n" \
             "            <td>\n" \
-            "            <h1 style = font-size:18px;>执行设置</h1>\n" \
+            "            <h1 style = font-size:15px;>执行设置</h1>\n" \
             "            </td>\n" \
             "            <Td colspan=\"6\"></Td>\n" \
             "        </tr>\n" \
@@ -155,39 +155,39 @@ def mack_crawl_result_html(plan, app):
             "            </th>\n" \
             "        </tr>\n" \
             "       <tr valign=\"top\" class=\"Failure\">\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             crawlModel + \
             "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             str(Setting.CoverageLevel) + \
             "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             timeModel + \
             "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             reInstallApk + \
             "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             saveScreen + \
             "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             keepRun + \
             "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             runInitNodes + \
             "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             runInitCase + \
             "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             login + \
             "            </td>\n" \
             "        </tr>\n" \
-            "</table>\n" \
+            "    </table>\n" \
             "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
             "        <tr>\n" \
             "            <td>\n" \
-            "            <h1 style = font-size:18px;>被测App</h1>\n" \
+            "            <h1 style = font-size:15px;>被测App</h1>\n" \
             "            </td>\n" \
             "            <Td colspan=\"6\"></Td>\n" \
             "        </tr>\n" \
@@ -212,24 +212,24 @@ def mack_crawl_result_html(plan, app):
             "            </th>\n" \
             "        </tr>\n" \
             "       <tr valign=\"top\" class=\"Failure\">\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + app.appName + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + app.versionName + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + app.versionCode + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + app.packageName + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + app.activityNum + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + app.apkPath + "</td>\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.appName + "</td>\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.versionName + "</td>\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.versionCode + "</td>\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.packageName + "</td>\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.activityNum + "</td>\n" \
+            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.apkPath + "</td>\n" \
             "        </tr>\n" \
-            "</table>\n" \
+            "    </table>\n" \
             "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
             "        <tr>\n" \
             "            <td>\n" \
-            "            <h1 style = font-size:18px;>详细结果</h1>\n" \
+            "            <h1 style = font-size:15px;>详细结果</h1>\n" \
             "            </td>\n" \
             "            <Td colspan=\"6\"></Td>\n" \
             "        </tr>\n" \
             "        <tr valign=\"top\">\n" \
             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                设备名称\n" \
+            "                设备名\n" \
             "            </th>\n" \
             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
             "                设备ID\n" \
@@ -238,22 +238,22 @@ def mack_crawl_result_html(plan, app):
             "                系统版本\n" \
             "            </th>\n" \
             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                覆盖Activity数量" \
+            "                覆盖Act数" \
             "            </th>\n" \
             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                Activity覆盖率" \
+            "                Act覆盖率" \
             "            </th>\n" \
             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                操作控件数量" \
+            "                操作控件数" \
             "            </th>\n" \
             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                遗漏控件数量" \
+            "                遗漏控件数" \
             "            </th>\n" \
             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
             "                控件覆盖率" \
             "            </th>\n" \
             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                Crash次数" \
+            "                异常退出" \
             "            </th>\n" \
             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
             "                执行时长" \
@@ -312,26 +312,33 @@ def mack_crawl_result_html(plan, app):
                      "                   " + device.crawlStatue + \
                      "\n                   </span>\n"
         result_body = "       <tr valign=\"top\" class=\"Failure\">\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + name + "</td>\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + device.id + "</td>\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + device.version + "</td>\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + crawlActNum + "</td>\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + actCover + "</td>\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + crawlNodeNum + "</td>\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + unCrawlNodeNum + "</td>\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + nodesCover + "</td>\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + failedNum + "</td>\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">" + crawlTime + "秒</td>\n" \
-                      "            <td align=\"center\" style=\"background: #eeeee0;white-space: nowrap;\">\n" \
+                      "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + name + "</td>\n" \
+                      "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
+                      "                 <a href = " + device.logPath + "/" + " >\n" + \
+                      "                      " + device.id + \
+                      "\n                 </a>\n" \
+                      "</td>\n" \
+                      "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + device.version + "</td>\n" \
+                      "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + crawlActNum + "</td>\n" \
+                      "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + actCover + "</td>\n" \
+                      "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + crawlNodeNum + "</td>\n" \
+                      "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + unCrawlNodeNum + "</td>\n" \
+                      "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + nodesCover + "</td>\n" \
+                      "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
+                      "                 <a href = " + device.logPath + "/logcat.txt" + " >\n" + \
+                      "                      " + failedNum + \
+                      "\n                 </a>\n" \
+                      "            </td>\n" \
+                      "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + crawlTime + " 秒</td>\n" \
+                      "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
                       "               <a href=" + device.logPath + "/CrawlerLog.txt" + ">\n" + \
                                         result + \
                       "               </a>\n" \
                       "            </td>\n" \
                       "       </tr>\n"
         device_result += result_body
-    html_end = "</table>\n"\
-               "</div>\n" \
-               "</br>\n" \
+    html_end = "        </table>\n"\
+               "    </div>\n" \
                "</html>\n"
     result_html = html_head + table + device_result + html_end
     return result_html

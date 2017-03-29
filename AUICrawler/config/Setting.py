@@ -25,9 +25,9 @@ TestApkPath = '/Users/admin/Downloads/xxxx-china-debug-androidTest.apk'
 AppMainActivity = 'com.xxxxx.MainActivity'
 FirstClickViews = ['iv_transfer_to', 'guide_i_know', 'ok', 'edit_ok', 'button1', 'iv_back']
 BackBtnViews = ['back', 'iv_title_left', 'back_iv', 'iv_btn_back', 'iv_back']  # finally tap in the page
-UnCrawlViews = {'id': 'play_click',
-                'id': 'fullscreen',
-                'text': u'我的'}
+UnCrawlViews = {'play_click': 'id',
+                'fullscreen': 'id',
+                u'我的': 'text'}
 AuthorizationAlert = [['com.huawei.systemmanager', 'com.huawei.systemmanager:id/btn_allow', '允许']]
 
 #  - * Run Init Robotium Case Setting * -

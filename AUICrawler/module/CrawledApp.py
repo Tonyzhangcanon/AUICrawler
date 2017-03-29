@@ -50,8 +50,8 @@ class App:
         self.backBtnViews = self.get_view_list(Setting.BackBtnViews)
         Saver.save_crawler_log(plan.logPath, 'BackBtnViews : ' + str(self.backBtnViews))
 
-        self.unCrawlViews = self.get_unCrawlViews()
-        Saver.save_crawler_log(plan.logPath, 'UnClickViews : ' + str(self.unCrawlViews))
+        self.unCrawlViews = self.get_unCrawlViews(plan)
+        Saver.save_crawler_log(plan.logPath, 'UnCrawlViews : ' + str(self.unCrawlViews))
 
         self.loginViews = self.get_view_list(Setting.LoginViewList)
         Saver.save_crawler_log(plan.logPath, 'LoginViews : ' + str(self.loginViews))
@@ -71,14 +71,14 @@ class App:
                 views.append(resource_id)
         return views
 
-    def get_unCrawlViews(self):
+    def get_unCrawlViews(self, plan):
         unCrawlViews = []
         for key, value in Setting.UnCrawlViews.items():
-            if key == 'id':
-                resource_id = self.packageName + ':id/' + value
+            if value == 'id':
+                resource_id = self.packageName + ':id/' + key
                 unCrawlViews.append(resource_id)
-            if key == 'text':
-                unCrawlViews.append(value)
+            if value == 'text':
+                unCrawlViews.append(key)
         return unCrawlViews
 
     def get_app_name(self):
