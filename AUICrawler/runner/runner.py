@@ -10,7 +10,7 @@ from script import Saver
 from PIL import Image
 from module import PageInfo
 from module import NodeInfo
-from script import Setting
+from config import Setting
 import pylab as pl
 
 reload(sys)

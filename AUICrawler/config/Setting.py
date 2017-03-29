@@ -18,11 +18,11 @@ CoverageLevel = 1  # 0 < level <= 1 , Exp level = 0.6 , if there are 10 points i
 #  - * Apk Install Setting * -
 UnInstallApk = False  # True (uninstall app & testApp) , False
 InstallApk = False  # True (install app & testApp) ,False
-ApkPath = '/Users/admin/Downloads/Kuaiya-china-debug.apk'
-TestApkPath = '/Users/admin/Downloads/Kuaiya-china-debug-androidTest.apk'
+ApkPath = '/Users/admin/Downloads/xxxxx.apk'
+TestApkPath = '/Users/admin/Downloads/xxxx-china-debug-androidTest.apk'
 
 #  - * App Info Setting * -
-AppMainActivity = 'com.dewmobile.kuaiya.act.MainActivity'
+AppMainActivity = 'com.xxxxx.MainActivity'
 FirstClickViews = ['iv_transfer_to', 'guide_i_know', 'ok', 'edit_ok', 'button1', 'iv_back']
 BackBtnViews = ['back', 'iv_title_left', 'back_iv', 'iv_btn_back', 'iv_back']  # finally tap in the page
 UnCrawlViews = {'id': 'play_click',
@@ -33,12 +33,18 @@ AuthorizationAlert = [['com.huawei.systemmanager', 'com.huawei.systemmanager:id/
 #  - * Run Init Robotium Case Setting * -
 RunInitNodes = False  # True (run init nodes before run init Robotium Case) , False
 RunInitCase = False  # True (run init Robotium case) , False
-InitCases = ['com.dewmobile.kuaiya.test.cases.host.initcase.RunGuidePage']
+InitCases = ['com.xxxxxxx.initcase.RunGuidePage']
 TestRunner = 'com.android.test.runner.MultiDexTestRunner'
 
 #  - * Login Setting * -
 Login = False  # True (if crawl to the loginActivity, login & continue crawl)
-AppLoginActivity = 'com.dewmobile.kuaiya.es.ui.activity.LoginActivity'
+AppLoginActivity = 'com.xxxxxx.LoginActivity'
 LoginViewList = ['username', 'password', 'btn_login']  # [AccountViewID, PasswordViewID, LoginBtnId]
-AccountList = [['15210614522', '123456'],
-               ['15600900870', '123456']]
+AccountList = [['xxxx', 'xxxx'],
+               ['xxxx', 'xxx']]
+
+#  - * send crawl result email * -
+SMTP_HOST = "smtp.xxxx.com"  # Set mail smtp host
+Mail_To_List = ["xxxxx@xxx.com", "xxxxx@xxx.com"]  # who will receive the result mail
+Mail_User = "xxxxx@xxxx.com"  # which account will be Use to send mail
+Mail_Pass = "******"  # the password for login

@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import os
 import datetime
-from script import Setting
+from config import Setting
 from DeviceInfo import Device
 from script import Saver
 import sys
@@ -20,6 +20,7 @@ class Plan:
         self.passedDevice = 0
         self.failedDevice = 0
         self.endTime = None
+        self.resultHtml = '<a>测试结果</a>'
 
     # change the node info ,because the same type nodes has difference bounds.
     # the same type nodes need crawl once only

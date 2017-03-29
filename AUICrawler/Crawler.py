@@ -1,12 +1,15 @@
 # -*- coding:utf-8 -*-
+import datetime
+import getopt
+import sys
 import threading
+
+from config import Setting
 from module.CrawledApp import App
 from module.PlanInfo import Plan
 from runner import runner
-from script import Setting
 from script import Saver
-import getopt, sys
-import datetime
+from script import MailSender
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -63,3 +66,5 @@ for th in threads:
 
 plan.endTime = datetime.datetime.now()
 Saver.save_crawl_result(plan, app)
+MailSender.send_mail(plan)
+

@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import os
 from script import Saver
-from script import Setting
+from config import Setting
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
