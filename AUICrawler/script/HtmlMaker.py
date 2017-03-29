@@ -81,7 +81,7 @@ def mack_crawl_result_html(plan, app):
             "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
             "        <tr>\n" \
             "            <td>\n" \
-            "            <h1 style = font-size:15px;>测试结果</h1>\n" \
+            "            <h1 style = font-size:15px;>结果</h1>\n" \
             "            </td>\n" \
             "            <Td colspan=\"6\"></Td>\n" \
             "        </tr>\n" \
@@ -121,7 +121,7 @@ def mack_crawl_result_html(plan, app):
             "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
             "        <tr>\n" \
             "            <td>\n" \
-            "            <h1 style = font-size:15px;>执行设置</h1>\n" \
+            "            <h1 style = font-size:15px;>配置</h1>\n" \
             "            </td>\n" \
             "            <Td colspan=\"6\"></Td>\n" \
             "        </tr>\n" \

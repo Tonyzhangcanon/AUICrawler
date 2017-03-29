@@ -15,9 +15,9 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 plan = Plan()
-app = App(plan)
 
-opts, args = getopt.getopt(sys.argv[1:], "auicsjkld:t:r:")
+
+opts, args = getopt.getopt(sys.argv[1:], "aicsjklud:t:r:p:")
 for op, value in opts:
     if op == "-a":
         Setting.CrawlModel = 'Activity'
@@ -50,10 +50,13 @@ for op, value in opts:
         Setting.CoverageLevel = float(value)
         if Setting.CrawlModel == 'Normal':
             Setting.CrawlModel = 'Random'
+    elif op == '-p':
+        Setting.ApkPath = value
 
 if len(plan.deviceList) == 0:
     plan.get_device_list()
 
+app = App(plan)
 threads = []
 
 for device in plan.deviceList:

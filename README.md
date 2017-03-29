@@ -58,6 +58,7 @@ Mail_Pass : 使用的邮箱账号的登录密码
 ##### 参数：
 ```
 -d xxxx     : 指定单设备
+-p xxx/xxx.apk : 指定被测应用的Apk目录
 -t 30       : 开启限时模式 & 调整遍历限时时间 ，单位分钟
 -r 0.8      : 开启随机遍历 & 设置覆盖程度
 -a          : Activity遍历模式
@@ -70,15 +71,17 @@ Mail_Pass : 使用的邮箱账号的登录密码
 -l          : 遍历过程中登录
 ```
 ##### 示例场景：
-1.指定单个设备、重新安装App、初始化App、执行Robotium Case、按序遍历10分钟 、不保存截图
+1. 指定apk快速遍历
+`python Crawler.py -p xxx/xxx/xxx.apk`
+2. 指定单个设备、重新安装App、初始化App、执行Robotium Case、按序遍历10分钟 、不保存截图
 
 `python Crawler.py -d deviceid -t 10 -uic` 
 
-2.指定多个设备，不重新安装App、不初始化、覆盖程度0.5随机遍历5分钟、保存有效遍历截图、Crash后重启继续执行、遍历过程中登录
+3. 指定多个设备，不重新安装App、不初始化、覆盖程度0.5随机遍历5分钟、保存有效遍历截图、Crash后重启继续执行、遍历过程中登录
 
 `python Crawler.py -d deviceid1,deviceid2,deviceid3 -t 5 -r 0.5 -skl`
 
-3.使用当前连接的所有设备、重新安装App、初始化App、不执行Robotium Case、遍历所有无参数Activity、不限时、保存所有截图
+4. 使用当前连接的所有设备、重新安装App、初始化App、不执行Robotium Case、遍历所有无参数Activity、不限时、保存所有截图
 
 `python Crawler.py -uisj`
 
