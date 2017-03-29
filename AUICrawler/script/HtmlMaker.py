@@ -93,7 +93,7 @@ def mack_crawl_result_html(plan, app):
             "                通过\n" \
             "            </th>\n" \
             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                出错" \
+            "                异常" \
             "            </th>\n" \
             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
             "                开始时间" \
