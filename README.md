@@ -3,7 +3,7 @@
 ### 遍历方案:
 #### 时间模式:
 * Limit ：限定遍历时长，不包括初始化应用 & 结果统计，超过规定时长后结束
-* Free  ：不规定遍历时长，全部递归执行完成后结束
+* Normal  ：不规定遍历时长，全部递归执行完成后结束
 #### 遍历模式:
 * Normal ： 按序遍历，多次／多设备执行的路径完全相同
 * Random ： 随机遍历，可设置覆盖程度（0 <CoverageLever <=1）,在当前页面中随机抽取 覆盖百分比个 控件进行遍历
@@ -12,7 +12,7 @@
 #### 执行前配置:
 ##### 配置文件:
 - AUICrawler
-  - script
+  - config
     - Setting.py
 ##### 设置项详解:
 ```
@@ -45,6 +45,11 @@ Login : 执行中登录功能开关，在遍历过程中，进入到登录Activi
 AppLoginActivity : 登录页面Activity， 目前只支持被测App本身的登录方式，暂不支持第三方登录
 LoginViewList ：登录按钮信息，[账号输入框AccountViewID, 密码输入框PasswordViewID, 登录按钮LoginBtnId]
 AccountList : 账号密码列表，执行前请保证账号足够设备1对1分配，可多不可少
+
+SMTP_HOST : SMTP服务器地址 
+Mail_To_List : 测试报告邮件发送给哪些人
+Mail_User : 使用哪个邮箱账号发送测试报告
+Mail_Pass : 使用的邮箱账号的登录密码
 ```
 #### 执行脚本:
 - AUICrawler
@@ -122,7 +127,8 @@ NodeInfo :  每个控件的获取时信息 & 遍历中相关状态&信息
         - CrawlerLog.txt : 此设备执行时详细Log
         - Screenshot : 截图存储目录
         - Uidump.xml : 运行中获取页面信息生成的临时文件，计划执行结束时会删除
-
+#### 测试报告
+![](file/Result.png)
 ### 开发进度:
 - [x] 1.  架构设计
 - [x] 2.  递归逻辑
