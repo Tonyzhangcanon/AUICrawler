@@ -27,7 +27,6 @@ class Plan:
 
     def create_this_time_folder(self):
         path = os.getcwd() + '/result/' + self.runCaseTime.strftime('%Y%m%d%H%M%S')
-        print path
         if not os.path.exists(path):
             os.makedirs(path)
         return path
@@ -41,16 +40,17 @@ class Plan:
                 device_id = line[0:line.index(string)]
                 device = Device(self, device_id)
                 device_list.append(device)
-                index = device_list.index(device)
-                device.update_device_account(Setting.AccountList[index])
+                if Setting.Login:
+                    index = device_list.index(device)
+                    device.update_device_account(Setting.AccountList[index])
         Saver.save_crawler_log(self.logPath, device_list)
         self.deviceList = device_list
         self.deviceNum = str(len(device_list))
 
     def update_device_list(self, id_list):
         device_list = []
-        for id in id_list:
-            device = Device(self, id)
+        for device_id in id_list:
+            device = Device(self, device_id)
             device_list.append(device)
             index = device_list.index(device)
             device.update_device_account(Setting.AccountList[index])

@@ -11,11 +11,7 @@ from runner import runner
 from script import Saver
 from script import MailSender
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 plan = Plan()
-
 
 opts, args = getopt.getopt(sys.argv[1:], "aicsjklud:t:r:p:")
 for op, value in opts:

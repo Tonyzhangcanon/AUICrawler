@@ -1,9 +1,8 @@
 # -*- coding:utf-8 -*-
-__author__ = 'Zhang.zhiyang'
-
 import random
 import os
-import datetime, time
+import datetime
+import time
 import sys
 import xml.dom.minidom
 from script import Saver
@@ -18,7 +17,6 @@ sys.setdefaultencoding('utf-8')
 
 curPath = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(curPath)
-global page_need_crawled
 
 
 def install_app(device, apk_path):
@@ -98,7 +96,8 @@ def get_top_activity_info(device):
             activity = result[result.find('/') + len('/'):result.find(' t')]
         elif '}' in result:
             activity = result[result.find('/') + len('/'):result.find('}')]
-    except:
+    except Exception, e:
+        print (str(e))
         command = 'adb -s ' + device.id + ' shell dumpsys activity | findstr "mResumedActivity"'
         result = os.popen(command).read()
         packagename = ''
@@ -136,7 +135,8 @@ def remove_uidump_xml_file(device):
         Saver.save_crawler_log(device.logPath, "Step : remove uidunp xml")
         remove_xml_file = device.logPath + '/Uidump.xml'
         os.remove(remove_xml_file)
-    except:
+    except Exception, e:
+        print (str(e))
         Saver.save_crawler_log(device.logPath, "no uidump xml")
 
 
@@ -147,7 +147,8 @@ def get_nodes_list(device):
         root = dom.documentElement
         nodes = root.getElementsByTagName('node')
         return nodes
-    except:
+    except Exception, e:
+        print (str(e))
         return ''
 
 
@@ -309,7 +310,8 @@ def get_page_info(plan, app, device):
             get_uidump_xml_file(device)
             dom = xml.dom.minidom.parse(device.logPath + '/Uidump.xml')
             result = True
-        except:
+        except Exception, e:
+            print (str(e))
             result = False
     root = dom.documentElement
     nodes = root.getElementsByTagName('node')
@@ -356,15 +358,18 @@ def get_need_crawl_page(plan, app, device, page_before_run, page_after_run):
 def find_node_by_info(app, device, classname, resourceid, contentdesc, page):
     result = False
     for node in page.nodesList:
-        if node.package == app.packageName and node.className == classname and node.resource_id == resourceid and contentdesc == contentdesc:
+        if node.package == app.packageName \
+                and node.className == classname \
+                and node.resource_id == resourceid \
+                and contentdesc == contentdesc:
             result = True
             break
     return result
 
 
-def get_node_by_id(page, id):
+def get_node_by_id(page, resource_id):
     for node in page.nodesInfoList:
-        if node.resource_id == id:
+        if node.resource_id == resource_id:
             return node
 
 
@@ -632,7 +637,8 @@ def save_screen(device, node, model):
             region = im.crop(box)
             region.save(local_png)
             pl.close()
-        except:
+        except Exception, e:
+            print (str(e))
             Saver.save_crawler_log(device.logPath, "save screen error")
 
 
@@ -648,7 +654,8 @@ def save_screen_jump_out(device, package, activity):
             os.popen(pull_screenshot_command)
             device.saveScreenNum += 1
             device.jump_out_time += 1
-        except:
+        except Exception, e:
+            print (str(e))
             Saver.save_crawler_log(device, "save screen error")
 
 
@@ -989,23 +996,23 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
 
 
 def crawl_main_nodes(plan, app, device, page_before_run):
-    global page_need_crawled
-    page_need_crawled = PageInfo.Page()
+    page_now = PageInfo.Page()
     if page_is_crawlable(app, device, page_before_run):
         device.update_crawl_page(page_before_run.nodesInfoList)
         if page_before_run.clickableNodesNum > 0:
-            page_need_crawled = crawl_clickable_nodes(plan, app, device, page_before_run, page_need_crawled, False)
+            page_now = crawl_clickable_nodes(plan, app, device, page_before_run, page_now, False)
         if page_before_run.longClickableNodesNum > 0:
-            page_need_crawled = crawl_longclickable_nodes(plan, app, device, page_before_run, page_need_crawled, False)
+            page_now = crawl_longclickable_nodes(plan, app, device, page_before_run, page_now, False)
         if page_before_run.editTextsNum > 0:
-            page_need_crawled = crawl_edittext(plan, app, device, page_before_run, page_need_crawled, False)
-    return page_need_crawled
+            page_now = crawl_edittext(plan, app, device, page_before_run, page_now, False)
+    return page_now
 
 
 def run_init_cases(plan, app, device):
     Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : run init cases")
     for case in app.initCasesList:
-        command = 'adb -s ' + device.id + ' shell am instrument -w -e class ' + case + ' ' + app.testPackageName + '/' + app.testRunner
+        command = 'adb -s ' + device.id + ' shell am instrument -w -e class ' + case + ' ' + app.testPackageName + '/'\
+                  + app.testRunner
         Saver.save_crawler_log_both(plan.logPath, device.logPath, command)
         os.popen(command)
     Saver.save_crawler_log_both(plan.logPath, device.logPath, "Run novice guide finish ...")
@@ -1014,17 +1021,16 @@ def run_init_cases(plan, app, device):
 def crawl_init_nodes(plan, app, device, page_before_run):
     Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : run init nodes")
     if page_before_run.currentActivity != app.mainActivity or page_before_run.package != app.packageName:
-        global page_need_crawled
-        page_need_crawled = PageInfo.Page()
+        page_now = PageInfo.Page()
         if page_before_run.clickableNodesNum != 0:
             device.update_crawl_page(page_before_run.nodesInfoList)
             if page_before_run.clickableNodesNum > 0:
-                page_need_crawled = crawl_clickable_nodes(plan, app, device, page_before_run, page_need_crawled, True)
+                page_now = crawl_clickable_nodes(plan, app, device, page_before_run, page_now, True)
             if page_before_run.longClickableNodesNum > 0:
-                page_need_crawled = crawl_longclickable_nodes(plan, app, device, page_before_run, page_need_crawled, True)
+                page_now = crawl_longclickable_nodes(plan, app, device, page_before_run, page_now, True)
             if page_before_run.editTextsNum > 0:
-                page_need_crawled = crawl_edittext(plan, app, device, page_before_run, page_need_crawled, False)
-        return page_need_crawled
+                page_now = crawl_edittext(plan, app, device, page_before_run, page_now, False)
+        return page_now
     else:
         Saver.save_crawler_log_both(plan.logPath, device.logPath, 'Is in ' + app.mainActivity)
         return page_before_run

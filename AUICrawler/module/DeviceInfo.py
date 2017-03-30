@@ -4,9 +4,7 @@ import os
 import re
 import datetime
 from script import Saver
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+import PageInfo
 
 
 class Device:
@@ -31,6 +29,7 @@ class Device:
         self.jump_out_time = 0
         self.crawlStatue = "Inited"
         self.failedTime = 0
+        self.page_now = PageInfo.Page()
 
     def create_device_folder(self, plan):
         path = plan.logPath + '/' + self.id
@@ -43,6 +42,8 @@ class Device:
         command = 'adb -s ' + self.id + ' shell wm size'
         resolution = []
         result = os.popen(command).readlines()
+        x = ''
+        y = ''
         for line in result:
             if 'Physical size: ' in line:
                 r = re.findall(r'\d+', line)
@@ -75,7 +76,8 @@ class Device:
                     device_name = line[line.find(key) + len(key):-2]
                     break
             Saver.save_crawler_log(self.logPath, "device name : " + device_name)
-        except:
+        except Exception, e:
+            print (e)
             command = 'adb -s ' + self.id + ' shell cat /system/build.prop | findstr "product" '
             result = os.popen(command).readlines()
             for line in result:

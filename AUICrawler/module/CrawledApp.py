@@ -2,9 +2,6 @@
 import os
 from script import Saver
 from config import Setting
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 
 class App:
@@ -66,8 +63,8 @@ class App:
     def get_view_list(self, id_list):
         views = []
         if len(id_list) != 0:
-            for id in id_list:
-                resource_id = self.packageName + ':id/' + id
+            for device_id in id_list:
+                resource_id = self.packageName + ':id/' + device_id
                 views.append(resource_id)
         return views
 
@@ -90,7 +87,8 @@ class App:
                 if name_head in line:
                     name = line[line.index(name_head) + len(name_head):len(line)-2]
                     return name
-        except:
+        except Exception, e:
+            print (str(e))
             return ""
 
     @staticmethod
@@ -104,7 +102,8 @@ class App:
                 if package_head in line:
                     package_name = line[line.index(package_head) + len(package_head):line.index(end)]
                     return package_name
-        except:
+        except Exception, e:
+            print (str(e))
             return ""
 
     def get_version_code(self):

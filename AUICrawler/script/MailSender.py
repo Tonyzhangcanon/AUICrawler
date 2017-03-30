@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 import smtplib
 from email.mime.text import MIMEText
 from config import Setting
@@ -19,6 +20,6 @@ def send_mail(plan):
         s.close()
         return True
     except Exception, e:
-        print str(e)
+        print(str(e))
         return False
 

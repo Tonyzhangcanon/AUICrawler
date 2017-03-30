@@ -33,7 +33,7 @@ def save_crawler_log_both(plan_log_path, device_log_path, log):
 
 
 def save_crawl_result(plan, app):
-    save_crawler_log(plan.logPath,"Step : Save crawl results . ")
+    save_crawler_log(plan.logPath, "Step : Save crawl results . ")
     plan.resultHtml = HtmlMaker.mack_crawl_result_html(plan, app)
     result_file = open(plan.logPath + '/Result.html', 'w')
     result_file.write(plan.resultHtml)

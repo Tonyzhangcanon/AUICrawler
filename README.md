@@ -57,7 +57,7 @@ Mail_Pass : 使用的邮箱账号的登录密码
 #### 参数执行:
 ##### 参数：
 ```
--d xxxx     : 指定单设备
+-d xxxx     : 指定单设备/ 多设备列表 device1id,device2id,device3id...
 -p xxx/xxx.apk : 指定被测应用的Apk目录
 -t 30       : 开启限时模式 & 调整遍历限时时间 ，单位分钟
 -r 0.8      : 开启随机遍历 & 设置覆盖程度
@@ -72,7 +72,9 @@ Mail_Pass : 使用的邮箱账号的登录密码
 ```
 ##### 示例场景：
 1. 指定apk快速遍历
+
 `python Crawler.py -p xxx/xxx/xxx.apk`
+
 2. 指定单个设备、重新安装App、初始化App、执行Robotium Case、按序遍历10分钟 、不保存截图
 
 `python Crawler.py -d deviceid -t 10 -uic` 
