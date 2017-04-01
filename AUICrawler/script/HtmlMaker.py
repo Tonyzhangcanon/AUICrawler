@@ -264,8 +264,8 @@ def mack_crawl_result_html(plan, app):
             "        </tr>\n"
     device_result = ""
     for device in plan.deviceList:
-        if device.name == device.model:
-            name = device.name
+        if device.name in device.model:
+            name = device.model
         else:
             name = device.name + " " + device.model
         crawlActNum = str(len(device.hasCrawledActivities))

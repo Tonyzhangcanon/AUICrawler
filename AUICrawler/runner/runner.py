@@ -6,11 +6,10 @@ import time
 import sys
 import xml.dom.minidom
 from script import Saver
-from PIL import Image
 from module import PageInfo
 from module import NodeInfo
 from config import Setting
-import pylab as pl
+import gc
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -37,7 +36,7 @@ def start_activity(device, packagename, activity):
     result = False
     while not result:
         command = 'adb -s ' + device.id + ' shell am start -n ' + packagename + '/' + activity
-        os.popen(command)
+        os.system(command)
         if (datetime.datetime.now() - time1).seconds < 10:
             top_activity_info = get_top_activity_info(device)
             top_packagename = top_activity_info['packagename']
@@ -50,7 +49,7 @@ def start_activity(device, packagename, activity):
 
 def kill_app(app):
     c = 'adb shell  am force-stop ' + app.packageName
-    os.popen(c)
+    os.system(c)
 
 
 def save_logcat(plan, device, finish):
@@ -58,7 +57,7 @@ def save_logcat(plan, device, finish):
     if not os.path.exists(os.getcwd()):
         os.makedirs(os.getcwd())
     command = 'adb -s ' + device.id + ' logcat -d >> ' + device.logPath + '/logcat.txt'
-    os.popen(command)
+    os.system(command)
     if not finish:
         get_log_commend = 'adb -s ' + device.id + ' logcat -d'
         log = os.popen(get_log_commend).readlines()
@@ -123,11 +122,11 @@ def get_top_activity_info(device):
 
 def get_uidump_xml_file(device):
     get_xml_command = 'adb -s ' + device.id + ' shell ' + 'uiautomator dump /data/local/tmp/uidump.xml'
-    os.popen(get_xml_command)
+    os.system(get_xml_command)
     pull_command = 'adb -s ' + device.id + ' pull /data/local/tmp/uidump.xml ' + device.logPath + '/Uidump.xml'
-    os.popen(pull_command)
+    os.system(pull_command)
     rm_command = 'adb -s ' + device.id + ' shell rm /data/local/tmp/uidump.xml'
-    os.popen(rm_command)
+    os.system(rm_command)
 
 
 def remove_uidump_xml_file(device):
@@ -223,31 +222,31 @@ def drag_screen_to_left(device):
     # x_min = str(int(resolution[0]) * 0.5)[:str(int(resolution[0]) * 0.5).index('.')]
     # command = 'adb -s ' + device.id + ' shell input swipe ' + x_max + ' 100 ' + '20' + ' 100'
     command = 'adb -s ' + device.id + ' shell input keyevent 22'
-    os.popen(command)
+    os.system(command)
 
 
 def drag_screen_to_right(device):
     Saver.save_crawler_log(device.logPath, "Step : drag screen to right")
     command = 'adb -s ' + device.id + ' shell input keyevent 21'
-    os.popen(command)
+    os.system(command)
 
 
 def click_back(device):
     Saver.save_crawler_log(device.logPath, "Step : click back btn on device")
     command = 'adb -s ' + device.id + ' shell input keyevent 4'
-    os.popen(command)
+    os.system(command)
 
 
 def click_point(device, x_point, y_point):
     command = 'adb -s ' + device.id + ' shell input tap ' + x_point + ' ' + y_point
     Saver.save_crawler_log(device.logPath, 'click screen :' + x_point + ',' + y_point)
-    os.popen(command)
+    os.system(command)
 
 
 def long_click_point(device, x, y):
     command = 'adb -s' + device.id + 'shell input swipe ' + x + ' ' + y + ' ' + x + ' ' + y + ' 1000'
     Saver.save_crawler_log(device.logPath, 'long click screen :' + x + ',' + y)
-    os.popen(command)
+    os.system(command)
 
 
 def keyboard_is_shown(device):
@@ -271,7 +270,7 @@ def close_sys_alert(plan, app, device, page_now):
         info = [node.package, node.resource_id, node.text]
         if info in Setting.AuthorizationAlert:
             Saver.save_crawler_log(device.logPath, "Step : close sys alert")
-            save_screen(device, node, False)
+            device.save_screen(node, False)
             tap_node(device, node)
             page_now = get_page_info(plan, app, device)
     return page_now
@@ -293,7 +292,7 @@ def app_is_running(device, app):
 def clean_device_logcat(device):
     Saver.save_crawler_log(device.logPath, "Step : clean device logcat cache")
     command = 'adb -s ' + device.id + ' logcat -c'
-    os.popen(command)
+    os.system(command)
 
 
 def get_page_info(plan, app, device):
@@ -321,7 +320,7 @@ def get_page_info(plan, app, device):
         n = NodeInfo.Node(node)
         n.update_current_activity(info['activity'])
         if n.resource_id in app.firstClickViews:
-            save_screen(device, n, False)
+            device.save_screen(n, False)
             tap_node(device, n)
             page = get_page_info(plan, app, device)
             if page is not None:
@@ -407,7 +406,7 @@ def get_random_text(length):
 def type_text(device, edittext, text):
     tap_node(device, edittext)
     command = 'adb -s ' + device.id + ' shell input text ' + text
-    os.popen(command)
+    os.system(command)
     edittext.update_operation('type')
 
 
@@ -463,7 +462,7 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
             r = True
             break
         Saver.save_crawler_log(device.logPath, "Step : no recover way , click back")
-        save_screen_jump_out(device, page_now.package, page_now.currentActivity)
+        device.save_screen_jump_out(page_now.package, page_now.currentActivity)
         click_back(device)
         page_now = get_page_info(plan, app, device)
         t += 1
@@ -473,7 +472,7 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
     if r:
         Saver.save_crawler_log(device.logPath, "Step : recover node shown")
         for n in node.recoverWay:
-            save_screen(device, n, False)
+            device.save_screen(n, False)
             if n.crawlOperation == 'tap':
                 tap_node(device, n)
             elif n.crawlOperation == 'longclick':
@@ -513,7 +512,7 @@ def check_activity_after_operation(plan, app, device, crawl_activity):
                                             "Step : crawl app " + device.crawlStatue + ', break crawling..')
                 return None
         Saver.save_crawler_log(device.logPath, 'back to ' + crawl_activity)
-        save_screen_jump_out(device, package, activity)
+        device.save_screen_jump_out(package, activity)
         click_back(device)
         time.sleep(2)
         times += 1
@@ -558,7 +557,7 @@ def check_page_after_operation(plan, app, device):
                                             "Step : crawl app " + device.crawlStatue + ', break crawling..')
                 return None
         Saver.save_crawler_log(device.logPath, 'back to ' + app.packageName)
-        save_screen_jump_out(device, package, activity)
+        device.save_screen_jump_out(package, activity)
         click_back(device)
         times += 1
         top_activity_info = get_top_activity_info(device)
@@ -585,7 +584,7 @@ def check_page_after_operation(plan, app, device):
         loginBtn = get_node_by_id(page, app.loginViews[2])
         account = device.accountInfo[0]
         password = device.accountInfo[1]
-        save_screen(device, accountView, True)
+        device.save_screen(accountView, True)
         type_text(device, accountView, account)
         if keyboard_is_shown(device):
             click_back(device)
@@ -595,68 +594,6 @@ def check_page_after_operation(plan, app, device):
         tap_node(device, loginBtn)
         page = check_page_after_operation(plan, app, device)
     return page
-
-
-def save_screen(device, node, model):
-    if Setting.SaveScreen:
-        try:
-            Saver.save_crawler_log(device.logPath, "Step : save screenshot ")
-            get_screenshot_command = 'adb -s ' + device.id + ' shell /system/bin/screencap -p /sdcard/screenshot.png'
-            activity = node.currentActivity
-            resource_id = node.resource_id
-            resource_id = resource_id[resource_id.find('/') + 1:]
-            location = node.location
-            if model:
-                local_png = device.screenshotPath + '/' + str(device.saveScreenNum) + '-' + str(activity) + '-' + str(
-                    resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
-            else:
-                local_png = device.screenshotPath + '/' + str(device.saveScreenNum) + '-' + 'unCrawl' + '-' + str(
-                    activity) + '-' + str(
-                    resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
-            pull_screenshot_command = 'adb -s ' + device.id + ' pull /sdcard/screenshot.png ' + local_png
-            os.popen(get_screenshot_command)
-            os.popen(pull_screenshot_command)
-            device.saveScreenNum += 1
-            # command = 'adb shell screencap -p | gsed s/' + '\r' + '$//> ' + local_png
-            # os.popen(command)
-            bounds = node.bounds
-            image = pl.array(Image.open(local_png))
-            pl.figure(figsize=(float(device.screenResolution[0]) / 100, float(device.screenResolution[1]) / 100),
-                      dpi=100)
-            pl.imshow(image)
-            x = [bounds[0], bounds[0], bounds[2], bounds[2], bounds[0]]
-            y = [bounds[1], bounds[3], bounds[3], bounds[1], bounds[1]]
-            pl.axis('off')
-            pl.axis('scaled')
-            pl.axis([0, int(device.screenResolution[0]), int(device.screenResolution[1]), 0])
-            pl.plot(x[:5], y[:5], 'r', linewidth=2)
-            pl.savefig(local_png)
-            im = Image.open(local_png)
-            box = (float(device.screenResolution[0]) / 8, float(device.screenResolution[1]) / 9,
-                   float(device.screenResolution[0]) * 65 / 72, float(device.screenResolution[1]) * 8 / 9)
-            region = im.crop(box)
-            region.save(local_png)
-            pl.close()
-        except Exception, e:
-            print (str(e))
-            Saver.save_crawler_log(device.logPath, "save screen error")
-
-
-def save_screen_jump_out(device, package, activity):
-    if Setting.SaveJumpOutScreen:
-        try:
-            Saver.save_crawler_log(device.logPath, "Step : jump out . save screenshot ")
-            get_screenshot_command = 'adb -s ' + device.id + ' shell /system/bin/screencap -p /sdcard/screenshot.png'
-            local_png = device.screenshotPath + '/' + str(device.saveScreenNum) + '-' + str(package) + '-' + str(
-                activity) + '-Jump' + str(device.jump_out_time) + '.png'
-            pull_screenshot_command = 'adb -s ' + device.id + ' pull /sdcard/screenshot.png ' + local_png
-            os.popen(get_screenshot_command)
-            os.popen(pull_screenshot_command)
-            device.saveScreenNum += 1
-            device.jump_out_time += 1
-        except Exception, e:
-            print (str(e))
-            Saver.save_crawler_log(device, "save screen error")
 
 
 def no_uncrawled_clickable_nodes_now(device, page_now):
@@ -739,13 +676,13 @@ def recover_page_to_crawlable(plan, app, device, page_now):
         if page_now.backBtn is not None \
                 and node_is_shown_in_page(device, page_now.backBtn, page_now):
             Saver.save_crawler_log(device.logPath, "Step : find the back btn and tap ")
-            save_screen(device, page_now.backBtn, False)
+            device.save_screen(page_now.backBtn, False)
             tap_node(device, page_now.backBtn)
             t += 1
             page_now = get_page_info(plan, app, device)
         else:
             Saver.save_crawler_log(device.logPath, "Step : no back btn , click back")
-            save_screen_jump_out(device, page_now.package, page_now.currentActivity)
+            device.save_screen_jump_out(page_now.package, page_now.currentActivity)
             click_back(device)
             page_now = get_page_info(plan, app, device)
             t += 1
@@ -774,7 +711,7 @@ def crawl_clickable_nodes(plan, app, device, page_before_run, page_now, init):
         # sometimes the need tap node is not shown after one deep run
         if not recover_node_shown(plan, app, device, page_now, page_before_run, node):
             continue
-        save_screen(device, node, True)
+        device.save_screen(node, True)
         tap_node(device, node)
         device.update_crawled_activity(node.currentActivity)
         device.update_crawled_nodes(node.nodeInfo)
@@ -812,7 +749,7 @@ def crawl_longclickable_nodes(plan, app, device, page_before_run, page_now, init
         # sometimes the need tap node is not shown after one deep run
         if not recover_node_shown(plan, app, device, page_now, page_before_run, node):
             continue
-        save_screen(device, node, True)
+        device.save_screen(node, True)
         long_click_node(device, node)
         device.update_crawled_activity(node.currentActivity)
         device.update_crawled_nodes(node.nodeInfo)
@@ -850,7 +787,7 @@ def crawl_edittext(plan, app, device, page_before_run, page_now, init):
         # sometimes the need tap node is not shown after one deep run
         if not recover_node_shown(plan, app, device, page_now, page_before_run, node):
             continue
-        save_screen(device, node, True)
+        device.save_screen(node, True)
         text = get_random_text(8)
         type_text(device, node, text)
         device.update_crawled_activity(node.currentActivity)
@@ -904,7 +841,7 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
             # sometimes the need tap node is not shown after one deep run
             if not recover_node_shown(plan, app, device, page_now, page_need_crawl, node):
                 continue
-            save_screen(device, node, True)
+            device.save_screen(node, True)
             tap_node(device, node)
             device.update_crawled_activity(node.currentActivity)
             device.update_crawled_nodes(node.nodeInfo)
@@ -936,7 +873,7 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
             # sometimes the need tap node is not shown after one deep run
             if not recover_node_shown(plan, app, device, page_now, page_need_crawl, node):
                 continue
-            save_screen(device, node, True)
+            device.save_screen(node, True)
             long_click_node(device, node)
             device.update_crawled_activity(node.currentActivity)
             device.update_crawled_nodes(node.nodeInfo)
@@ -968,7 +905,7 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
             # sometimes the need tap node is not shown after one deep run
             if not recover_node_shown(plan, app, device, page_now, page_need_crawl, node):
                 continue
-            save_screen(device, node, True)
+            device.save_screen(node, True)
             text = get_random_text(8)
             type_text(device, node, text)
             device.update_crawled_activity(node.currentActivity)
@@ -1014,7 +951,7 @@ def run_init_cases(plan, app, device):
         command = 'adb -s ' + device.id + ' shell am instrument -w -e class ' + case + ' ' + app.testPackageName + '/'\
                   + app.testRunner
         Saver.save_crawler_log_both(plan.logPath, device.logPath, command)
-        os.popen(command)
+        os.system(command)
     Saver.save_crawler_log_both(plan.logPath, device.logPath, "Run novice guide finish ...")
 
 
