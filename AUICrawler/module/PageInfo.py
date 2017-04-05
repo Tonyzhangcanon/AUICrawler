@@ -44,20 +44,16 @@ class Page:
                 elif node.isEditText:
                     self.editTexts.append(node)
                     self.editTextsNum += 1
-                    device.update_uncrawled_nodes(node.nodeInfo)
                 else:
                     if (node.clickable == 'true' or node.checkable == 'true') and not node.isEditText:
                         self.clickableNodes.append(node)
                         self.clickableNodesNum += 1
-                        device.update_uncrawled_nodes(node.nodeInfo)
                     if node.scrollable == 'true':
                         self.scrollableNodes.append(node)
                         self.scrollableNodesNum += 1
-                        device.update_uncrawled_nodes(node.nodeInfo)
                     if node.longClickable == 'true':
                         self.longClickableNodes.append(node)
                         self.longClickableNodesNum += 1
-                        device.update_uncrawled_nodes(node.nodeInfo)
         del device, app, node
 
     def update_back_btn(self, back_btn_node):

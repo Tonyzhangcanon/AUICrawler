@@ -120,10 +120,22 @@ class Device:
             self.hasCrawledNodes.append(node_info)
         del node_info
 
-    def update_uncrawled_nodes(self, node_info):
-        if node_info not in self.unCrawledNodes:
-            self.unCrawledNodes.append(node_info)
-        del node_info
+    def update_uncrawled_nodes(self, page):
+        if page.clickableNodesNum != 0:
+            for node in page.clickableNodes:
+                if node.nodeInfo not in self.unCrawledNodes:
+                    self.unCrawledNodes.append(node.nodeInfo)
+                del node
+        if page.longClickableNodesNum != 0:
+            for node in page.longClickableNodes:
+                if node.nodeInfo not in self.unCrawledNodes:
+                    self.unCrawledNodes.append(node.nodeInfo)
+                del node
+        if page.editTextsNum != 0:
+            for node in page.editTexts:
+                if node.nodeInfo not in self.unCrawledNodes:
+                    self.unCrawledNodes.append(node.nodeInfo)
+                del node
 
     def update_crawled_activity(self, activity):
         if activity not in self.hasCrawledActivities:
