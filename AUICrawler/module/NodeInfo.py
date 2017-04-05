@@ -45,13 +45,31 @@ class Node:
                          'selected': self.selected,
                          'bounds': self.bounds}
 
-        self.isEditText = self.node_is_edittext()
+        self.isEditText = self.is_edittext()
         self.crawlOperation = ''
 
         self.recoverWay = []
 
-    def node_is_edittext(self):
+    def is_edittext(self):
         if self.className == 'android.widget.EditText':
+            return True
+        else:
+            return False
+
+    def is_scrollable(self):
+        if self.scrollable == 'true':
+            return True
+        else:
+            return False
+
+    def is_clickable(self):
+        if self.clickable == 'true':
+            return True
+        else:
+            return False
+
+    def is_longclickable(self):
+        if self.longClickable == 'true':
             return True
         else:
             return False
@@ -65,6 +83,7 @@ class Node:
         x_end = int(node_end[node_end.find('[') + 1:node_end.find(',')])
         y_end = int(node_end[node_end.find(',') + 1:node_end.find(']')])
         bounds = [x_begin, y_begin, x_end, y_end]
+        del x_begin, x_end, y_begin, y_end, node_bounds, node_end
         return bounds
 
     def get_node_location(self):
@@ -78,6 +97,7 @@ class Node:
         location.append(str(x))
         y = (int(y_begin) + int(y_end)) / 2
         location.append(str(y))
+        del node_bounds, x_begin, x_end, y_begin, y_end, x, y
         return location
 
     def update_current_activity(self, activity):

@@ -24,12 +24,34 @@ def save_crawler_log(log_path, log):
         log_str = log_tag + " : " + str(datetime.datetime.now()) + "       - " + str(log)
     print log_str
     log_file.write(log_str + '\n')
+    del log_str, log_path, log
     log_file.close()
 
 
 def save_crawler_log_both(plan_log_path, device_log_path, log):
     save_crawler_log(plan_log_path, log)
     save_crawler_log(device_log_path, log)
+
+
+def save_logcat(plan, device, finish):
+    save_crawler_log(plan.logPath, "Step : save device log : " + device.id)
+    if not os.path.exists(os.getcwd()):
+        os.makedirs(os.getcwd())
+    command = 'adb -s ' + device.id + ' logcat -d >> ' + device.logPath + '/logcat.txt'
+    os.system(command)
+    if not finish:
+        get_log_commend = 'adb -s ' + device.id + ' logcat -d'
+        log = os.popen(get_log_commend).readlines()
+        for line in log:
+            if line.find('System.err') != -1:
+                device.update_crawl_statue('HasCrashed')
+                device.failedTime += 1
+            elif line.find('ANR') != -1:
+                device.update_crawl_statue('HasANR')
+                device.failedTime += 1
+            del line
+        del get_log_commend, log
+    del plan, device, finish, command
 
 
 def save_crawl_result(plan, app):

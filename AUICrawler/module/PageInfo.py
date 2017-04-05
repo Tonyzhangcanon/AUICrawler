@@ -58,50 +58,62 @@ class Page:
                         self.longClickableNodes.append(node)
                         self.longClickableNodesNum += 1
                         device.update_uncrawled_nodes(node.nodeInfo)
+        del device, app, node
 
     def update_back_btn(self, back_btn_node):
         if back_btn_node is not None:
             self.backBtn = back_btn_node
+        del back_btn_node
 
     def remove_clickable_node(self, node):
         if node in self.clickableNodes:
             self.clickableNodes.remove(node)
             self.clickableNodesNum -= 1
+        del node
 
     def remove_scrollable_node(self, node):
         if node in self.scrollableNodes:
             self.scrollableNodes.remove(node)
             self.scrollableNodesNum -= 1
+        del node
 
     def remove_longclickable_node(self, node):
         if node in self.longClickableNodes:
             self.longClickableNodes.remove(node)
             self.longClickableNodesNum -= 1
+        del node
 
     def remove_edit_text(self, node):
         if node in self.editTexts:
             self.editTexts.remove(node)
             self.editTextsNum -= 1
+        del node
 
     def add_entry(self, node):
         self.entry.insert(0, node)
         self.entryNum += 1
+        del node
 
     def add_last_page(self, page):
         self.lastPage = page
         self.lastPageNum += 1
+        del page
 
     def has_added(self, node_info):
         for node in self.clickableNodes:
             if node.nodeInfo == node_info:
+                del node_info
                 return True
         for node in self.scrollableNodes:
             if node.nodeInfo == node_info:
+                del node_info
                 return True
         for node in self.longClickableNodes:
             if node.nodeInfo == node_info:
+                del node_info
                 return True
         for node in self.editTexts:
             if node.nodeInfo == node_info:
+                del node_info
                 return True
 

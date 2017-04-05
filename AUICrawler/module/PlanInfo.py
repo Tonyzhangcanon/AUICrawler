@@ -43,9 +43,12 @@ class Plan:
                 if Setting.Login:
                     index = device_list.index(device)
                     device.update_device_account(Setting.AccountList[index])
+                del device_id, device
+            del line
         Saver.save_crawler_log(self.logPath, device_list)
         self.deviceList = device_list
         self.deviceNum = str(len(device_list))
+        del device_list, string, outLine
 
     def update_device_list(self, id_list):
         device_list = []
@@ -54,8 +57,10 @@ class Plan:
             device_list.append(device)
             index = device_list.index(device)
             device.update_device_account(Setting.AccountList[index])
+            del device_id, device, index
         self.deviceList = device_list
         self.deviceNum = str(len(device_list))
+        del device_list
 
 
 

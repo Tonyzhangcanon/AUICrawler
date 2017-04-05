@@ -47,7 +47,7 @@ class App:
         self.backBtnViews = self.get_view_list(Setting.BackBtnViews)
         Saver.save_crawler_log(plan.logPath, 'BackBtnViews : ' + str(self.backBtnViews))
 
-        self.unCrawlViews = self.get_unCrawlViews(plan)
+        self.unCrawlViews = self.get_unCrawlViews()
         Saver.save_crawler_log(plan.logPath, 'UnCrawlViews : ' + str(self.unCrawlViews))
 
         self.loginViews = self.get_view_list(Setting.LoginViewList)
@@ -66,14 +66,16 @@ class App:
             for device_id in id_list:
                 resource_id = self.packageName + ':id/' + device_id
                 views.append(resource_id)
+                del resource_id
         return views
 
-    def get_unCrawlViews(self, plan):
+    def get_unCrawlViews(self):
         unCrawlViews = []
         for key, value in Setting.UnCrawlViews.items():
             if value == 'id':
                 resource_id = self.packageName + ':id/' + key
                 unCrawlViews.append(resource_id)
+                del resource_id
             if value == 'text':
                 unCrawlViews.append(key)
         return unCrawlViews
@@ -86,6 +88,7 @@ class App:
                 name_head = "application-label-zh-CN:'"
                 if name_head in line:
                     name = line[line.index(name_head) + len(name_head):len(line)-2]
+                    del name_head
                     return name
         except Exception, e:
             print (str(e))
@@ -101,6 +104,7 @@ class App:
                 end = "' "
                 if package_head in line:
                     package_name = line[line.index(package_head) + len(package_head):line.index(end)]
+                    del command, result, package_head, end, apk_path
                     return package_name
         except Exception, e:
             print (str(e))
@@ -115,6 +119,7 @@ class App:
             if version_code_head in line:
                 line = line[line.index(version_code_head) + len(version_code_head):]
                 version_code = line[:line.index(end)]
+                del command, result, version_code_head, line
                 return version_code
 
     def get_version_name(self):
@@ -126,6 +131,7 @@ class App:
             if version_name_head in line:
                 line = line[line.index(version_name_head) + len(version_name_head):]
                 version_name = line[:line.index(end)]
+                del command, result, line, version_name_head, end
                 return version_name
 
     def get_launcher_activity(self):
@@ -136,6 +142,7 @@ class App:
             end = "' "
             if activity_head in line:
                 activity_name = line[line.index(activity_head) + len(activity_head):line.index(end)]
+                del command, result, line, activity_head, end
                 return activity_name
 
     def get_all_activities(self):
@@ -148,4 +155,6 @@ class App:
                 activity = line[index+len(': '):len(line) - 1]
                 if activity != self.launcherActivity and activity not in activity_list:
                     activity_list.append(activity)
+                del line, index, activity
+        del command, result
         return activity_list
