@@ -251,7 +251,7 @@ def check_page_after_operation(plan, app, device):
             Saver.save_logcat(plan, device, False)
             appController.clean_device_logcat(device)
             if Setting.KeepRun:
-                appController.start_activity(device, app.packageName, app.mainActivity)
+                appController.start_activity(device, app.packageName, app.launcherActivity)
             else:
                 Saver.save_crawler_log_both(plan.logPath, device.logPath,
                                             "Step : crawl app " + device.crawlStatue + ', break crawling..')
@@ -267,7 +267,7 @@ def check_page_after_operation(plan, app, device):
         if times > 3:
             Saver.save_crawler_log(device.logPath,
                                    "can't back to " + app.packageName + " after click back 3 times , Restart app")
-            appController.start_activity(device, app.packageName, app.mainActivity)
+            appController.start_activity(device, app.packageName, app.launcherActivity)
             top_activity_info = get_top_activity_info(device)
             top_app_package = top_activity_info['packagename']
             if top_app_package == app.packageName:
