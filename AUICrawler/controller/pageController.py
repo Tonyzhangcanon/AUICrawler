@@ -128,8 +128,6 @@ def get_page_info(plan, app, device):
             device.save_screen(n, False)
             appController.tap_node(device, n)
             page = get_page_info(plan, app, device)
-            if page is not None:
-                page.add_entry(n)
         page.add_node(device, app, n)
         del node, n
     page = appController.close_sys_alert(plan, app, device, page)

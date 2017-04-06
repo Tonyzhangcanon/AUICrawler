@@ -20,7 +20,7 @@ class Page:
         self.backBtn = None
         self.currentActivity = ''
         self.package = ''
-        self.entry = []
+        self.entry = None
         self.entryNum = 0
         self.lastPage = None
         self.lastPageNum = 0
@@ -86,7 +86,7 @@ class Page:
         del node
 
     def add_entry(self, node):
-        self.entry.insert(0, node)
+        self.entry = node
         self.entryNum += 1
         del node
 

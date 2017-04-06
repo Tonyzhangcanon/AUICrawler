@@ -22,7 +22,7 @@ def find_node_by_info(app, classname, resourceid, contentdesc, page):
 
 
 def get_node_by_id(page, resource_id):
-    for node in page.nodesInfoList:
+    for node in page.nodesList:
         if node.resource_id == resource_id:
             del page, resource_id
             return node
@@ -45,27 +45,23 @@ def get_node_recover_way(device, page_now, page_before_run, node, way):
     way_this_deep = way
     result = False
     if page_before_run is not None and page_before_run.entryNum != 0:
-        for entry in page_before_run.entry:
-            Saver.save_crawler_log(device.logPath, entry.resource_id)
-            if page_now is not None and entry.nodeInfo in page_now.nodesInfoList:
-                way_this_deep.insert(0, entry)
-                node.update_recover_way(way_this_deep)
-                Saver.save_crawler_log(device.logPath, "get the node recover way success. ")
-                Saver.save_crawler_log(device.logPath, str(way_this_deep))
-                result = True
-                del device, page_now, page_before_run, node, way, way_this_deep
-                break
-            del entry
+        entry = page_before_run.entry
+        Saver.save_crawler_log(device.logPath, entry.resource_id)
+        if page_now is not None and entry.nodeInfo in page_now.nodesInfoList:
+            way_this_deep.insert(0, entry)
+            node.update_recover_way(way_this_deep)
+            Saver.save_crawler_log(device.logPath, "get the node recover way success. ")
+            Saver.save_crawler_log(device.logPath, str(way_this_deep))
+            result = True
     if not result:
         if page_before_run is not None and page_before_run.lastPageNum != 0:
-            Saver.save_crawler_log(device.logPath, "have " + str(page_before_run.lastPageNum) + ' entries')
             p = page_before_run.lastPage
-            for e in page_before_run.entry:
-                Saver.save_crawler_log(device.logPath, e.resource_id)
-                way_this_deep.insert(page_before_run.entry.index(e), e)
-                del e
+            entry = page_before_run.entry
+            Saver.save_crawler_log(device.logPath, entry.resource_id)
+            way_this_deep.insert(0, entry)
             result = get_node_recover_way(device, page_now, p, node, way_this_deep)
     if result:
+        del device, page_now, page_before_run, node, way, way_this_deep
         return True
     else:
         Saver.save_crawler_log(device.logPath, "get the node recover way false. ")
@@ -85,7 +81,7 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
         appController.click_back(device)
         page_now = pageController.get_page_info(plan, app, device)
         t += 1
-        if t > 3:
+        if t > 2:
             Saver.save_crawler_log(device.logPath, "can't find the node after back 3 times.")
             break
     if r:
