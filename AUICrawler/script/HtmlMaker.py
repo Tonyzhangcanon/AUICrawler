@@ -283,8 +283,10 @@ def mack_crawl_result_html(plan, app):
         crawlNodeNum = str(len(device.hasCrawledNodes))
         unCrawlNodeNum = str(len(device.unCrawledNodes))
         nodesCover = str(float(crawlNodeNum)/(float(unCrawlNodeNum)+float(crawlNodeNum)))
-        if len(nodesCover) == 3:
-            nodesCover = nodesCover[2:] + "0%"
+        if len(nodesCover) == 3 and nodesCover[0] == '1':
+            nodesCover = nodesCover[0] + nodesCover[2:] + "0%"
+        elif len(nodesCover) == 3:
+            nodesCover = nodesCover[2:] + '0%'
         elif len(nodesCover) == 4:
             nodesCover = nodesCover[2:]+"%"
             if nodesCover[0] == '0':
