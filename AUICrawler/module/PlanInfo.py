@@ -11,7 +11,7 @@ sys.setdefaultencoding('utf-8')
 
 
 class Plan:
-    def __init__(self):
+    def __init__(self, app):
         self.coverageLevel = Setting.CoverageLevel
         self.runCaseTime = datetime.datetime.now()
         self.logPath = self.create_this_time_folder()
@@ -31,7 +31,7 @@ class Plan:
             os.makedirs(path)
         return path
 
-    def get_device_list(self):
+    def get_device_list(self, app):
         device_list = []
         string = '	'
         outLine = os.popen('adb devices').readlines()
@@ -42,7 +42,9 @@ class Plan:
                 device_list.append(device)
                 if Setting.Login:
                     index = device_list.index(device)
-                    device.update_device_account(Setting.AccountList[index])
+                    accountList = Setting.AccountList[app.packageName]
+                    device.update_device_account(accountList[index])
+                    del index, accountList
                 del device_id, device
             del line
         Saver.save_crawler_log(self.logPath, device_list)

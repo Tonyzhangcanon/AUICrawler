@@ -26,10 +26,10 @@ class App:
         self.launcherActivity = self.get_launcher_activity()
         Saver.save_crawler_log(plan.logPath, 'LauncherActivity : ' + self.launcherActivity)
 
-        self.mainActivity = Setting.AppMainActivity
+        self.mainActivity = self.get_main_activity()
         Saver.save_crawler_log(plan.logPath, 'MainActivity : ' + self.mainActivity)
 
-        self.loginActivity = Setting.AppLoginActivity
+        self.loginActivity = self.get_login_activity()
         Saver.save_crawler_log(plan.logPath, 'LoginActivity : ' + self.mainActivity)
 
         self.testApkPath = Setting.TestApkPath
@@ -38,7 +38,7 @@ class App:
         self.testPackageName = self.get_package_name(self.testApkPath)
         Saver.save_crawler_log(plan.logPath, 'Test Apk PackageName : ' + self.testPackageName)
 
-        self.initCasesList = Setting.InitCases
+        self.initCasesList = self.get_init_cases()
         Saver.save_crawler_log(plan.logPath, 'InitCaseList : ' + str(self.initCasesList))
 
         self.firstClickViews = self.get_view_list(Setting.FirstClickViews)
@@ -60,25 +60,33 @@ class App:
 
         self.activityNum = str(len(self.activities))
 
-    def get_view_list(self, id_list):
-        views = []
-        if len(id_list) != 0:
-            for device_id in id_list:
-                resource_id = self.packageName + ':id/' + device_id
-                views.append(resource_id)
-                del resource_id
-        return views
+    def get_view_list(self, id_dict):
+        try:
+            id_list = id_dict[self.packageName]
+            views = []
+            if len(id_list) != 0:
+                for device_id in id_list:
+                    resource_id = self.packageName + ':id/' + device_id
+                    views.append(resource_id)
+                    del resource_id
+            return views
+        except:
+            return []
 
     def get_unCrawlViews(self):
-        unCrawlViews = []
-        for key, value in Setting.UnCrawlViews.items():
-            if value == 'id':
-                resource_id = self.packageName + ':id/' + key
-                unCrawlViews.append(resource_id)
-                del resource_id
-            if value == 'text':
-                unCrawlViews.append(key)
-        return unCrawlViews
+        try:
+            unCrawlViews = []
+            for key, value in Setting.UnCrawlViews[self.packageName].items():
+                if value == 'id':
+                    resource_id = self.packageName + ':id/' + key
+                    unCrawlViews.append(resource_id)
+                    del resource_id
+                if value == 'text':
+                    unCrawlViews.append(key)
+                del key, value
+            return unCrawlViews
+        except:
+            return []
 
     def get_app_name(self):
         try:
@@ -90,8 +98,10 @@ class App:
                     name = line[line.index(name_head) + len(name_head):len(line)-2]
                     del name_head
                     return name
-        except Exception, e:
-            print (str(e))
+                del line
+            del command, result
+            return ''
+        except:
             return ""
 
     @staticmethod
@@ -106,55 +116,96 @@ class App:
                     package_name = line[line.index(package_head) + len(package_head):line.index(end)]
                     del command, result, package_head, end, apk_path
                     return package_name
-        except Exception, e:
-            print (str(e))
+            del command, result, apk_path
+            return ''
+        except:
+            del apk_path
             return ""
 
     def get_version_code(self):
-        command = 'aapt dump badging ' + self.apkPath
-        result = os.popen(command).readlines()
-        for line in result:
-            version_code_head = "versionCode='"
-            end = "' "
-            if version_code_head in line:
-                line = line[line.index(version_code_head) + len(version_code_head):]
-                version_code = line[:line.index(end)]
-                del command, result, version_code_head, line
-                return version_code
+        try:
+            command = 'aapt dump badging ' + self.apkPath
+            result = os.popen(command).readlines()
+            for line in result:
+                version_code_head = "versionCode='"
+                end = "' "
+                if version_code_head in line:
+                    line = line[line.index(version_code_head) + len(version_code_head):]
+                    version_code = line[:line.index(end)]
+                    del command, result, version_code_head, line
+                    return version_code
+            del command, result
+            return ''
+        except:
+            return ''
 
     def get_version_name(self):
-        command = 'aapt dump badging ' + self.apkPath
-        result = os.popen(command).readlines()
-        for line in result:
-            version_name_head = "versionName='"
-            end = "' "
-            if version_name_head in line:
-                line = line[line.index(version_name_head) + len(version_name_head):]
-                version_name = line[:line.index(end)]
-                del command, result, line, version_name_head, end
-                return version_name
+        try:
+            command = 'aapt dump badging ' + self.apkPath
+            result = os.popen(command).readlines()
+            for line in result:
+                version_name_head = "versionName='"
+                end = "' "
+                if version_name_head in line:
+                    line = line[line.index(version_name_head) + len(version_name_head):]
+                    version_name = line[:line.index(end)]
+                    del command, result, line, version_name_head, end
+                    return version_name
+            del command, result
+            return ''
+        except:
+            return ''
 
     def get_launcher_activity(self):
-        command = 'aapt dump badging ' + self.apkPath
-        result = os.popen(command).readlines()
-        for line in result:
-            activity_head = "launchable-activity: name='"
-            end = "' "
-            if activity_head in line:
-                activity_name = line[line.index(activity_head) + len(activity_head):line.index(end)]
-                del command, result, line, activity_head, end
-                return activity_name
+        try:
+            command = 'aapt dump badging ' + self.apkPath
+            result = os.popen(command).readlines()
+            for line in result:
+                activity_head = "launchable-activity: name='"
+                end = "' "
+                if activity_head in line:
+                    activity_name = line[line.index(activity_head) + len(activity_head):line.index(end)]
+                    del command, result, line, activity_head, end
+                    return activity_name
+            del command, result
+            return ''
+        except:
+            return ''
+
+    def get_main_activity(self):
+        try:
+            main_activity = Setting.AppMainActivity[self.packageName]
+            return main_activity
+        except:
+            return ''
+
+    def get_login_activity(self):
+        try:
+            login_activity = Setting.AppLoginActivity[self.packageName]
+            return login_activity
+        except:
+            return ''
 
     def get_all_activities(self):
-        activity_list = []
-        command = 'aapt dump xmlstrings ' + self.apkPath + ' AndroidManifest.xml'
-        result = os.popen(command).readlines()
-        for line in result:
-            if 'Activity' in line:
-                index = line.index(': ')
-                activity = line[index+len(': '):len(line) - 1]
-                if activity != self.launcherActivity and activity not in activity_list:
-                    activity_list.append(activity)
-                del line, index, activity
-        del command, result
-        return activity_list
+        try:
+            activity_list = []
+            command = 'aapt dump xmlstrings ' + self.apkPath + ' AndroidManifest.xml'
+            result = os.popen(command).readlines()
+            for line in result:
+                if 'Activity' in line:
+                    index = line.index(': ')
+                    activity = line[index+len(': '):len(line) - 1]
+                    if activity != self.launcherActivity and activity not in activity_list:
+                        activity_list.append(activity)
+                    del line, index, activity
+            del command, result
+            return activity_list
+        except:
+            return []
+
+    def get_init_cases(self):
+        try:
+            init_cases = Setting.InitCases[self.packageName]
+            return init_cases
+        except :
+            return []

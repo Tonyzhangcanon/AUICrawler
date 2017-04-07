@@ -73,7 +73,7 @@ Mail_Pass : 使用的邮箱账号的登录密码
 ##### 示例场景：
 1. 指定apk快速遍历
 
-`python Crawler.py -p xxx/xxx/xxx.apk`
+`python Crawler.py -u -p xxx/xxx/xxx.apk`
 
 2. 指定单个设备、重新安装App、初始化App、执行Robotium Case、按序遍历10分钟 、不保存截图
 
@@ -97,6 +97,12 @@ Mail_Pass : 使用的邮箱账号的登录密码
 3. 支持执行Robotium Case（主要是用来再初始化App至满足想要的遍历条件，比如遍历前先登录 ／ 解决一些可能会影响遍历的操作）
 4. 启动主页面按所选模式开始遍历
 ```
+#### 执行顺序：
+![](AUICrawler/file/RunCrawler.png)
+#### 遍历逻辑：
+![](AUICrawler/file/CrawlNode.png)
+#### 还原要操作的控件显示
+![](AUICrawler/file/RecoverNode.png)
 #### 执行时可能会遇到的现象:
 ```
 1. 反复进入一个页面，但操作的控件并不同：可能是操作后页面变化，导致下一个需要操作的控件没有正确显示，需要返回再还原其显示
@@ -173,5 +179,6 @@ NodeInfo :  每个控件的获取时信息 & 遍历中相关状态&信息
 - [ ] 14. webView遍历 （现在只是对UI控件遍历，未遍历WebView内容，准备补充WebView遍历，若有知道有哪些模块可以获取WebView（除类似Appium这种框架），欢迎告知
 - [x] 15. 邮件发送测试报告
 - [x] 16. 优化截图重绘方案 （虽然没有更换方案前也差不多解决了内存疯涨的问题，但是自己写的新方法还是更省时间和内存一些）
+- [ ] 17. Crash时及时发送携带logcat附件的邮件，及时反馈问题
 
 > QQ：553410327 ，欢迎前辈指导，同学交流 

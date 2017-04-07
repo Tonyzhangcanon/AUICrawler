@@ -56,7 +56,7 @@ def save_logcat(plan, device, finish):
 
 def save_crawl_result(plan, app):
     save_crawler_log(plan.logPath, "Step : Save crawl results . ")
-    plan.resultHtml = HtmlMaker.mack_crawl_result_html(plan, app)
+    resultHtml = HtmlMaker.mack_crawl_result_html(plan, app)
     result_file = open(plan.logPath + '/Result.html', 'w')
-    result_file.write(plan.resultHtml)
+    result_file.write(resultHtml)
     result_file.close()

@@ -69,199 +69,203 @@ def mack_crawl_result_html(plan, app):
     html_head = "<!DOCTYPE html public '-//W3C//DTD HTML 4.01 Transitional//EN'>\n" + "<html>\n" + "<head>\n" + \
            "    <META http-equiv='Content-Type' content='text/html; charset=UTF-8'>\n" + \
            "    <title>Crawl Test Results</title>\n" + "</head>\n"
-    table = "<TABLE Align='center' width=1000px>\n" \
-            "    <TR>\n" \
-            "        <TD Align='center'>\n" \
-            "         <span style='font-family:微软雅黑;font-size:30px;font-weight:normal;font-style:normal;text-decoration:none;color:#2674a6;'><strong>自动遍历测试报告</strong></span>\n" \
-            "        </TD>\n" \
-            "    </TR>\n" \
-            "</table>\n" \
-            "<div>\n" \
-            "   <hr size=\"1\" width=\"90%\">\n" \
-            "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
-            "        <tr>\n" \
-            "            <td>\n" \
-            "            <h1 style = font-size:15px;>结果</h1>\n" \
-            "            </td>\n" \
-            "            <Td colspan=\"6\"></Td>\n" \
-            "        </tr>\n" \
-            "        <tr valign=\"top\">\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                设备数量\n" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                通过\n" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                异常" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                开始时间" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                结束时间" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                执行Log" \
-            "            </th>\n" \
-            "        </tr>\n" \
-            "       <tr valign=\"top\" class=\"Failure\">\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + plan.deviceNum + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\"><span style =\"color: green;\">" + str(plan.passedDevice) + "</span></td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\"><span style =\"color: red;\">" + str(plan.failedDevice) + "</span></td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.runCaseTime) + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.endTime) + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
-            "               <a href=" + plan.logPath + "/CrawlerLog.txt" + ">\n" \
-            "                   " + "CrawlerLog" + \
-            "\n               </a>\n" \
-            "            </td>\n" \
-            "        </tr>\n" \
-            "    </table>\n" \
-            "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
-            "        <tr>\n" \
-            "            <td>\n" \
-            "            <h1 style = font-size:15px;>配置</h1>\n" \
-            "            </td>\n" \
-            "            <Td colspan=\"6\"></Td>\n" \
-            "        </tr>\n" \
-            "        <tr valign=\"top\">\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                执行模式\n" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                覆盖程度\n" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                是否限时" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                重新安装" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                是否截图" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                崩溃重启" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                初始化遍历" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                执行初始化Case" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                遍历中登录" \
-            "            </th>\n" \
-            "        </tr>\n" \
-            "       <tr valign=\"top\" class=\"Failure\">\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
+    table1 = "<TABLE Align='center' width=1000px>\n" \
+             "    <TR>\n" \
+             "        <TD Align='center'>\n" \
+             "         <span style='font-family:微软雅黑;font-size:30px;font-weight:normal;font-style:normal;text-decoration:none;color:#2674a6;'><strong>自动遍历测试报告</strong></span>\n" \
+             "        </TD>\n" \
+             "    </TR>\n" \
+             "</table>\n" \
+             "<div>\n" \
+             "   <hr size=\"1\" width=\"90%\">\n" \
+             "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
+             "        <tr>\n" \
+             "            <td>\n" \
+             "            <h1 style = font-size:15px;>被测App</h1>\n" \
+             "            </td>\n" \
+             "            <Td colspan=\"6\"></Td>\n" \
+             "        </tr>\n" \
+             "        <tr valign=\"top\">\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                应用名称\n" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                版本名称\n" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                版本号" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                包名" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                Activity总数" \
+             "            </th>\n"
+
+    apkpath ="            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                安装包位置" \
+             "            </th>\n"
+
+    table2 = "        </tr>\n" \
+             "       <tr valign=\"top\" class=\"Failure\">\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.appName + "</td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.versionName + "</td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.versionCode + "</td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.packageName + "</td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.activityNum + "</td>\n"
+
+    path = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.apkPath + "</td>\n"
+
+    table3 = "        </tr>\n" \
+             "    </table>\n" \
+             "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
+             "        <tr>\n" \
+             "            <td>\n" \
+             "            <h1 style = font-size:15px;>结果统计</h1>\n" \
+             "            </td>\n" \
+             "            <Td colspan=\"6\"></Td>\n" \
+             "        </tr>\n" \
+             "        <tr valign=\"top\">\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                设备数量\n" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                通过\n" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                异常" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                开始时间" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                结束时间" \
+             "            </th>\n"
+    log = "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+          "                执行Log" \
+          "            </th>\n"
+    table4 = "        </tr>\n" \
+             "       <tr valign=\"top\" class=\"Failure\">\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + plan.deviceNum + "</td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\"><span style =\"color: green;\">" + str(plan.passedDevice) + "</span></td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\"><span style =\"color: red;\">" + str(plan.failedDevice) + "</span></td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.runCaseTime) + "</td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.endTime) + "</td>\n"
+    logfile = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
+              "               <a href=" + plan.logPath + "/CrawlerLog.txt" + ">\n" \
+              "                   " + "CrawlerLog" + \
+              "\n               </a>\n" \
+              "            </td>\n"
+    table5 = "        </tr>\n" \
+             "    </table>\n" \
+             "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
+             "        <tr>\n" \
+             "            <td>\n" \
+             "            <h1 style = font-size:15px;>执行配置</h1>\n" \
+             "            </td>\n" \
+             "            <Td colspan=\"6\"></Td>\n" \
+             "        </tr>\n" \
+             "        <tr valign=\"top\">\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                执行模式\n" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                覆盖程度\n" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                是否限时" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                重新安装" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                是否截图" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                崩溃重启" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                初始化遍历" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                执行初始化Case" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                遍历中登录" \
+             "            </th>\n" \
+             "        </tr>\n" \
+             "       <tr valign=\"top\" class=\"Failure\">\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             crawlModel + \
-            "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
+             "            </td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             str(Setting.CoverageLevel) + \
-            "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
+             "            </td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             timeModel + \
-            "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
+             "            </td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             reInstallApk + \
-            "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
+             "            </td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             saveScreen + \
-            "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
+             "            </td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             keepRun + \
-            "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
+             "            </td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             runInitNodes + \
-            "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
+             "            </td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             runInitCase + \
-            "            </td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
+             "            </td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + \
                             login + \
-            "            </td>\n" \
-            "        </tr>\n" \
-            "    </table>\n" \
-            "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
-            "        <tr>\n" \
-            "            <td>\n" \
-            "            <h1 style = font-size:15px;>被测App</h1>\n" \
-            "            </td>\n" \
-            "            <Td colspan=\"6\"></Td>\n" \
-            "        </tr>\n" \
-            "        <tr valign=\"top\">\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                应用名称\n" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                版本名称\n" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                版本号" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                包名" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                Activity总数" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                安装包位置" \
-            "            </th>\n" \
-            "        </tr>\n" \
-            "       <tr valign=\"top\" class=\"Failure\">\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.appName + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.versionName + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.versionCode + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.packageName + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.activityNum + "</td>\n" \
-            "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.apkPath + "</td>\n" \
-            "        </tr>\n" \
-            "    </table>\n" \
-            "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
-            "        <tr>\n" \
-            "            <td>\n" \
-            "            <h1 style = font-size:15px;>详细结果</h1>\n" \
-            "            </td>\n" \
-            "            <Td colspan=\"6\"></Td>\n" \
-            "        </tr>\n" \
-            "        <tr valign=\"top\">\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                设备名\n" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                设备ID\n" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                系统版本\n" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                覆盖Act数" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                Act覆盖率" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                操作控件数" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                遗漏控件数" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                控件覆盖率" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                异常退出" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                执行时长" \
-            "            </th>\n" \
-            "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
-            "                遍历结果" \
-            "            </th>\n" \
-            "        </tr>\n"
+             "            </td>\n" \
+             "        </tr>\n" \
+             "    </table>\n" \
+             "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
+             "        <tr>\n" \
+             "            <td>\n" \
+             "            <h1 style = font-size:15px;>详细结果</h1>\n" \
+             "            </td>\n" \
+             "            <Td colspan=\"6\"></Td>\n" \
+             "        </tr>\n" \
+             "        <tr valign=\"top\">\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                设备名\n" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                设备ID\n" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                系统版本\n" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                覆盖Act数" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                Act覆盖率" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                操作控件数" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                遗漏控件数" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                控件覆盖率" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                异常退出" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                执行时长" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                遍历结果" \
+             "            </th>\n" \
+             "        </tr>\n"
     device_result = ""
     for device in plan.deviceList:
         if device.name in device.model:
@@ -342,5 +346,7 @@ def mack_crawl_result_html(plan, app):
     html_end = "        </table>\n"\
                "    </div>\n" \
                "</html>\n"
-    result_html = html_head + table + device_result + html_end
+    result_html = html_head + table1 + apkpath + table2 + path + table3 + log + table4 + logfile + table5 + device_result + html_end
+    plan.resultHtml = html_head + table1 + table2 + table3 + table4 + table5 + device_result + html_end
     return result_html
+
