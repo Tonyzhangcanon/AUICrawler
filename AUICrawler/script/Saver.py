@@ -5,6 +5,7 @@ import os
 import sys
 import types
 import HtmlMaker
+import MailSender
 
 
 reload(sys)
@@ -33,7 +34,7 @@ def save_crawler_log_both(plan_log_path, device_log_path, log):
     save_crawler_log(device_log_path, log)
 
 
-def save_logcat(plan, device, finish):
+def save_logcat(plan, app, device, finish):
     save_crawler_log(plan.logPath, "Step : save device log : " + device.id)
     if not os.path.exists(os.getcwd()):
         os.makedirs(os.getcwd())
@@ -46,10 +47,14 @@ def save_logcat(plan, device, finish):
             if line.find('System.err') != -1:
                 device.update_crawl_statue('HasCrashed')
                 device.failedTime += 1
+                break
             elif line.find('ANR') != -1:
                 device.update_crawl_statue('HasANR')
                 device.failedTime += 1
+                break
             del line
+        HtmlMaker.mack_failed_result_html(plan, app)
+        MailSender.send_failed_mail(plan, app, device)
         del get_log_commend, log
     del plan, device, finish, command
 

@@ -369,7 +369,7 @@ def run_test(plan, app, device):
 
     crawl_activities(plan, app, device)
     device.endCrawlTime = datetime.datetime.now()
-    Saver.save_logcat(plan, device, True)
+    Saver.save_logcat(plan, app, device, True)
     # clean unusable files
     pageController.remove_uidump_xml_file(device)
 

@@ -198,7 +198,7 @@ def check_activity_after_operation(plan, app, device, crawl_activity):
     times = 0
     while activity != crawl_activity:
         if not appController.app_is_running(device, app):
-            Saver.save_logcat(plan, device, False)
+            Saver.save_logcat(plan, app, device, False)
             appController.clean_device_logcat(device)
             if Setting.KeepRun:
                 appController.start_activity(device, app.packageName, crawl_activity)
@@ -248,7 +248,7 @@ def check_page_after_operation(plan, app, device):
     times = 0
     while package != app.packageName:
         if not appController.app_is_running(device, app):
-            Saver.save_logcat(plan, device, False)
+            Saver.save_logcat(plan, app, device, False)
             appController.clean_device_logcat(device)
             if Setting.KeepRun:
                 appController.start_activity(device, app.packageName, app.launcherActivity)

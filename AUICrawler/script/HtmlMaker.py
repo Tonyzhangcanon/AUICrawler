@@ -350,3 +350,51 @@ def mack_crawl_result_html(plan, app):
     plan.resultHtml = html_head + table1 + table2 + table3 + table4 + table5 + device_result + html_end
     return result_html
 
+
+def mack_failed_result_html(plan, app):
+    table1 = "<TABLE Align='center' width=1000px>\n" \
+             "    <TR>\n" \
+             "        <TD Align='center'>\n" \
+             "         <span style='font-family:微软雅黑;font-size:30px;font-weight:normal;font-style:normal;text-decoration:none;color:#2674a6;'><strong>自动遍历测试报告</strong></span>\n" \
+             "        </TD>\n" \
+             "    </TR>\n" \
+             "</table>\n" \
+             "<div>\n" \
+             "   <hr size=\"1\" width=\"90%\">\n" \
+             "    <TABLE Align='center' class=\"details\"  border=0 cellpadding=5 cellspacing=2 width=85%>\n" \
+             "        <tr>\n" \
+             "            <td>\n" \
+             "            <h1 style = font-size:15px;>被测App</h1>\n" \
+             "            </td>\n" \
+             "            <Td colspan=\"6\"></Td>\n" \
+             "        </tr>\n" \
+             "        <tr valign=\"top\">\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                应用名称\n" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                版本名称\n" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                版本号" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                包名" \
+             "            </th>\n" \
+             "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+             "                Activity总数" \
+             "            </th>\n"
+    apkpath = "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
+              "                安装包位置" \
+              "            </th>\n"
+    table2 = "        </tr>\n" \
+             "       <tr valign=\"top\" class=\"Failure\">\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.appName + "</td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.versionName + "</td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.versionCode + "</td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.packageName + "</td>\n" \
+             "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.activityNum + "</td>\n"
+    path = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.apkPath + "</td>\n"
+    table3 = "        </tr>\n" \
+             "    </table>\n"
+    plan.resultHtml = table1 + apkpath + table2 + path + table3
