@@ -12,6 +12,7 @@ from script import Saver
 from script import MailSender
 
 plan = Plan()
+app = App(plan)
 
 opts, args = getopt.getopt(sys.argv[1:], "aicsjklud:t:r:p:")
 for op, value in opts:
@@ -38,7 +39,7 @@ for op, value in opts:
             device_list = value.split(',')
         else:
             device_list.append(value)
-        plan.update_device_list(device_list)
+        plan.update_device_list(app, device_list)
     elif op == '-t':
         Setting.TimeModel = 'Limit'
         Setting.LimitTime = int(value)
@@ -49,10 +50,9 @@ for op, value in opts:
     elif op == '-p':
         Setting.ApkPath = value
 
-if len(plan.deviceList) == 0:
-    plan.get_device_list()
 
-app = App(plan)
+if len(plan.deviceList) == 0:
+    plan.get_device_list(app)
 threads = []
 
 for device in plan.deviceList:

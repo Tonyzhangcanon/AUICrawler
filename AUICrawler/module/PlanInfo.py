@@ -11,7 +11,7 @@ sys.setdefaultencoding('utf-8')
 
 
 class Plan:
-    def __init__(self, app):
+    def __init__(self):
         self.coverageLevel = Setting.CoverageLevel
         self.runCaseTime = datetime.datetime.now()
         self.logPath = self.create_this_time_folder()
@@ -52,13 +52,14 @@ class Plan:
         self.deviceNum = str(len(device_list))
         del device_list, string, outLine
 
-    def update_device_list(self, id_list):
+    def update_device_list(self, app, id_list):
         device_list = []
         for device_id in id_list:
             device = Device(self, device_id)
             device_list.append(device)
             index = device_list.index(device)
-            device.update_device_account(Setting.AccountList[index])
+            accountList = Setting.AccountList[app.packageName]
+            device.update_device_account(accountList[index])
             del device_id, device, index
         self.deviceList = device_list
         self.deviceNum = str(len(device_list))
