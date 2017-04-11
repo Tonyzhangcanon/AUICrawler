@@ -52,15 +52,12 @@ class Plan:
         self.deviceNum = str(len(device_list))
         del device_list, string, outLine
 
-    def update_device_list(self, app, id_list):
+    def update_device_list(self, id_list):
         device_list = []
         for device_id in id_list:
             device = Device(self, device_id)
             device_list.append(device)
-            index = device_list.index(device)
-            accountList = Setting.AccountList[app.packageName]
-            device.update_device_account(accountList[index])
-            del device_id, device, index
+            del device_id, device
         self.deviceList = device_list
         self.deviceNum = str(len(device_list))
         del device_list
