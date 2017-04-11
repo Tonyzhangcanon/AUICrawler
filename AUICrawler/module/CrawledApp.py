@@ -207,5 +207,5 @@ class App:
         try:
             init_cases = Setting.InitCases[self.packageName]
             return init_cases
-        except :
+        except:
             return []

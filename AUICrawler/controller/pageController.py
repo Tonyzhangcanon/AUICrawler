@@ -280,7 +280,7 @@ def check_page_after_operation(plan, app, device):
         Saver.save_crawler_log(device.logPath, "close login web QQ/Weibo")
         appController.click_back(device)
     page = get_page_info(plan, app, device)
-    if page is not None and page.currentActivity == Setting.AppLoginActivity and Setting.Login:
+    if page is not None and page.currentActivity == app.loginActivity and Setting.Login:
         accountView = nodeController.get_node_by_id(page, app.loginViews[0])
         passwordView = nodeController.get_node_by_id(page, app.loginViews[1])
         loginBtn = nodeController.get_node_by_id(page, app.loginViews[2])
