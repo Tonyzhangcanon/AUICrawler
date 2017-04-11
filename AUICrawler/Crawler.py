@@ -13,7 +13,6 @@ from script import MailSender
 
 plan = Plan()
 
-
 opts, args = getopt.getopt(sys.argv[1:], "aicsjklud:t:r:p:")
 for op, value in opts:
     if op == "-a":
