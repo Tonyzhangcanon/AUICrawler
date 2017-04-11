@@ -60,6 +60,7 @@ else:
         accountList = Setting.AccountList[app.packageName]
         device.update_device_account(accountList[index])
         del device, index, accountList
+
 threads = []
 
 for device in plan.deviceList:
