@@ -1,5 +1,7 @@
 ## AUICrawler
 > 针对Android App 的UI遍历自动化方案 
+### 快速安装
+* npm install auicrawler
 ### 遍历方案:
 #### 时间模式:
 * Limit ：限定遍历时长，不包括初始化应用 & 结果统计，超过规定时长后结束
