@@ -30,7 +30,7 @@ class App:
         Saver.save_crawler_log(plan.logPath, 'MainActivity : ' + self.mainActivity)
 
         self.loginActivity = self.get_login_activity()
-        Saver.save_crawler_log(plan.logPath, 'LoginActivity : ' + self.mainActivity)
+        Saver.save_crawler_log(plan.logPath, 'LoginActivity : ' + self.loginActivity)
 
         self.testApkPath = Setting.TestApkPath
         Saver.save_crawler_log(plan.logPath, 'Test Apk Path : ' + self.testApkPath)
