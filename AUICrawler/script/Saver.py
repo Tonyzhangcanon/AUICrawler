@@ -47,11 +47,9 @@ def save_logcat(plan, app, device, finish):
             if line.find('System.err') != -1:
                 device.update_crawl_statue('HasCrashed')
                 device.failedTime += 1
-                break
             elif line.find('ANR') != -1:
                 device.update_crawl_statue('HasANR')
                 device.failedTime += 1
-                break
             del line
         HtmlMaker.mack_failed_result_html(plan, app)
         MailSender.send_failed_mail(plan, app, device)

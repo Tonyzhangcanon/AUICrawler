@@ -201,6 +201,7 @@ def check_activity_after_operation(plan, app, device, crawl_activity):
             Saver.save_logcat(plan, app, device, False)
             appController.clean_device_logcat(device)
             if Setting.KeepRun:
+                appController.kill_app(app)
                 appController.start_activity(device, app.packageName, crawl_activity)
             else:
                 Saver.save_crawler_log_both(plan.logPath, device.logPath,
