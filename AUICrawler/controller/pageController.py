@@ -125,22 +125,26 @@ def get_page_info(plan, app, device):
             time += 1
             print (str(e))
             result = False
-    root = dom.documentElement
-    nodes = root.getElementsByTagName('node')
-    Saver.save_crawler_log(device.logPath, len(nodes))
-    info = get_top_activity_info(device)
-    for node in nodes:
-        n = NodeInfo.Node(node)
-        n.update_current_activity(info['activity'])
-        if n.resource_id in app.firstClickViews:
-            device.save_screen(n, False)
-            appController.tap_node(device, n)
-            page = get_page_info(plan, app, device)
-        page.add_node(device, app, n)
-        del node, n
-    page = appController.close_sys_alert(plan, app, device, page)
-    del result, dom, root, nodes, info, plan, app, device
-    return page
+    try:
+        root = dom.documentElement
+        nodes = root.getElementsByTagName('node')
+        Saver.save_crawler_log(device.logPath, len(nodes))
+        info = get_top_activity_info(device)
+        for node in nodes:
+            n = NodeInfo.Node(node)
+            n.update_current_activity(info['activity'])
+            if n.resource_id in app.firstClickViews:
+                device.save_screen(n, False)
+                appController.tap_node(device, n)
+                page = get_page_info(plan, app, device)
+            page.add_node(device, app, n)
+            del node, n
+        page = appController.close_sys_alert(plan, app, device, page)
+        del result, dom, root, nodes, info, plan, app, device
+        return page
+    except Exception, e:
+        print (str(e))
+        return None
 
 
 # compare two pages before & after click .
