@@ -5,7 +5,6 @@ import os
 import sys
 import types
 import HtmlMaker
-import MailSender
 
 
 reload(sys)
@@ -34,27 +33,34 @@ def save_crawler_log_both(plan_log_path, device_log_path, log):
     save_crawler_log(device_log_path, log)
 
 
-def save_logcat(plan, app, device, finish):
+def save_logcat(plan, device):
     save_crawler_log(plan.logPath, "Step : save device log : " + device.id)
     if not os.path.exists(os.getcwd()):
         os.makedirs(os.getcwd())
     command = 'adb -s ' + device.id + ' logcat -d >> ' + device.logPath + '/logcat.txt'
     os.system(command)
-    if not finish:
-        get_log_commend = 'adb -s ' + device.id + ' logcat -d'
-        log = os.popen(get_log_commend).readlines()
-        for line in log:
-            if line.find('System.err') != -1:
-                device.update_crawl_statue('HasCrashed')
-                device.failedTime += 1
-            elif line.find('ANR') != -1:
-                device.update_crawl_statue('HasANR')
-                device.failedTime += 1
-            del line
-        HtmlMaker.mack_failed_result_html(plan, app)
-        MailSender.send_failed_mail(plan, app, device)
-        del get_log_commend, log
-    del plan, device, finish, command
+    del plan, device, command
+
+
+def save_error_logcat(plan,device):
+    save_crawler_log(plan.logPath, "Step : save device log : " + device.id)
+    if not os.path.exists(os.getcwd()):
+        os.makedirs(os.getcwd())
+    device.failedTime += 1
+    command1 = 'adb -s ' + device.id + ' logcat -d >> ' + device.logPath + '/errorLog' + str(device.failedTime) + '.txt'
+    command2 = 'adb -s ' + device.id + ' logcat -d >> ' + device.logPath + '/logcat.txt'
+    os.system(command1)
+    os.system(command2)
+    get_log_commend = 'adb -s ' + device.id + ' logcat -d'
+    log = os.popen(get_log_commend).readlines()
+    for line in log:
+        if line.find('System.err') != -1:
+            device.update_crawl_statue('HasCrashed')
+        elif line.find('ANR') != -1:
+            device.update_crawl_statue('HasANR')
+        del line
+    del get_log_commend, log
+    del plan, device, command1, command2
 
 
 def save_crawl_result(plan, app):

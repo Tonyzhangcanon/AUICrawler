@@ -351,7 +351,7 @@ def mack_crawl_result_html(plan, app):
     return result_html
 
 
-def mack_failed_result_html(plan, app):
+def make_failed_result_html(plan, app):
     table1 = "<TABLE Align='center' width=1000px>\n" \
              "    <TR>\n" \
              "        <TD Align='center'>\n" \

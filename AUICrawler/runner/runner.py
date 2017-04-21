@@ -34,7 +34,7 @@ def crawl_clickable_nodes(plan, app, device, page_before_run, page_now, init):
         device.update_crawled_nodes(node.nodeInfo)
         device.delete_uncrawled_nodes(node.nodeInfo)
         # if jump out the test app, try to go back & return the final page
-        page_after_operation = pageController.check_page_after_operation(plan, app, device)
+        page_after_operation = pageController.check_page_after_operation(plan, app, device, page_before_run, node)
         if page_after_operation is None:
             Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
             page_now = page_after_operation
@@ -73,7 +73,7 @@ def crawl_longclickable_nodes(plan, app, device, page_before_run, page_now, init
         device.update_crawled_nodes(node.nodeInfo)
         device.delete_uncrawled_nodes(node.nodeInfo)
         # if jump out the test app, try to go back & return the final page
-        page_after_operation = pageController.check_page_after_operation(plan, app, device)
+        page_after_operation = pageController.check_page_after_operation(plan, app, device, page_before_run, node)
         if page_after_operation is None:
             Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
             page_now = page_after_operation
@@ -114,7 +114,7 @@ def crawl_edittext(plan, app, device, page_before_run, page_now, init):
         device.update_crawled_nodes(node.nodeInfo)
         device.delete_uncrawled_nodes(node.nodeInfo)
         # if jump out the test app, try to go back & return the final page
-        page_after_operation = pageController.check_page_after_operation(plan, app, device)
+        page_after_operation = pageController.check_page_after_operation(plan, app, device, page_before_run, node)
         if page_after_operation is None:
             Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
             page_now = page_after_operation
@@ -174,7 +174,7 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
             device.update_crawled_nodes(node.nodeInfo)
             device.delete_uncrawled_nodes(node.nodeInfo)
             # if jump out the test app, try to go back & return the final page
-            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity)
+            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity, page_need_crawl, node)
             if page_after_operation is None:
                 Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
                 page_now = page_after_operation
@@ -209,7 +209,7 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
             device.update_crawled_nodes(node.nodeInfo)
             device.delete_uncrawled_nodes(node.nodeInfo)
             # if jump out the test app, try to go back & return the final page
-            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity)
+            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity, page_need_crawl, node)
             if page_after_operation is None:
                 Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
                 page_now = page_after_operation
@@ -245,7 +245,7 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
             device.update_crawled_nodes(node.nodeInfo)
             device.delete_uncrawled_nodes(node.nodeInfo)
             # if jump out the test app, try to go back & return the final page
-            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity)
+            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity, page_need_crawl, node)
             if page_after_operation is None:
                 Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
                 page_now = page_after_operation
@@ -369,7 +369,7 @@ def run_test(plan, app, device):
 
     crawl_activities(plan, app, device)
     device.endCrawlTime = datetime.datetime.now()
-    Saver.save_logcat(plan, app, device, True)
+    Saver.save_logcat(plan, device)
     # clean unusable files
     pageController.remove_uidump_xml_file(device)
 

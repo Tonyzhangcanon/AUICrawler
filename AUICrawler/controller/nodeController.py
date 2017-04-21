@@ -95,7 +95,7 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
             elif n.crawlOperation == 'type':
                 t = appController.get_random_text(8)
                 appController.type_text(device, n, t)
-            pageController.check_page_after_operation(plan, app, device)
+            pageController.check_page_after_operation(plan, app, device, page_before_run, node)
             del n
     if t < 4:
         r = True

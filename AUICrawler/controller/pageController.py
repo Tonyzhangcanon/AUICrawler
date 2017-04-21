@@ -4,6 +4,8 @@ import os
 import datetime
 import time
 from script import Saver
+from script import HtmlMaker
+from script import MailSender
 from module import PageInfo
 from module import NodeInfo
 from config import Setting
@@ -109,12 +111,18 @@ def get_page_info(plan, app, device):
     Saver.save_crawler_log(device.logPath, "get all nodes in this page")
     page = PageInfo.Page()
     result = False
+    time = 0
     while not result:
         try:
+            if time > 2:
+                appController.click_back(device)
+                get_uidump_xml_file(device)
+                break
             get_uidump_xml_file(device)
             dom = xml.dom.minidom.parse(device.logPath + '/Uidump.xml')
             result = True
         except Exception, e:
+            time += 1
             print (str(e))
             result = False
     root = dom.documentElement
@@ -179,7 +187,7 @@ def page_is_crawlable(app, device, page):
         return False
 
 
-def check_activity_after_operation(plan, app, device, crawl_activity):
+def check_activity_after_operation(plan, app, device, crawl_activity, page_before_run, node):
     Saver.save_crawler_log(device.logPath, "Step : Check page after operation")
     # if app crashed after crawl , save log & start app ,comtinue
     if Setting.TimeModel == 'Limit':
@@ -198,9 +206,11 @@ def check_activity_after_operation(plan, app, device, crawl_activity):
     times = 0
     while activity != crawl_activity:
         if not appController.app_is_running(device, app):
-            Saver.save_logcat(plan, app, device, False)
+            Saver.save_error_logcat(plan, device)
             appController.clean_device_logcat(device)
-            if Setting.KeepRun:
+            HtmlMaker.make_failed_result_html(plan, app)
+            MailSender.send_failed_mail_first(plan, app, device)
+            if not re_crawl_mack_error_node(plan, app, device, page_before_run, node, crawl_activity) and Setting.KeepRun:
                 appController.kill_app(app)
                 appController.start_activity(device, app.packageName, crawl_activity)
             else:
@@ -228,8 +238,31 @@ def check_activity_after_operation(plan, app, device, crawl_activity):
     return get_page_info(plan, app, device)
 
 
+def re_crawl_mack_error_node(plan, app, device, page_before_run, node, activity):
+    appController.start_activity(device, app.packageName, activity)
+    page_now = get_page_info(plan, app, device)
+    if nodeController.recover_node_shown(plan, app, device, page_now, page_before_run, node):
+        device.save_make_error_node_screen(node)
+        if node.crawlOperation == 'tap':
+            appController.tap_node(device, node)
+        elif node.crawlOperation == 'longclick':
+            appController.long_click_node(device, node)
+        elif node.crawlOperation == 'type':
+            t = appController.get_random_text(8)
+            appController.type_text(device, node, t)
+        if not appController.app_is_running(device, app):
+            Saver.save_error_logcat(plan, device)
+            HtmlMaker.make_failed_result_html(plan, app)
+            MailSender.send_failed_mail_necessary(plan, app, device, node)
+            return False
+        else:
+            HtmlMaker.make_failed_result_html(plan, app)
+            MailSender.send_failed_mail_un_necessary(plan, app, device)
+    return True
+
+
 # if jump out the test app, try to go back & return the final page
-def check_page_after_operation(plan, app, device):
+def check_page_after_operation(plan, app, device, page_before_run, node):
     Saver.save_crawler_log(device.logPath, "Step : Check page after operation")
     # if app crashed after crawl , save log & start app ,comtinue
     if Setting.TimeModel == 'Limit':
@@ -249,9 +282,12 @@ def check_page_after_operation(plan, app, device):
     times = 0
     while package != app.packageName:
         if not appController.app_is_running(device, app):
-            Saver.save_logcat(plan, app, device, False)
+            Saver.save_error_logcat(plan, device)
             appController.clean_device_logcat(device)
-            if Setting.KeepRun:
+            HtmlMaker.make_failed_result_html(plan, app)
+            MailSender.send_failed_mail_first(plan, app, device)
+            if not re_crawl_mack_error_node(plan, app, device, page_before_run, node, app.launcherActivity) and Setting.KeepRun:
+                appController.kill_app(app)
                 appController.start_activity(device, app.packageName, app.launcherActivity)
             else:
                 Saver.save_crawler_log_both(plan.logPath, device.logPath,
@@ -295,7 +331,7 @@ def check_page_after_operation(plan, app, device):
         if appController.keyboard_is_shown(device):
             appController.click_back(device)
         appController.tap_node(device, loginBtn)
-        page = check_page_after_operation(plan, app, device)
+        page = check_page_after_operation(plan, app, device, page_before_run, node)
         del accountView, passwordView, loginBtn, account, password, plan, app, device
     return page
 

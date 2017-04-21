@@ -224,6 +224,38 @@ class Device:
                 print (str(e))
                 Saver.save_crawler_log(self, "save screen error")
 
+    def save_make_error_node_screen(self, node):
+        try:
+            Saver.save_crawler_log(self.logPath, "Step : save screenshot ")
+            get_screenshot_command = 'adb -s ' + self.id + ' shell /system/bin/screencap -p /sdcard/screenshot.png'
+            activity = node.currentActivity
+            resource_id = node.resource_id
+            resource_id = resource_id[resource_id.find('/') + 1:]
+            location = node.location
+            local_png = self.screenshotPath + '/' + str(self.saveScreenNum) + '-' + str(
+                    activity) + '-' + str(
+                    resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
+            pull_screenshot_command = 'adb -s ' + self.id + ' pull /sdcard/screenshot.png ' + local_png
+            os.system(get_screenshot_command)
+            os.system(pull_screenshot_command)
+            self.saveScreenNum += 1
+            i = Image.open(local_png)
+            for w in range(3):
+                bounds = node.bounds
+                for x in range(bounds[0] + w, bounds[2] - w):
+                    i.putpixel((x, bounds[1] + 1 + w), (255, 0, 0))
+                    i.putpixel((x, bounds[3] - 1 - w), (255, 0, 0))
+                for y in range(bounds[1] + w, bounds[3] - w):
+                    i.putpixel((bounds[0] + 1 + w, y), (255, 0, 0))
+                    i.putpixel((bounds[2] - 1 - w, y), (255, 0, 0))
+            i.save(local_png)
+            del get_screenshot_command, activity, resource_id, location, pull_screenshot_command, local_png, i
+            del node, bounds
+            gc.collect()
+        except Exception, e:
+            print (str(e))
+            Saver.save_crawler_log(self.logPath, "save screen error")
+
 
 
 
