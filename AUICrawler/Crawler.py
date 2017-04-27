@@ -47,7 +47,13 @@ for op, value in opts:
         if Setting.CrawlModel == 'Normal':
             Setting.CrawlModel = 'Random'
     elif op == '-p':
-        Setting.ApkPath = value
+        if ',' in value:
+            apk_list = []
+            apk_list = value.split(',')
+            Setting.ApkPath = apk_list[0]
+            Setting.TestApkPath = apk_list[1]
+        else:
+            Setting.ApkPath = value
 
 app = App(plan)
 

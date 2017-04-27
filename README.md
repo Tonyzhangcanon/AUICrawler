@@ -60,7 +60,7 @@ Mail_Pass : 使用的邮箱账号的登录密码
 ##### 参数：
 ```
 -d xxxx     : 指定单设备/ 多设备列表 device1id,device2id,device3id...
--p xxx/xxx.apk : 指定被测应用的Apk目录
+-p x/x.apk,x/xtest.apk : 指定被测应用的Apk & 被测Apk的测试Apk。 可以只传入 xxx/xxx.apk作为被测apk,不传入"，xxx/xxxtest.apk"
 -t 30       : 开启限时模式 & 调整遍历限时时间 ，单位分钟
 -r 0.8      : 开启随机遍历 & 设置覆盖程度
 -a          : Activity遍历模式
