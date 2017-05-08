@@ -328,14 +328,18 @@ def check_page_after_operation(plan, app, device, page_before_run, node):
         account = device.accountInfo[0]
         password = device.accountInfo[1]
         device.save_screen(accountView, True)
-        appController.type_text(device, accountView, account)
-        if appController.keyboard_is_shown(device):
+        if accountView in page.editTexts and passwordView in page.editTexts and loginBtn in page.clickableNodes:
+            Saver.save_crawler_log(device.logPath, "Login begin .")
+            appController.type_text(device, accountView, account)
+            if appController.keyboard_is_shown(device):
+                appController.click_back(device)
+            appController.type_text(device, passwordView, password)
+            if appController.keyboard_is_shown(device):
+                appController.click_back(device)
+            appController.tap_node(device, loginBtn)
+            page = check_page_after_operation(plan, app, device, page_before_run, node)
+        else:
             appController.click_back(device)
-        appController.type_text(device, passwordView, password)
-        if appController.keyboard_is_shown(device):
-            appController.click_back(device)
-        appController.tap_node(device, loginBtn)
-        page = check_page_after_operation(plan, app, device, page_before_run, node)
         del accountView, passwordView, loginBtn, account, password, plan, app, device
     return page
 
