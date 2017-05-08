@@ -58,6 +58,8 @@ def save_error_logcat(plan,device):
             device.update_crawl_statue('HasCrashed')
         elif line.find('ANR') != -1:
             device.update_crawl_statue('HasANR')
+        else:
+            device.update_crawl_statue('UnknownException')
         del line
     del get_log_commend, log
     del plan, device, command1, command2

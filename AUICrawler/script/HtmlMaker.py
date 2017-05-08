@@ -347,7 +347,7 @@ def mack_crawl_result_html(plan, app):
                "    </div>\n" \
                "</html>\n"
     result_html = html_head + table1 + apkpath + table2 + path + table3 + log + table4 + logfile + table5 + device_result + html_end
-    plan.resultHtml = html_head + table1 + table2 + table3 + table4 + table5 + device_result + html_end
+    plan.resultHtml = result_html
     return result_html
 
 
