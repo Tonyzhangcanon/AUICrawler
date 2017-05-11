@@ -44,8 +44,6 @@ def save_logcat(plan, device):
 
 def save_error_logcat(plan,device):
     save_crawler_log(plan.logPath, "Step : save device log : " + device.id)
-    if not os.path.exists(os.getcwd()):
-        os.makedirs(os.getcwd())
     device.failedTime += 1
     command1 = 'adb -s ' + device.id + ' logcat -d >> ' + device.logPath + '/errorLog' + str(device.failedTime) + '.txt'
     command2 = 'adb -s ' + device.id + ' logcat -d >> ' + device.logPath + '/logcat.txt'
