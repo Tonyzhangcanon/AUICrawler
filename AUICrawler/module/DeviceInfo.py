@@ -87,9 +87,10 @@ class Device:
                 key = 'ro.product.model='
                 if key in line:
                     device_name = line[line.find(key) + len(key):-2]
+                    del key
                     break
             Saver.save_crawler_log(self.logPath, "device name : " + device_name)
-        del command, result, key
+        del command, result
         return device_name
 
     def get_device_model(self):
