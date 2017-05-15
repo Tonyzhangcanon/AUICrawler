@@ -52,12 +52,16 @@ def save_error_logcat(plan,device):
     get_log_commend = 'adb -s ' + device.id + ' logcat -d'
     log = os.popen(get_log_commend).readlines()
     for line in log:
-        if line.find('System.err') != -1:
+        if line.find('NullPointerException') != -1:
+            device.update_crawl_statue('NullPointExc')
+        if line.find('shortMsg') != -1:
             device.update_crawl_statue('HasCrashed')
-        elif line.find('ANR') != -1:
+        elif line.find('ANR ') != -1:
             device.update_crawl_statue('HasANR')
+        elif line.find('Fatal') != -1:
+            device.update_crawl_status('ForceClosed')
         else:
-            device.update_crawl_statue('UnknownException')
+            device.update_crawl_statue('UnknownExc')
         del line
     del get_log_commend, log
     del plan, device, command1, command2

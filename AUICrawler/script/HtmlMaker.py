@@ -308,14 +308,6 @@ def mack_crawl_result_html(plan, app):
             result = "                   <span style ='color: green;'>\n" \
                      "                   " + "Passed" + \
                      "\n                   </span>\n"
-        elif device.crawlStatue == 'HasCrashed':
-            result = "                   <span style ='color: red;'>\n" \
-                     "                   " + "HasCrashed" + \
-                     "\n                   </span>\n"
-        elif device.crawlStatue == 'HasANR':
-            result = "                   <span style ='color: red;'>\n" \
-                     "                   " + "HasANR" + \
-                     "\n                   </span>\n"
         else:
             result = "                   <span style ='color: red;'>\n" \
                      "                   " + device.crawlStatue + \
