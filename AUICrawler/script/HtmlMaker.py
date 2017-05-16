@@ -117,9 +117,14 @@ def mack_crawl_result_html(plan, app):
     if len(Setting.JenkinsHost) != 0:
         index = app.apkPath.index('jobs/')
         apkpath_url = Setting.JenkinsHost + '/job/' + app.apkPath[index+5:]
+        apkpath_url.replace('workspace', 'ws')
     else:
         apkpath_url = app.apkPath
-    path = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + apkpath_url + "</td>\n"
+    path = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" + \
+           "               <a href=" + apkpath_url + ">\n" \
+           "                   APK\n" + \
+           "               </a>\n" \
+           "</td>\n"
 
     table3 = "        </tr>\n" \
              "    </table>\n" \
@@ -159,6 +164,7 @@ def mack_crawl_result_html(plan, app):
     if len(Setting.JenkinsHost) != 0:
         index = plan.logPath.index('jobs')
         logPath_url = Setting.JenkinsHost + '/job/' + plan.logPath[index+5:]
+        logPath_url.replace('workspace', 'ws')
     else:
         logPath_url = plan.logPath
     logfile = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
@@ -325,6 +331,7 @@ def mack_crawl_result_html(plan, app):
         if len(Setting.JenkinsHost) != 0:
             index = device.logPath.index('jobs/')
             log_url = Setting.JenkinsHost + '/job/' + device.logPath[index+5:]
+            log_url.replace('workspace', 'ws')
         else:
             log_url = device.logPath
         result_body = "       <tr valign=\"top\" class=\"Failure\">\n" \
