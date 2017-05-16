@@ -114,7 +114,12 @@ def mack_crawl_result_html(plan, app):
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.packageName + "</td>\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.activityNum + "</td>\n"
 
-    path = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.apkPath + "</td>\n"
+    if len(Setting.JenkinsHome) != 0:
+        index = app.apkPath.index('jobs/')
+        apkpath_url = Setting.JenkinsHome + '/job/' + app.apkPath[index+5:]
+    else:
+        apkpath_url = app.apkPath
+    path = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + apkpath_url + "</td>\n"
 
     table3 = "        </tr>\n" \
              "    </table>\n" \
@@ -151,8 +156,13 @@ def mack_crawl_result_html(plan, app):
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\"><span style =\"color: red;\">" + str(plan.failedDevice) + "</span></td>\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.runCaseTime) + "</td>\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.endTime) + "</td>\n"
+    if len(Setting.JenkinsHome) != 0:
+        index = plan.logPath.index('jobs')
+        logPath_url = Setting.JenkinsHome + '/job/' + plan.logPath[index+5:]
+    else:
+        logPath_url = plan.logPath
     logfile = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
-              "               <a href=" + plan.logPath + "/CrawlerLog.txt" + ">\n" \
+              "               <a href=" + logPath_url + "/CrawlerLog.txt" + ">\n" \
               "                   " + "CrawlerLog" + \
               "\n               </a>\n" \
               "            </td>\n"
@@ -312,10 +322,15 @@ def mack_crawl_result_html(plan, app):
             result = "                   <span style ='color: red;'>\n" \
                      "                   " + device.crawlStatue + \
                      "\n                   </span>\n"
+        if len(Setting.JenkinsHome) != 0:
+            index = device.logPath.index('jobs/')
+            log_url = Setting.JenkinsHome + '/job/' + device.logPath[index+5:]
+        else:
+            log_url = device.logPath
         result_body = "       <tr valign=\"top\" class=\"Failure\">\n" \
                       "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + name + "</td>\n" \
                       "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
-                      "                 <a href = " + device.logPath + "/" + " >\n" + \
+                      "                 <a href = " + log_url + "/" + " >\n" + \
                       "                      " + device.id + \
                       "\n                 </a>\n" \
                       "</td>\n" \
@@ -326,13 +341,13 @@ def mack_crawl_result_html(plan, app):
                       "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + unCrawlNodeNum + "</td>\n" \
                       "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + nodesCover + "</td>\n" \
                       "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
-                      "                 <a href = " + device.logPath + "/logcat.txt" + " >\n" + \
+                      "                 <a href = " + log_url + "/logcat.txt" + " >\n" + \
                       "                      " + failedNum + \
                       "\n                 </a>\n" \
                       "            </td>\n" \
                       "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + crawlTime + " 秒</td>\n" \
                       "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
-                      "               <a href=" + device.logPath + "/CrawlerLog.txt" + ">\n" + \
+                      "               <a href=" + log_url + "/CrawlerLog.txt" + ">\n" + \
                                         result + \
                       "               </a>\n" \
                       "            </td>\n" \
