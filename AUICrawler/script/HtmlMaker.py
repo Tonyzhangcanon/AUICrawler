@@ -114,9 +114,9 @@ def mack_crawl_result_html(plan, app):
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.packageName + "</td>\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.activityNum + "</td>\n"
 
-    if len(Setting.JenkinsHome) != 0:
+    if len(Setting.JenkinsHost) != 0:
         index = app.apkPath.index('jobs/')
-        apkpath_url = Setting.JenkinsHome + '/job/' + app.apkPath[index+5:]
+        apkpath_url = Setting.JenkinsHost + '/job/' + app.apkPath[index+5:]
     else:
         apkpath_url = app.apkPath
     path = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + apkpath_url + "</td>\n"
@@ -156,9 +156,9 @@ def mack_crawl_result_html(plan, app):
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\"><span style =\"color: red;\">" + str(plan.failedDevice) + "</span></td>\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.runCaseTime) + "</td>\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.endTime) + "</td>\n"
-    if len(Setting.JenkinsHome) != 0:
+    if len(Setting.JenkinsHost) != 0:
         index = plan.logPath.index('jobs')
-        logPath_url = Setting.JenkinsHome + '/job/' + plan.logPath[index+5:]
+        logPath_url = Setting.JenkinsHost + '/job/' + plan.logPath[index+5:]
     else:
         logPath_url = plan.logPath
     logfile = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">\n" \
@@ -322,9 +322,9 @@ def mack_crawl_result_html(plan, app):
             result = "                   <span style ='color: red;'>\n" \
                      "                   " + device.crawlStatue + \
                      "\n                   </span>\n"
-        if len(Setting.JenkinsHome) != 0:
+        if len(Setting.JenkinsHost) != 0:
             index = device.logPath.index('jobs/')
-            log_url = Setting.JenkinsHome + '/job/' + device.logPath[index+5:]
+            log_url = Setting.JenkinsHost + '/job/' + device.logPath[index+5:]
         else:
             log_url = device.logPath
         result_body = "       <tr valign=\"top\" class=\"Failure\">\n" \
