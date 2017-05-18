@@ -51,20 +51,28 @@ def save_error_logcat(plan,device):
     os.system(command2)
     get_log_commend = 'adb -s ' + device.id + ' logcat -d'
     log = os.popen(get_log_commend).readlines()
+    update_statue_finish = False
     for line in log:
         if line.find('NullPointerException') != -1:
             device.update_crawl_statue('NullPointExc')
+            update_statue_finish = True
+            break
         if line.find('shortMsg') != -1:
             device.update_crawl_statue('HasCrashed')
+            update_statue_finish = True
+            break
         elif line.find('ANR ') != -1:
             device.update_crawl_statue('HasANR')
+            update_statue_finish = True
+            break
         elif line.find('Fatal') != -1:
             device.update_crawl_status('ForceClosed')
-        else:
-            device.update_crawl_statue('UnknownExc')
+            update_statue_finish = True
+            break
         del line
-    del get_log_commend, log
-    del plan, device, command1, command2
+    if not update_statue_finish:
+        device.update_crawl_statue('UnknownExc')
+    del get_log_commend, log, plan, device, command1, command2, update_statue_finish
 
 
 def save_crawl_result(plan, app):
