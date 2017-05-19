@@ -88,11 +88,12 @@ def send_failed_mail_necessary(plan, app, device, node):
     screen = device.screenshotPath + '/' + str(device.saveScreenNum-1) + '-' + str(
                     node.currentActivity) + '-' + str(
                     resource_id) + '-' + str(node.location[0]) + '-' + str(node.location[1]) + '.png'
-    fp = open(screen, 'rb')
-    msgImage = MIMEImage(fp.read())
-    fp.close()
-    msgImage.add_header('Content-Disposition', 'attachment', filename=os.path.basename("screenShot"))
-    msg.attach(msgImage)
+    if os.path.exists(screen):
+        fp = open(screen, 'rb')
+        msgImage = MIMEImage(fp.read())
+        fp.close()
+        msgImage.add_header('Content-Disposition', 'attachment', filename=os.path.basename("screenShot"))
+        main_msg.attach(msgImage)
     data = open(file_name, 'rb')
     ctype, encoding = mimetypes.guess_type(file_name)
     if ctype is None or encoding is not None:
