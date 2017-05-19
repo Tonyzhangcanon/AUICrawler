@@ -404,6 +404,12 @@ def make_failed_result_html(plan, app):
     apkpath = "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
               "                安装包位置" \
               "            </th>\n"
+    if len(Setting.JenkinsHost) != 0:
+        index = app.apkPath.index('jobs/')
+        apkpath_url = Setting.JenkinsHost + '/job/' + app.apkPath[index+5:]
+        apkpath_url = apkpath_url.replace('workspace', 'ws')
+    else:
+        apkpath_url = app.apkPath
     table2 = "        </tr>\n" \
              "       <tr valign=\"top\" class=\"Failure\">\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.appName + "</td>\n" \
@@ -411,7 +417,7 @@ def make_failed_result_html(plan, app):
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.versionCode + "</td>\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.packageName + "</td>\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.activityNum + "</td>\n"
-    path = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.apkPath + "</td>\n"
+    path = "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + apkpath_url + "</td>\n"
     table3 = "        </tr>\n" \
              "    </table>\n"
     plan.resultHtml = table1 + apkpath + table2 + path + table3
