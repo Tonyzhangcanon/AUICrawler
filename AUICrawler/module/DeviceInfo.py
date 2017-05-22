@@ -53,7 +53,7 @@ class Device:
             index4 = check_keyguard_statue.find(str4)
             check_lock_statue = check_lock_statue[index1 + len(str1):index2 - 1]
             check_keyguard_statue = check_keyguard_statue[index3 + len(str3):index4 - 4]
-            if check_lock_statue == 'false' and check_keyguard_statue == 'false':
+            if check_lock_statue != 'true' or check_keyguard_statue != 'true':
                 return "unlock"
             else:
                 return "screenlocked"
