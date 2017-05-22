@@ -19,12 +19,12 @@ def send_mail(plan):
     msg = MIMEText(plan.resultHtml, _subtype='html', _charset='utf-8')
     msg['Subject'] = u"自动遍历测试报告 - " + str(plan.runCaseTime)
     msg['From'] = me
-    msg['To'] = ";".join(Setting.Mail_To_List)
+    msg['To'] = ";".join(Setting.Result_Mail_To_List)
     try:
         s = smtplib.SMTP()
         s.connect(Setting.SMTP_HOST)
         s.login(Setting.Mail_User, Setting.Mail_Pass)
-        s.sendmail(me, Setting.Mail_To_List, msg.as_string())
+        s.sendmail(me, Setting.Result_Mail_To_List, msg.as_string())
         s.close()
         return True
     except Exception, e:
@@ -58,7 +58,7 @@ def send_failed_mail_first(plan, app, device):
 
     # 设置根容器属性
     main_msg['From'] = me
-    main_msg['To'] = ";".join(Setting.Mail_To_List)
+    main_msg['To'] = ";".join(Setting.Failed_Mail_To_List)
     main_msg['Subject'] = u"自动遍历测试发现异常啦！！！快看我！！！"
     main_msg['Date'] = Utils.formatdate()
 
@@ -66,7 +66,7 @@ def send_failed_mail_first(plan, app, device):
         s = smtplib.SMTP()
         s.connect(Setting.SMTP_HOST)
         s.login(Setting.Mail_User, Setting.Mail_Pass)
-        s.sendmail(me, Setting.Mail_To_List, main_msg.as_string())
+        s.sendmail(me, Setting.Failed_Mail_To_List, main_msg.as_string())
         s.close()
         return True
     except Exception, e:
@@ -108,7 +108,7 @@ def send_failed_mail_necessary(plan, app, device, node):
 
     # 设置根容器属性
     main_msg['From'] = me
-    main_msg['To'] = ";".join(Setting.Mail_To_List)
+    main_msg['To'] = ";".join(Setting.Failed_Mail_To_List)
     main_msg['Subject'] = u"自动遍历测试 - 复现异常啦，此处应该有掌声！！！！"
     main_msg['Date'] = Utils.formatdate()
 
@@ -123,6 +123,6 @@ def send_failed_mail_un_necessary(plan, app, device):
 
     # 设置根容器属性
     main_msg['From'] = me
-    main_msg['To'] = ";".join(Setting.Mail_To_List)
+    main_msg['To'] = ";".join(Setting.Failed_Mail_To_List)
     main_msg['Subject'] = u"自动遍历测试 - 异常未复现"
     main_msg['Date'] = Utils.formatdate()
