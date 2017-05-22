@@ -49,7 +49,8 @@ LoginViewList ：登录按钮信息，[账号输入框AccountViewID, 密码输�
 AccountList : 账号密码列表，执行前请保证账号足够设备1对1分配，可多不可少
 
 SMTP_HOST : SMTP服务器地址 
-Mail_To_List : 测试报告邮件发送给哪些人
+Result_Mail_To_List : 测试报告邮件发送给哪些人
+Failed_Mail_To_List : 测试过程中，被测应用出现异常，邮件通知哪些人
 Mail_User : 使用哪个邮箱账号发送测试报告
 Mail_Pass : 使用的邮箱账号的登录密码
 ```
