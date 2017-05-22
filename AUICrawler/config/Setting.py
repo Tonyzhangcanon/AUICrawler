@@ -62,6 +62,7 @@ AccountList = {'com.xxx.xxx': [['xxxxx', 'xxxxxx'], ['xxxxx', 'xxxxx']],
 
 #  - * send crawl result email * -
 SMTP_HOST = "smtp.xxx.net"  # Set mail smtp host
-Mail_To_List = ["xxx.xxx@xxx.net"]  # who will receive the result mail
+Failed_Mail_To_List = ["xxx.xxx@xxx.net"]  # who will receive the failed exception mail
+Result_Mail_To_List = ["xxx.xxx@xxx.net"]  # who will receivr the result mail
 Mail_User = "xxx.xxx@xxx.net"  # which account will be Use to send mail
 Mail_Pass = "xxxxxx"  # the password for login
