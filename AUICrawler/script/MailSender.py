@@ -24,7 +24,7 @@ def send_mail(plan):
         s = smtplib.SMTP()
         s.connect(Setting.SMTP_HOST)
         s.login(Setting.Mail_User, Setting.Mail_Pass)
-        s.sendmail(me, Setting.Mail_To_List, msg.as_string())
+        s.sendmail(me, Setting.Result_Mail_To_List, msg.as_string())
         s.close()
         return True
     except Exception, e:
@@ -66,7 +66,7 @@ def send_failed_mail_first(plan, app, device):
         s = smtplib.SMTP()
         s.connect(Setting.SMTP_HOST)
         s.login(Setting.Mail_User, Setting.Mail_Pass)
-        s.sendmail(me, Setting.Mail_To_List, main_msg.as_string())
+        s.sendmail(me, Setting.Failed_Mail_To_List, main_msg.as_string())
         s.close()
         return True
     except Exception, e:
