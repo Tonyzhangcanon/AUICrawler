@@ -15,6 +15,7 @@ class Device:
         Saver.save_crawler_log(plan.logPath, "Step : Init device : " + device_id)
         self.id = device_id
         Saver.save_crawler_log(plan.logPath, "id : " + self.id)
+        self.statue = self.get_device_statue()
         self.logPath = self.create_device_folder(plan)
         self.name = self.get_device_name()
         self.model = self.get_device_model()
@@ -33,6 +34,29 @@ class Device:
         self.crawlStatue = "Inited"
         self.failedTime = 0
         self.page_now = PageInfo.Page()
+
+    def get_device_statue(self):
+        check_lock_command = "adb -s " + self.id + " shell dumpsys window policy|grep mShowingLockscreen"
+        check_lock_statue = os.popen(check_lock_command).read()
+        if "error: device" in check_lock_statue and "not found" in check_lock_statue:
+            return "unConnect/powerOff"
+        else:
+            str1 = 'mShowingLockscreen='
+            str2 = 'mShowingDream='
+            index1 = check_lock_statue.find(str1)
+            index2 = check_lock_statue.find(str2)
+            check_lock_statue = check_lock_statue[index1 + len(str1):index2 - 1]
+            check_keyguard_command = "adb -s " + self.id + "shell dumpsys window policy|grep isStatusBarKeyguard"
+            check_keyguard_statue = os.popen(check_keyguard_command).read()
+            str3 = 'isStatusBarKeyguard'
+            str4 = 'mNavigationBar='
+            index3 = check_keyguard_statue.find(str3)
+            index4 = check_keyguard_statue.find(str4)
+            check_keyguard_statue = check_keyguard_statue[index3 + len(str3):index4 - 4]
+            if check_lock_statue == 'false' and check_keyguard_statue == 'false':
+                return "unlock"
+            else:
+                return "screenlocked"
 
     def create_device_folder(self, plan):
         path = plan.logPath + '/' + self.id

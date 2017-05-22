@@ -340,49 +340,52 @@ def init_application(plan, app, device):
 
 
 def run_test(plan, app, device):
-    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : run test ")
-    device.update_crawl_statue("Running")
+    if device.statue == "unlock":
+        Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : run test ")
+        device.update_crawl_statue("Running")
 
-    # init device
-    appController.clean_device_logcat(device)
+        # init device
+        appController.clean_device_logcat(device)
 
-    # uninstall & install apk
-    if Setting.UnInstallApk:
-        appController.uninstall_app(device, app.packageName)
-        appController.uninstall_app(device, app.testPackageName)
-    if Setting.InstallApk:
-        appController.install_app(device, app.apkPath)
-        appController.install_app(device, app.testApkPath)
+        # uninstall & install apk
+        if Setting.UnInstallApk:
+            appController.uninstall_app(device, app.packageName)
+            appController.uninstall_app(device, app.testPackageName)
+        if Setting.InstallApk:
+            appController.install_app(device, app.apkPath)
+            appController.install_app(device, app.testApkPath)
 
-    # init app
-    init_application(plan, app, device)
+        # init app
+        init_application(plan, app, device)
 
-    # begin crawl
-    if Setting.CrawlModel == 'Normal' or Setting.CrawlModel == 'Random':
-        Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : begin to crawl main nodes")
-        appController.start_activity(device, app.packageName, app.mainActivity)
-        time.sleep(5)
-        page = pageController.get_page_info(plan, app, device)
-        device.update_begin_crawl_time()
-        crawl_main_nodes(plan, app, device, page)
-        del page
+        # begin crawl
+        if Setting.CrawlModel == 'Normal' or Setting.CrawlModel == 'Random':
+            Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : begin to crawl main nodes")
+            appController.start_activity(device, app.packageName, app.mainActivity)
+            time.sleep(5)
+            page = pageController.get_page_info(plan, app, device)
+            device.update_begin_crawl_time()
+            crawl_main_nodes(plan, app, device, page)
+            del page
 
-    crawl_activities(plan, app, device)
-    device.endCrawlTime = datetime.datetime.now()
-    Saver.save_logcat(plan, device)
-    # clean unusable files
-    pageController.remove_uidump_xml_file(device)
+        crawl_activities(plan, app, device)
+        device.endCrawlTime = datetime.datetime.now()
+        Saver.save_logcat(plan, device)
+        # clean unusable files
+        pageController.remove_uidump_xml_file(device)
 
-    # update & save result
-    Saver.save_crawler_log_both(plan.logPath, device.logPath,
-                                "Step : " + device.id + " has Crawled " + str(len(device.hasCrawledNodes)) + " nodes.")
-    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " there are " + str(
-        len(device.unCrawledNodes)) + " unCrawled nodes .")
-    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " has Crawled " + str(
-        len(device.hasCrawledActivities)) + " activities .")
-    if device.crawlStatue == 'Running':
-        device.update_crawl_statue('Passed')
-    if device.crawlStatue == "Passed":
-        plan.passedDevice += 1
+        # update & save result
+        Saver.save_crawler_log_both(plan.logPath, device.logPath,
+                                    "Step : " + device.id + " has Crawled " + str(len(device.hasCrawledNodes)) + " nodes.")
+        Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " there are " + str(
+            len(device.unCrawledNodes)) + " unCrawled nodes .")
+        Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " has Crawled " + str(
+            len(device.hasCrawledActivities)) + " activities .")
+        if device.crawlStatue == 'Running':
+            device.update_crawl_statue('Passed')
+        if device.crawlStatue == "Passed":
+            plan.passedDevice += 1
+        else:
+            plan.failedDevice += 1
     else:
-        plan.failedDevice += 1
+        device.crawlStatue = 'DeviceExc'
