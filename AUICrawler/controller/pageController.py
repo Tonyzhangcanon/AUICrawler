@@ -217,6 +217,11 @@ def check_activity_after_operation(plan, app, device, crawl_activity, page_befor
             if not re_crawl_mack_error_node(plan, app, device, page_before_run, node, crawl_activity) and Setting.KeepRun:
                 appController.kill_app(app)
                 appController.start_activity(device, app.packageName, crawl_activity)
+                device.statue = device.get_device_statue()
+                if device.statue != "unlock":
+                    Saver.save_crawler_log_both(plan.logPath, device.logPath,
+                                                "Step : device " + device.crawlStatue + ', break crawling..')
+                    return None
             else:
                 Saver.save_crawler_log_both(plan.logPath, device.logPath,
                                             "Step : crawl app " + device.crawlStatue + ', break crawling..')
