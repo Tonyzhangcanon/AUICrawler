@@ -46,9 +46,9 @@ class Device:
             index1 = check_lock_statue.find(str1)
             index2 = check_lock_statue.find(str2)
             check_lock_statue = check_lock_statue[index1 + len(str1):index2 - 1]
-            check_keyguard_command = "adb -s " + self.id + "shell dumpsys window policy|grep isStatusBarKeyguard"
+            check_keyguard_command = "adb -s " + self.id + " shell dumpsys window policy|grep isStatusBarKeyguard"
             check_keyguard_statue = os.popen(check_keyguard_command).read()
-            str3 = 'isStatusBarKeyguard'
+            str3 = 'isStatusBarKeyguard='
             str4 = 'mNavigationBar='
             index3 = check_keyguard_statue.find(str3)
             index4 = check_keyguard_statue.find(str4)
