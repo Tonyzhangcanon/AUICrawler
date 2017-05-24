@@ -16,6 +16,7 @@ class Device:
         self.id = device_id
         Saver.save_crawler_log(plan.logPath, "id : " + self.id)
         self.statue = self.get_device_statue()
+        Saver.save_crawler_log(plan.logPath, "statue : " + self.statue)
         self.logPath = self.create_device_folder(plan)
         self.name = self.get_device_name()
         self.model = self.get_device_model()
@@ -31,7 +32,7 @@ class Device:
         self.hasCrawledActivities = []
         self.saveScreenNum = 0
         self.jump_out_time = 0
-        self.crawlStatue = "Inited"
+        self.crawlStatue = "Uninit"
         self.failedTime = 0
         self.page_now = PageInfo.Page()
 

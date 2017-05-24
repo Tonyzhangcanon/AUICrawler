@@ -341,8 +341,7 @@ def init_application(plan, app, device):
 
 def run_test(plan, app, device):
     if device.statue == "unlock":
-        Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : run test ")
-        device.update_crawl_statue("Running")
+        Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : Begin test ")
 
         # init device
         appController.clean_device_logcat(device)
@@ -352,40 +351,51 @@ def run_test(plan, app, device):
             appController.uninstall_app(device, app.packageName)
             appController.uninstall_app(device, app.testPackageName)
         if Setting.InstallApk:
-            appController.install_app(device, app.apkPath)
-            appController.install_app(device, app.testApkPath)
-
-        # init app
-        init_application(plan, app, device)
-
-        # begin crawl
-        if Setting.CrawlModel == 'Normal' or Setting.CrawlModel == 'Random':
-            Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : begin to crawl main nodes")
-            appController.start_activity(device, app.packageName, app.mainActivity)
-            time.sleep(5)
-            page = pageController.get_page_info(plan, app, device)
-            device.update_begin_crawl_time()
-            crawl_main_nodes(plan, app, device, page)
-            del page
-
-        crawl_activities(plan, app, device)
-        device.endCrawlTime = datetime.datetime.now()
-        Saver.save_logcat(plan, device)
-        # clean unusable files
-        pageController.remove_uidump_xml_file(device)
-
-        # update & save result
-        Saver.save_crawler_log_both(plan.logPath, device.logPath,
-                                    "Step : " + device.id + " has Crawled " + str(len(device.hasCrawledNodes)) + " nodes.")
-        Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " there are " + str(
-            len(device.unCrawledNodes)) + " unCrawled nodes .")
-        Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " has Crawled " + str(
-            len(device.hasCrawledActivities)) + " activities .")
-        if device.crawlStatue == 'Running':
-            device.update_crawl_statue('Passed')
-        if device.crawlStatue == "Passed":
-            plan.passedDevice += 1
+            if not appController.install_app(device, app.apkPath):
+                device.update_crawl_statue("InstallExc")
+            else:
+                appController.install_app(device, app.testApkPath)
         else:
-            plan.failedDevice += 1
+            if not appController.app_is_installed(device, app.packageName):
+                if not appController.install_app(device, app.apkPath):
+                    device.update_crawl_statue("InstallExc")
+                elif appController.app_is_installed(device, app.testPackageName):
+                    appController.install_app(device, app.testApkPath)
+
+        if device.crawlStatue != "InstallExc":
+            # init app
+            device.update_crawl_statue("Initing")
+            init_application(plan, app, device)
+
+            # begin crawl
+            device.update_crawl_statue("Running")
+            if Setting.CrawlModel == 'Normal' or Setting.CrawlModel == 'Random':
+                Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : begin to crawl main nodes")
+                appController.start_activity(device, app.packageName, app.mainActivity)
+                time.sleep(5)
+                page = pageController.get_page_info(plan, app, device)
+                device.update_begin_crawl_time()
+                crawl_main_nodes(plan, app, device, page)
+                del page
+
+            crawl_activities(plan, app, device)
+            device.endCrawlTime = datetime.datetime.now()
+            Saver.save_logcat(plan, device)
+            # clean unusable files
+            pageController.remove_uidump_xml_file(device)
+
+            # update & save result
+            Saver.save_crawler_log_both(plan.logPath, device.logPath,
+                                        "Step : " + device.id + " has Crawled " + str(len(device.hasCrawledNodes)) + " nodes.")
+            Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " there are " + str(
+                len(device.unCrawledNodes)) + " unCrawled nodes .")
+            Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " has Crawled " + str(
+                len(device.hasCrawledActivities)) + " activities .")
+            if device.crawlStatue == 'Running':
+                device.update_crawl_statue('Passed')
+            if device.crawlStatue == "Passed":
+                plan.passedDevice += 1
+            else:
+                plan.failedDevice += 1
     else:
-        device.crawlStatue = 'DeviceExc'
+        device.update_crawl_statue('DeviceExc')
