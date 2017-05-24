@@ -15,31 +15,55 @@ sys.setdefaultencoding('utf-8')
 
 def install_app(device, apk_path):
     Saver.save_crawler_log(device.logPath, 'Step : install app : ' + apk_path)
-    command = 'adb -s ' + "\"" + device.id + "\"" + " install -r " + apk_path
-    os.system(command)
-    del device, apk_path, command
+    command = 'adb -s ' + device.id + " install -r " + apk_path
+    result = os.popen(command).readlines()
+    result = result[-1]
+    if 'success' in result:
+        del device, apk_path, command, result
+        return True
+    else:
+        print result
+        del device, apk_path, command, result
+        return False
 
 
 def uninstall_app(device, package_name):
     Saver.save_crawler_log(device.logPath, 'Step : uninstall app : ' + package_name)
-    command = 'adb -s ' + "\"" + device.id + "\"" + " uninstall " + package_name
+    command = 'adb -s ' + device.id + " uninstall " + package_name
     os.system(command)
     del device, package_name, command
 
 
+def app_is_installed(device, package_name):
+    Saver.save_crawler_log(device.logPath, "Step : check app is installed or not")
+    command = 'adb -s ' + device.id + " shell pm list"
+    result = os.popen(command)
+    lines = result.readlines()
+    for line in lines:
+        if ("package:"+package_name) == line[:-2]:
+            Saver.save_crawler_log(device.logPath, "app is installed")
+            del command, lines, device, line, package_name
+            return True
+        del line
+    Saver.save_crawler_log(device.logPath, "app is not installed")
+    del command, lines, device, package_name
+    return False
+
+
 def app_is_running(device, app):
     Saver.save_crawler_log(device.logPath, "Step : check app is running or not")
-    command = "adb -s " + device.id + " shell top -n 1 | grep " + app.packageName
+    command = "adb -s " + device.id + " shell top -n 1"
     output = os.popen(command)
     lines = output.readlines()
-    if len(lines) == 0:
-        Saver.save_crawler_log(device.logPath, "app is not running")
-        del command, lines, device, app
-        return False
-    else:
-        Saver.save_crawler_log(device.logPath, "app is running")
-        del command, lines, device, app
-        return True
+    for line in lines:
+        if app.packageName in line:
+            Saver.save_crawler_log(device.logPath, "app is running")
+            del command, lines, device, app, line
+            return True
+        del line
+    Saver.save_crawler_log(device.logPath, "app is not running")
+    del command, lines, device, app
+    return False
 
 
 def clean_device_logcat(device):
