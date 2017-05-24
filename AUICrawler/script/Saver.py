@@ -53,10 +53,10 @@ def save_error_logcat(plan,device):
     log = os.popen(get_log_commend).readlines()
     update_statue_finish = False
     for line in log:
-        if line.find('NullPointerException') != -1:
-            device.update_crawl_statue('NullPointExc')
-            update_statue_finish = True
-            break
+        # if line.find('NullPointerException') != -1:
+        #     device.update_crawl_statue('NullPointExc')
+        #     update_statue_finish = True
+        #     break
         if line.find('shortMsg') != -1:
             device.update_crawl_statue('HasCrashed')
             update_statue_finish = True
