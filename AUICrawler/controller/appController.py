@@ -18,7 +18,7 @@ def install_app(device, apk_path):
     command = 'adb -s ' + device.id + " install -r " + apk_path
     result = os.popen(command).readlines()
     result = result[-1]
-    if 'success' in result:
+    if 'Success' in result:
         del device, apk_path, command, result
         return True
     else:
