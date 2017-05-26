@@ -348,18 +348,22 @@ def run_test(plan, app, device):
 
         # uninstall & install apk
         if Setting.UnInstallApk:
-            appController.uninstall_app(device, app.packageName)
-            appController.uninstall_app(device, app.testPackageName)
+            if appController.app_is_installed(device, app.packageName):
+                appController.uninstall_app(device, app.packageName)
+            if appController.app_is_installed(device, app.testPackageName):
+                appController.uninstall_app(device, app.testPackageName)
         if Setting.InstallApk:
-            if not appController.install_app(device, app.apkPath):
+            appController.install_app(device, app.apkPath)
+            if not appController.app_is_installed(device, app.packageName):
                 device.update_crawl_statue("InstallExc")
             else:
                 appController.install_app(device, app.testApkPath)
         else:
             if not appController.app_is_installed(device, app.packageName):
-                if not appController.install_app(device, app.apkPath):
+                appController.install_app(device, app.apkPath)
+                if not appController.app_is_installed(device, app.packageName):
                     device.update_crawl_statue("InstallExc")
-                elif appController.app_is_installed(device, app.testPackageName):
+                else:
                     appController.install_app(device, app.testApkPath)
 
         if device.crawlStatue != "InstallExc":
