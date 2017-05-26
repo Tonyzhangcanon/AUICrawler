@@ -59,7 +59,7 @@ app = App(plan)
 
 if len(plan.deviceList) == 0:
     plan.get_device_list(app)
-else:
+elif Setting.Login:
     device_list = plan.deviceList
     for device in device_list:
         index = device_list.index(device)
