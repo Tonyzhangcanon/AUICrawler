@@ -14,24 +14,26 @@ sys.setdefaultencoding('utf-8')
 
 
 def install_app(device, apk_path):
-    Saver.save_crawler_log(device.logPath, 'Step : install app : ' + apk_path)
-    command = 'adb -s ' + device.id + " install -r " + apk_path
-    result = os.popen(command).readlines()
-    result = result[-1]
-    if 'Success' in result:
-        del device, apk_path, command, result
-        return True
-    else:
-        print result
-        del device, apk_path, command, result
-        return False
+    try:
+        if os.path.exists(apk_path):
+            Saver.save_crawler_log(device.logPath, 'Step : install app : ' + apk_path)
+            command = 'adb -s ' + device.id + " install -r " + apk_path
+            os.system(command)
+            del device, apk_path
+    except:
+        del device, apk_path
+        Saver.save_crawler_log(device.logPath, 'install app catch exception')
 
 
 def uninstall_app(device, package_name):
-    Saver.save_crawler_log(device.logPath, 'Step : uninstall app : ' + package_name)
-    command = 'adb -s ' + device.id + " uninstall " + package_name
-    os.system(command)
-    del device, package_name, command
+    try:
+        Saver.save_crawler_log(device.logPath, 'Step : uninstall app : ' + package_name)
+        command = 'adb -s ' + device.id + " uninstall " + package_name
+        os.system(command)
+        del device, package_name, command
+    except:
+        del device, package_name, command
+        Saver.save_crawler_log(device.logPath, 'uninstall app catch exception')
 
 
 def app_is_installed(device, package_name):
