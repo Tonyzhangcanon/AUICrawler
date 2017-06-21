@@ -58,7 +58,7 @@ def send_failed_mail_first(plan, app, device):
 
     # 设置根容器属性
     main_msg['From'] = me
-    main_msg['To'] = ";".join(Setting.Result_Mail_To_List)
+    main_msg['To'] = ";".join(Setting.Failed_Mail_To_List)
     main_msg['Subject'] = u"自动遍历测试发现异常啦！！！快看我！！！"
     main_msg['Date'] = Utils.formatdate()
 
@@ -123,6 +123,6 @@ def send_failed_mail_un_necessary(plan, app, device):
 
     # 设置根容器属性
     main_msg['From'] = me
-    main_msg['To'] = ";".join(Setting.Result_Mail_To_List)
+    main_msg['To'] = ";".join(Setting.Failed_Mail_To_List)
     main_msg['Subject'] = u"自动遍历测试 - 异常未复现"
     main_msg['Date'] = Utils.formatdate()
