@@ -111,20 +111,23 @@ def get_page_info(plan, app, device):
     Saver.save_crawler_log(device.logPath, "get all nodes in this page")
     page = PageInfo.Page()
     result = False
-    time = 0
+    t = 0
     while not result:
         try:
-            if time > 2:
+            if t > 2:
+                Saver.save_crawler_log(device.logPath, "get page error after 3 times , click back .")
                 appController.click_back(device)
+                time.sleep(1)
                 get_uidump_xml_file(device)
                 break
             get_uidump_xml_file(device)
             dom = xml.dom.minidom.parse(device.logPath + '/Uidump.xml')
             result = True
         except Exception, e:
-            time += 1
+            t += 1
             print (str(e))
             result = False
+    del t
     try:
         root = dom.documentElement
         nodes = root.getElementsByTagName('node')
@@ -144,7 +147,7 @@ def get_page_info(plan, app, device):
         return page
     except Exception, e:
         print (str(e))
-        return None
+        return page
 
 
 # compare two pages before & after click .
@@ -176,7 +179,7 @@ def get_need_crawl_page(plan, app, device, page_before_run, page_after_run):
 
 def page_is_crawlable(app, device, page):
     Saver.save_crawler_log(device.logPath, "Step : check page is crawlable or not")
-    if page.nodesInfoList not in device.hasCrawlPage \
+    if page.nodesInfoList not in device.hasCrawledPage \
             and page.package == app.packageName \
             and (page.clickableNodesNum != 0
                  or page.scrollableNodesNum != 0
@@ -214,7 +217,8 @@ def check_activity_after_operation(plan, app, device, crawl_activity, page_befor
             appController.clean_device_logcat(device)
             HtmlMaker.make_failed_result_html(plan, app)
             MailSender.send_failed_mail_first(plan, app, device)
-            if not re_crawl_mack_error_node(plan, app, device, page_before_run, node, crawl_activity) and Setting.KeepRun:
+            if not re_crawl_mack_error_node(plan, app, device, page_before_run, node,
+                                            crawl_activity) and Setting.KeepRun:
                 appController.kill_app(app)
                 appController.start_activity(device, app.packageName, crawl_activity)
                 device.statue = device.get_device_statue()
@@ -295,7 +299,8 @@ def check_page_after_operation(plan, app, device, page_before_run, node):
             appController.clean_device_logcat(device)
             HtmlMaker.make_failed_result_html(plan, app)
             MailSender.send_failed_mail_first(plan, app, device)
-            if not re_crawl_mack_error_node(plan, app, device, page_before_run, node, app.launcherActivity) and Setting.KeepRun:
+            if not re_crawl_mack_error_node(plan, app, device, page_before_run, node,
+                                            app.launcherActivity) and Setting.KeepRun:
                 appController.kill_app(app)
                 appController.start_activity(device, app.packageName, app.launcherActivity)
             else:

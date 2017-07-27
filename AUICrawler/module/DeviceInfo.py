@@ -28,7 +28,7 @@ class Device:
         self.endCrawlTime = datetime.datetime.now()
         self.unCrawledNodes = []
         self.hasCrawledNodes = []
-        self.hasCrawlPage = []
+        self.hasCrawledPage = []
         self.hasCrawledActivities = []
         self.saveScreenNum = 0
         self.jump_out_time = 0
@@ -188,8 +188,8 @@ class Device:
             return False
 
     def update_crawl_page(self, nodes_info_list):
-        if nodes_info_list not in self.hasCrawlPage:
-            self.hasCrawlPage.append(nodes_info_list)
+        if nodes_info_list not in self.hasCrawledPage:
+            self.hasCrawledPage.append(nodes_info_list)
 
     def update_begin_crawl_time(self):
         self.beginCrawlTime = datetime.datetime.now()
@@ -258,9 +258,8 @@ class Device:
             resource_id = node.resource_id
             resource_id = resource_id[resource_id.find('/') + 1:]
             location = node.location
-            local_png = self.screenshotPath + '/' + str(self.saveScreenNum) + '-' + str(
-                    activity) + '-' + str(
-                    resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
+            local_png = self.screenshotPath + '/' + str(self.saveScreenNum) + '-' + str(activity) + '-' + str(
+                resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
             pull_screenshot_command = 'adb -s ' + self.id + ' pull /sdcard/screenshot.png ' + local_png
             os.system(get_screenshot_command)
             os.system(pull_screenshot_command)
@@ -281,7 +280,3 @@ class Device:
         except Exception, e:
             print (str(e))
             Saver.save_crawler_log(self.logPath, "save screen error")
-
-
-
-

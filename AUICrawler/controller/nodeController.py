@@ -71,7 +71,10 @@ def get_node_recover_way(device, page_now, page_before_run, node, way):
 
 def recover_node_shown(plan, app, device, page_now, page_before_run, node):
     t = 1
-    r = False
+    if node.nodeInfo in page_now.nodesInfoList:
+        return True
+    else:
+        r = False
     while page_now is not None and page_now.nodesNum != 0 and node.nodeInfo not in page_now.nodesInfoList:
         if get_node_recover_way(device, page_now, page_before_run, node, []):
             r = True
@@ -93,12 +96,14 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
             elif n.crawlOperation == 'longclick':
                 appController.long_click_node(device, n)
             elif n.crawlOperation == 'type':
-                t = appController.get_random_text(8)
-                appController.type_text(device, n, t)
-            pageController.check_page_after_operation(plan, app, device, page_before_run, node)
+                s = appController.get_random_text(8)
+                appController.type_text(device, n, s)
+                del s
+            page_now = pageController.check_page_after_operation(plan, app, device, page_before_run, node)
             del n
-    if t < 4:
-        r = True
+        if node.nodeInfo in page_now.nodesInfoList:
+            del plan, app, device, page_now, page_before_run, node, t
+            return True
     del plan, app, device, page_now, page_before_run, node, t
     return r
 
