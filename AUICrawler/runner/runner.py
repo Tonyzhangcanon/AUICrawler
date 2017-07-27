@@ -269,7 +269,7 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
 
 def crawl_main_nodes(plan, app, device, page_before_run):
     device.update_uncrawled_nodes(page_before_run)
-    page_now = PageInfo.Page()
+    page_now = pageController.get_page_info(plan, app, device)
     if pageController.page_is_crawlable(app, device, page_before_run):
         device.update_crawl_page(page_before_run.nodesInfoList)
         if page_before_run.clickableNodesNum > 0:
@@ -298,7 +298,7 @@ def crawl_init_nodes(plan, app, device, page_before_run):
     Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : run init nodes")
     device.update_uncrawled_nodes(page_before_run)
     if page_before_run.currentActivity != app.mainActivity or page_before_run.package != app.packageName:
-        page_now = PageInfo.Page()
+        page_now = pageController.get_page_info(plan, app, device)
         if page_before_run.clickableNodesNum != 0:
             device.update_crawl_page(page_before_run.nodesInfoList)
             if page_before_run.clickableNodesNum > 0:

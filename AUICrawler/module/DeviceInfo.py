@@ -28,7 +28,7 @@ class Device:
         self.endCrawlTime = datetime.datetime.now()
         self.unCrawledNodes = []
         self.hasCrawledNodes = []
-        self.hasCrawlPage = []
+        self.hasCrawledPage = []
         self.hasCrawledActivities = []
         self.saveScreenNum = 0
         self.jump_out_time = 0
@@ -188,8 +188,8 @@ class Device:
             return False
 
     def update_crawl_page(self, nodes_info_list):
-        if nodes_info_list not in self.hasCrawlPage:
-            self.hasCrawlPage.append(nodes_info_list)
+        if nodes_info_list not in self.hasCrawledPage:
+            self.hasCrawledPage.append(nodes_info_list)
 
     def update_begin_crawl_time(self):
         self.beginCrawlTime = datetime.datetime.now()
