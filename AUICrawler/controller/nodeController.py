@@ -40,26 +40,30 @@ def node_is_shown_in_page(device, node, page):
         return False
 
 
-def get_node_recover_way(device, page_now, page_before_run, node, way):
+def get_node_recover_way(app, device, page_now, page_before_run, node, way):
     Saver.save_crawler_log(device.logPath, "Step : get node recover way ,node info : " + str(node.nodeInfo))
     way_this_deep = way
     result = False
     if page_before_run is not None and page_before_run.entryNum != 0:
         entry = page_before_run.entry
-        Saver.save_crawler_log(device.logPath, entry.resource_id)
-        if page_now is not None and entry.nodeInfo in page_now.nodesInfoList:
-            way_this_deep.insert(0, entry)
-            node.update_recover_way(way_this_deep)
-            Saver.save_crawler_log(device.logPath, "get the node recover way success. ")
-            Saver.save_crawler_log(device.logPath, str(way_this_deep))
+        if entry is app.loginActivityEntry:
+            Saver.save_crawler_log(device.logPath, "node shown because login , can't find the way . ")
             result = True
+        else:
+            Saver.save_crawler_log(device.logPath, entry.resource_id)
+            if page_now is not None and entry.nodeInfo in page_now.nodesInfoList:
+                way_this_deep.insert(0, entry)
+                node.update_recover_way(way_this_deep)
+                Saver.save_crawler_log(device.logPath, "get the node recover way success. ")
+                Saver.save_crawler_log(device.logPath, str(way_this_deep))
+                result = True
     if not result:
         if page_before_run is not None and page_before_run.lastPageNum != 0:
             p = page_before_run.lastPage
             entry = page_before_run.entry
             Saver.save_crawler_log(device.logPath, entry.resource_id)
             way_this_deep.insert(0, entry)
-            result = get_node_recover_way(device, page_now, p, node, way_this_deep)
+            result = get_node_recover_way(app, device, page_now, p, node, way_this_deep)
     if result:
         del device, page_now, page_before_run, node, way, way_this_deep
         return True
@@ -76,7 +80,7 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
     else:
         r = False
     while page_now is not None and page_now.nodesNum != 0 and node.nodeInfo not in page_now.nodesInfoList:
-        if get_node_recover_way(device, page_now, page_before_run, node, []):
+        if get_node_recover_way(app, device, page_now, page_before_run, node, []):
             r = True
             break
         Saver.save_crawler_log(device.logPath, "Step : no recover way , click back")
