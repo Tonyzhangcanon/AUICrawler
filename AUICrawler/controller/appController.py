@@ -8,7 +8,6 @@ from config import Setting
 from script import Saver
 import pageController
 
-
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -194,6 +193,7 @@ def get_random_text(length):
 
 
 def type_text(device, edittext, text):
+    Saver.save_crawler_log(device.logPath, "type : " + text)
     tap_node(device, edittext)
     command = 'adb -s ' + device.id + ' shell input text ' + text
     os.system(command)

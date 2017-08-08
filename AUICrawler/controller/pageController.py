@@ -272,6 +272,39 @@ def re_crawl_mack_error_node(plan, app, device, page_before_run, node, activity)
     return True
 
 
+# login by account
+def login_by_account(plan, page, app, device):
+    account_view = nodeController.get_node_by_id(page, app.loginViews[0])
+    password_view = nodeController.get_node_by_id(page, app.loginViews[1])
+    login_btn = nodeController.get_node_by_id(page, app.loginViews[2])
+    account = device.accountInfo[0]
+    password = device.accountInfo[1]
+    if account_view in page.editTexts and password_view in page.editTexts and login_btn in page.clickableNodes:
+        Saver.save_crawler_log(device.logPath, "Login begin .")
+        appController.type_text(device, account_view, account)
+        if appController.keyboard_is_shown(device):
+            appController.click_back(device)
+        appController.type_text(device, password_view, password)
+        if appController.keyboard_is_shown(device):
+            appController.click_back(device)
+        appController.tap_node(device, login_btn)
+        time0 = time.time()
+        while True:
+            time1 = time.time()
+            if time1 - time0 > 10:
+                Saver.save_crawler_log(device.logPath, "Login failed , time out .")
+                appController.click_back(device)
+                break
+            info = get_top_activity_info(device)
+            if info['activity'] != app.loginActivity:
+                Saver.save_crawler_log(device.logPath, "Login successful .")
+                break
+    else:
+        appController.click_back(device)
+    del page, account_view, password_view, login_btn, account, password
+    return get_page_info(plan, app, device)
+
+
 # if jump out the test app, try to go back & return the final page
 def check_page_after_operation(plan, app, device, page_before_run, node):
     Saver.save_crawler_log(device.logPath, "Step : Check page after operation")
@@ -330,25 +363,9 @@ def check_page_after_operation(plan, app, device, page_before_run, node):
         appController.click_back(device)
     page = get_page_info(plan, app, device)
     if page is not None and page.currentActivity == app.loginActivity and Setting.Login:
-        accountView = nodeController.get_node_by_id(page, app.loginViews[0])
-        passwordView = nodeController.get_node_by_id(page, app.loginViews[1])
-        loginBtn = nodeController.get_node_by_id(page, app.loginViews[2])
-        account = device.accountInfo[0]
-        password = device.accountInfo[1]
-        device.save_screen(accountView, True)
-        if accountView in page.editTexts and passwordView in page.editTexts and loginBtn in page.clickableNodes:
-            Saver.save_crawler_log(device.logPath, "Login begin .")
-            appController.type_text(device, accountView, account)
-            if appController.keyboard_is_shown(device):
-                appController.click_back(device)
-            appController.type_text(device, passwordView, password)
-            if appController.keyboard_is_shown(device):
-                appController.click_back(device)
-            appController.tap_node(device, loginBtn)
-            page = check_page_after_operation(plan, app, device, page_before_run, node)
-        else:
-            appController.click_back(device)
-        del accountView, passwordView, loginBtn, account, password, plan, app, device
+        app.update_loginactivity_entry(node)
+        page = login_by_account(plan, page, app, device)
+    del node
     return page
 
 

@@ -53,6 +53,8 @@ class App:
         self.loginViews = self.get_view_list(Setting.LoginViewList)
         Saver.save_crawler_log(plan.logPath, 'LoginViews : ' + str(self.loginViews))
 
+        self.loginActivityEntry = None
+
         self.testRunner = Setting.TestRunner
         Saver.save_crawler_log(plan.logPath, 'TestRunner : ' + self.testRunner)
 
@@ -95,7 +97,7 @@ class App:
             for line in result:
                 name_head = "application-label-zh-CN:'"
                 if name_head in line:
-                    name = line[line.index(name_head) + len(name_head):len(line)-2]
+                    name = line[line.index(name_head) + len(name_head):len(line) - 2]
                     del name_head
                     return name
                 del line
@@ -194,7 +196,7 @@ class App:
             for line in result:
                 if 'Activity' in line:
                     index = line.index(': ')
-                    activity = line[index+len(': '):len(line) - 1]
+                    activity = line[index + len(': '):len(line) - 1]
                     if activity != self.launcherActivity and activity not in activity_list:
                         activity_list.append(activity)
                     del line, index, activity
@@ -209,3 +211,6 @@ class App:
             return init_cases
         except:
             return []
+
+    def update_loginactivity_entry(self, node):
+        self.loginActivityEntry = node
