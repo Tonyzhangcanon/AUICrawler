@@ -17,7 +17,7 @@ def install_app(device, apk_path):
     try:
         if os.path.exists(apk_path):
             Saver.save_crawler_log(device.logPath, 'Step : install app : ' + apk_path)
-            command = 'adb -s ' + device.id + " install -r " + apk_path
+            command = 'adb -s ' + device.id + " install -r -g " + apk_path
             os.system(command)
             del device, apk_path, command
     except:
