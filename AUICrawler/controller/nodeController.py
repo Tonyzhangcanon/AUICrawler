@@ -90,10 +90,7 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
         t += 1
         if t > 2:
             Saver.save_crawler_log(device.logPath, "can't find the node after back 3 times.")
-            try:
-                appController.start_activity(device,app.packageName,page_now.currentActivity)
-            except:
-                appController.start_activity(device,app.packageName,app.mainActivity)
+            appController.start_activity(device,app.packageName,app.launcherActivity)
             page_now = pageController.get_page_info(plan, app, device)
         if t > 3:
             Saver.save_crawler_log(device.logPath, "can't find the node after restart app")
