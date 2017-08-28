@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -83,7 +84,7 @@ class Node:
         x_end = int(node_end[node_end.find('[') + 1:node_end.find(',')])
         y_end = int(node_end[node_end.find(',') + 1:node_end.find(']')])
         bounds = [x_begin, y_begin, x_end, y_end]
-        del x_begin, x_end, y_begin, y_end, node_bounds, node_end
+        del node, x_begin, x_end, y_begin, y_end, node_bounds, node_end
         return bounds
 
     def get_node_location(self):
@@ -103,15 +104,19 @@ class Node:
     def update_current_activity(self, activity):
         self.currentActivity = activity
         self.nodeInfo['activity'] = activity
+        del activity
 
     def update_last_node(self, node):
         self.lastNode = node
+        del node
 
     def update_recover_way(self, way):
         self.recoverWay = way
+        del way
 
     def clear_recover_way(self):
         self.recoverWay = []
 
     def update_operation(self, operation):
         self.crawlOperation = operation
+        del operation

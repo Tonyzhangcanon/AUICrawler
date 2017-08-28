@@ -26,19 +26,21 @@ def send_mail(plan):
         s.login(Setting.Mail_User, Setting.Mail_Pass)
         s.sendmail(me, Setting.Result_Mail_To_List, msg.as_string())
         s.close()
+        del plan, me, msg, s
         return True
     except Exception, e:
         print(str(e))
+        del plan, me, msg
         return False
 
 
 def send_failed_mail_first(plan, app, device):
-    file_name = device.logPath + '/' + 'errorLog' + str(device.failedTime) +'.txt'
+    file_name = device.logPath + '/' + 'errorLog' + str(device.failedTime) + '.txt'
     me = "AUICrawler" + "<" + Setting.Mail_User + ">"
     main_msg = MIMEMultipart.MIMEMultipart()
     text = device.crawlStatue + " in " + str(device.id) + ' when crawl ' + str(
         app.appName) + ' , please check the logcat file in attachment . \n' + \
-        ' I will reCrawl this node again for check is necessary ' + device.crawlStatue + ' or not . \n\n'
+           ' I will reCrawl this node again for check is necessary ' + device.crawlStatue + ' or not . \n\n'
     msg = MIMEText(text + plan.resultHtml, _subtype='html', _charset='utf-8')
     main_msg.attach(msg)
 
@@ -68,9 +70,11 @@ def send_failed_mail_first(plan, app, device):
         s.login(Setting.Mail_User, Setting.Mail_Pass)
         s.sendmail(me, Setting.Failed_Mail_To_List, main_msg.as_string())
         s.close()
+        del plan, app, device, file_name, me, main_msg, text, msg, data, ctype, encoding, maintype, subtype, file_msg, basename, s
         return True
     except Exception, e:
         print(str(e))
+        del plan, app, device, file_name, me, main_msg, text, msg, data, ctype, encoding, maintype, subtype, file_msg, basename, e
         return False
 
 
@@ -80,14 +84,14 @@ def send_failed_mail_necessary(plan, app, device, node):
     main_msg = MIMEMultipart.MIMEMultipart()
     text = device.crawlStatue + " again in " + str(device.id) + ' when crawl ' + str(
         app.appName) + ' , please check the screenshot and the logcat file in attachment . \n' + \
-        ' Crawl this node is necessary to make app ' + device.crawlStatue + '. \n\n'
+           ' Crawl this node is necessary to make app ' + device.crawlStatue + '. \n\n'
     msg = MIMEText(text + plan.resultHtml, _subtype='html', _charset='utf-8')
     main_msg.attach(msg)
     resource_id = node.resource_id
     resource_id = resource_id[resource_id.find('/') + 1:]
-    screen = device.screenshotPath + '/' + str(device.saveScreenNum-1) + '-' + str(
-                    node.currentActivity) + '-' + str(
-                    resource_id) + '-' + str(node.location[0]) + '-' + str(node.location[1]) + '.png'
+    screen = device.screenshotPath + '/' + str(device.saveScreenNum - 1) + '-' + str(
+        node.currentActivity) + '-' + str(
+        resource_id) + '-' + str(node.location[0]) + '-' + str(node.location[1]) + '.png'
     if os.path.exists(screen):
         fp = open(screen, 'rb')
         msgImage = MIMEImage(fp.read())
@@ -111,6 +115,18 @@ def send_failed_mail_necessary(plan, app, device, node):
     main_msg['To'] = ";".join(Setting.Failed_Mail_To_List)
     main_msg['Subject'] = u"自动遍历测试 - 复现异常啦，此处应该有掌声！！！！"
     main_msg['Date'] = Utils.formatdate()
+    try:
+        s = smtplib.SMTP()
+        s.connect(Setting.SMTP_HOST)
+        s.login(Setting.Mail_User, Setting.Mail_Pass)
+        s.sendmail(me, Setting.Failed_Mail_To_List, main_msg.as_string())
+        s.close()
+        del plan, app, device, file_name, me, main_msg, text, msg, data, ctype, encoding, maintype, subtype, file_msg, s
+        return True
+    except Exception, e:
+        print(str(e))
+        del plan, app, device, file_name, me, main_msg, text, msg, data, ctype, encoding, maintype, subtype, file_msg, e
+        return False
 
 
 def send_failed_mail_un_necessary(plan, app, device):
@@ -126,3 +142,15 @@ def send_failed_mail_un_necessary(plan, app, device):
     main_msg['To'] = ";".join(Setting.Failed_Mail_To_List)
     main_msg['Subject'] = u"自动遍历测试 - 异常未复现"
     main_msg['Date'] = Utils.formatdate()
+    try:
+        s = smtplib.SMTP()
+        s.connect(Setting.SMTP_HOST)
+        s.login(Setting.Mail_User, Setting.Mail_Pass)
+        s.sendmail(me, Setting.Failed_Mail_To_List, main_msg.as_string())
+        s.close()
+        del plan, app, device, me, main_msg, text, msg, s
+        return True
+    except Exception, e:
+        print(str(e))
+        del plan, app, device, me, main_msg, text, msg, e
+        return False

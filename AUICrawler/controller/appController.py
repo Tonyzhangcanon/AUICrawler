@@ -19,8 +19,9 @@ def install_app(device, apk_path):
             command = 'adb -s ' + device.id + " install -r " + apk_path
             os.system(command)
             del device, apk_path, command
-    except:
-        del device, apk_path
+    except Exception, e:
+        Saver.save_crawler_log(device.logPath, str(e))
+        del device, apk_path, e
         Saver.save_crawler_log(device.logPath, 'install app catch exception')
 
 
@@ -30,7 +31,8 @@ def uninstall_app(device, package_name):
         command = 'adb -s ' + device.id + " uninstall " + package_name
         os.system(command)
         del device, package_name, command
-    except:
+    except Exception, e:
+        Saver.save_crawler_log(device.logPath, str(e))
         del device, package_name
         Saver.save_crawler_log(device.logPath, 'uninstall app catch exception')
 
@@ -43,11 +45,11 @@ def app_is_installed(device, package_name):
     for line in lines:
         if package_name in line and (package_name + '.') not in line:
             print "app is installed"
-            del command, lines, device, line, package_name
+            del command, result, lines, device, line, package_name
             return True
         del line
     Saver.save_crawler_log(device.logPath, "app is not installed")
-    del command, lines, device, package_name
+    del command, result, lines, device, package_name
     return False
 
 
@@ -59,11 +61,11 @@ def app_is_running(device, app):
     for line in lines:
         if app.packageName in line:
             Saver.save_crawler_log(device.logPath, "app is running")
-            del command, lines, device, app, line
+            del command, output, lines, device, app, line
             return True
         del line
     Saver.save_crawler_log(device.logPath, "app is not running")
-    del command, lines, device, app
+    del command, output, lines, device, app
     return False
 
 
@@ -77,25 +79,33 @@ def clean_device_logcat(device):
 def start_activity(device, packagename, activity):
     Saver.save_crawler_log(device.logPath, 'Step : start up activity : ' + activity)
     time1 = datetime.datetime.now()
-    result = False
-    while not result:
-        command = 'adb -s ' + device.id + ' shell am start -n ' + packagename + '/' + activity
+    command = 'adb -s ' + device.id + ' shell am start -n ' + packagename + '/' + activity
+    try:
         os.system(command)
-        if (datetime.datetime.now() - time1).seconds < 10:
-            top_activity_info = pageController.get_top_activity_info(device)
-            top_packagename = top_activity_info['packagename']
-            top_activity = top_activity_info['activity']
-            if top_packagename == packagename and top_activity == activity:
-                result = True
-            del top_activity_info, top_packagename, top_activity
-        else:
-            result = True
-        del command
-    del device, packagename, activity, time1, result
+        while True:
+            start_activity_time = (datetime.datetime.now() - time1).seconds
+            if start_activity_time < 10:
+                top_activity_info = pageController.get_top_activity_info(device)
+                top_packagename = top_activity_info['packagename']
+                top_activity = top_activity_info['activity']
+                if top_packagename == packagename and top_activity == activity:
+                    Saver.save_crawler_log(device.logPath, 'use time : ' + str(start_activity_time) + ' seconds')
+                    del top_activity_info, top_packagename, top_activity
+                    return True
+                del top_activity_info, top_packagename, top_activity
+            else:
+                break
+            del start_activity_time
+        del device, packagename, activity, time1, command
+        return False
+    except Exception, e:
+        Saver.save_crawler_log(device.logPath, str(e))
+        del device, packagename, activity, e, time1, command
+        return False
 
 
 def kill_app(app):
-    command = 'adb shell  am force-stop ' + app.packageName
+    command = 'adb shell am force-stop ' + app.packageName
     os.system(command)
     del command, app
 
@@ -164,6 +174,7 @@ def close_sys_alert(plan, app, device, page_now):
             device.save_screen(node, False)
             tap_node(device, node)
             page_now = pageController.get_page_info(plan, app, device)
+    del plan, app, device
     return page_now
 
 

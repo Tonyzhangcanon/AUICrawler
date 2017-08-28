@@ -8,17 +8,16 @@ import pageController
 
 
 def find_node_by_info(app, classname, resourceid, contentdesc, page):
-    result = False
     for node in page.nodesList:
         if node.package == app.packageName \
                 and node.className == classname \
                 and node.resource_id == resourceid \
                 and contentdesc == contentdesc:
-            result = True
-            break
+            del app, classname, resourceid, contentdesc, page, node
+            return True
         del node
     del app, classname, resourceid, contentdesc, page
-    return result
+    return False
 
 
 def get_node_by_id(page, resource_id):
@@ -27,6 +26,8 @@ def get_node_by_id(page, resource_id):
             del page, resource_id
             return node
         del node
+    del page, resource_id
+    return None
 
 
 def node_is_shown_in_page(device, node, page):
@@ -59,11 +60,12 @@ def get_node_recover_way(app, device, page_now, page_before_run, node, way):
                 result = True
     if not result:
         if page_before_run is not None and page_before_run.lastPageNum != 0:
-            p = page_before_run.lastPage
+            last_page = page_before_run.lastPage
             entry = page_before_run.entry
             Saver.save_crawler_log(device.logPath, entry.resource_id)
             way_this_deep.insert(0, entry)
-            result = get_node_recover_way(app, device, page_now, p, node, way_this_deep)
+            result = get_node_recover_way(app, device, page_now, last_page, node, way_this_deep)
+            del last_page, entry
     if result:
         del device, page_now, page_before_run, node, way, way_this_deep
         return True
@@ -78,10 +80,10 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
     if node.nodeInfo in page_now.nodesInfoList:
         return True
     else:
-        r = False
+        result = False
     while page_now is not None and page_now.nodesNum != 0 and node.nodeInfo not in page_now.nodesInfoList:
         if get_node_recover_way(app, device, page_now, page_before_run, node, []):
-            r = True
+            result = True
             break
         Saver.save_crawler_log(device.logPath, "Step : no recover way , click back")
         device.save_screen_jump_out(page_now.package, page_now.currentActivity)
@@ -89,14 +91,14 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
         page_now = pageController.get_page_info(plan, app, device)
         t += 1
         if t > 2:
-            Saver.save_crawler_log(device.logPath, "can't find the node after back 3 times.")
-            appController.start_activity(device,app.packageName,app.launcherActivity)
+            Saver.save_crawler_log(device.logPath, "can't find the node after back 3 times, restart app.")
+            appController.start_activity(device, app.packageName, app.launcherActivity)
             page_now = pageController.get_page_info(plan, app, device)
         if t > 3:
             Saver.save_crawler_log(device.logPath, "can't find the node after restart app")
             break
-    if r:
-        Saver.save_crawler_log(device.logPath, "Step : recover node shown")
+    if result:
+        Saver.save_crawler_log(device.logPath, "Step : get recover way , begin to recover node shown")
         for n in node.recoverWay:
             device.save_screen(n, False)
             if n.crawlOperation == 'tap':
@@ -113,7 +115,7 @@ def recover_node_shown(plan, app, device, page_now, page_before_run, node):
             del plan, app, device, page_now, page_before_run, node, t
             return True
     del plan, app, device, page_now, page_before_run, node, t
-    return r
+    return result
 
 
 def get_random_nodes(nodes_list):

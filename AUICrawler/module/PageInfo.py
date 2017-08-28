@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import sys
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -112,4 +113,5 @@ class Page:
             if node.nodeInfo == node_info:
                 del node_info
                 return True
-
+        del node_info
+        return False

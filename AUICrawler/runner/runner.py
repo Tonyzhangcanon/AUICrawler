@@ -22,7 +22,7 @@ def crawl_clickable_nodes(plan, app, device, page_before_run, page_now, init):
         # if crash and not keep run , break from deep run .page_need_crawled will be None
         if page_now is None:
             Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
-            del plan, app, device, page_before_run, init
+            del node
             break
         # sometimes the need tap node is not shown after one deep run
         if not nodeController.recover_node_shown(plan, app, device, page_now, page_before_run, node):
@@ -55,6 +55,7 @@ def crawl_clickable_nodes(plan, app, device, page_before_run, page_now, init):
         # if page no crawlable nodes , back to last Page, until has crawlable nodes, if back time >3, break
         page_now = pageController.recover_page_to_crawlable(plan, app, device, page_now)
         del node
+    del plan, app, device, page_before_run, init
     return page_now
 
 
@@ -63,6 +64,7 @@ def crawl_longclickable_nodes(plan, app, device, page_before_run, page_now, init
         # if crash and not keep run , break from deep run .page_need_crawled will be None
         if page_now is None:
             Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
+            del node
             break
         # sometimes the need tap node is not shown after one deep run
         if not nodeController.recover_node_shown(plan, app, device, page_now, page_before_run, node):
@@ -103,6 +105,7 @@ def crawl_edittext(plan, app, device, page_before_run, page_now, init):
         # if crash and not keep run , break from deep run .page_need_crawled will be None
         if page_now is None:
             Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
+            del node
             break
         # sometimes the need tap node is not shown after one deep run
         if not nodeController.recover_node_shown(plan, app, device, page_now, page_before_run, node):
@@ -142,17 +145,14 @@ def crawl_edittext(plan, app, device, page_before_run, page_now, init):
 def crawl_activities(plan, app, device):
     if Setting.CrawlModel == 'Activity':
         for activity in app.activities:
-            appController.start_activity(device, app.packageName, app.mainActivity)
+            appController.start_activity(device, app.packageName, app.launcherActivity)
             time.sleep(3)
-            appController.start_activity(device, app.packageName, activity)
-            time.sleep(2)
-            info = pageController.get_top_activity_info(device)
-            if info['activity'] == activity:
+            if appController.start_activity(device, app.packageName, activity):
                 page = pageController.get_page_info(plan, app, device)
                 crawl_nodes_in_an_activity(plan, app, device, activity, page, page)
                 appController.kill_app(app)
                 del page
-            del activity, info
+            del activity
     del plan, app, device
 
 
@@ -174,7 +174,8 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
             device.update_crawled_nodes(node.nodeInfo)
             device.delete_uncrawled_nodes(node.nodeInfo)
             # if jump out the test app, try to go back & return the final page
-            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity, page_need_crawl, node)
+            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity,
+                                                                                 page_need_crawl, node)
             if page_after_operation is None:
                 Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
                 page_now = page_after_operation
@@ -209,7 +210,8 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
             device.update_crawled_nodes(node.nodeInfo)
             device.delete_uncrawled_nodes(node.nodeInfo)
             # if jump out the test app, try to go back & return the final page
-            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity, page_need_crawl, node)
+            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity,
+                                                                                 page_need_crawl, node)
             if page_after_operation is None:
                 Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
                 page_now = page_after_operation
@@ -245,7 +247,8 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
             device.update_crawled_nodes(node.nodeInfo)
             device.delete_uncrawled_nodes(node.nodeInfo)
             # if jump out the test app, try to go back & return the final page
-            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity, page_need_crawl, node)
+            page_after_operation = pageController.check_activity_after_operation(plan, app, device, activity,
+                                                                                 page_need_crawl, node)
             if page_after_operation is None:
                 Saver.save_crawler_log(device.logPath, 'Jump out to crawl')
                 page_now = page_after_operation
@@ -285,13 +288,13 @@ def crawl_main_nodes(plan, app, device, page_before_run):
 def run_init_cases(plan, app, device):
     Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : run init cases")
     for case in app.initCasesList:
-        command = 'adb -s ' + device.id + ' shell am instrument -w -e class ' + case + ' ' + app.testPackageName + '/'\
+        command = 'adb -s ' + device.id + ' shell am instrument -w -e class ' + case + ' ' + app.testPackageName + '/' \
                   + app.testRunner
         Saver.save_crawler_log_both(plan.logPath, device.logPath, command)
         os.system(command)
         del case, command
     del plan, app, device
-    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Run novice guide finish ...")
+    Saver.save_crawler_log_both(plan.logPath, device.logPath, "Run init cases finish ...")
 
 
 def crawl_init_nodes(plan, app, device, page_before_run):
@@ -319,13 +322,12 @@ def init_application(plan, app, device):
     Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : init application")
     if Setting.RunInitNodes:
         appController.start_activity(device, app.packageName, app.launcherActivity)
-        launcherPage = PageInfo.Page()
         while True:
             launcherPage = pageController.get_page_info(plan, app, device)
             if launcherPage.clickableNodesNum == 0:
                 Saver.save_crawler_log_both(plan.logPath, device.logPath, 'scroll to left')
                 appController.drag_screen_to_left(device)
-            if launcherPage.clickableNodesNum != 0:
+            else:
                 Saver.save_crawler_log_both(plan.logPath, device.logPath, 'stop scroll')
                 break
         Saver.save_crawler_log_both(plan.logPath, device.logPath, 'Step : init nodes run begin')
@@ -354,19 +356,11 @@ def run_test(plan, app, device):
                 appController.uninstall_app(device, app.testPackageName)
         if Setting.InstallApk:
             appController.install_app(device, app.apkPath)
-            if not appController.app_is_installed(device, app.packageName):
-                device.update_crawl_statue("InstallExc")
-            else:
-                appController.install_app(device, app.testApkPath)
-        else:
-            if not appController.app_is_installed(device, app.packageName):
-                appController.install_app(device, app.apkPath)
-                if not appController.app_is_installed(device, app.packageName):
-                    device.update_crawl_statue("InstallExc")
-                else:
-                    appController.install_app(device, app.testApkPath)
-
+            appController.install_app(device, app.testApkPath)
+        if not appController.app_is_installed(device, app.packageName):
+            device.update_crawl_statue("InstallExc")
         Saver.save_crawler_log_both(plan.logPath, device.logPath, device.crawlStatue)
+
         if device.crawlStatue != "InstallExc":
             # init app
             device.update_crawl_statue("Initing")
@@ -391,16 +385,18 @@ def run_test(plan, app, device):
 
             # update & save result
             Saver.save_crawler_log_both(plan.logPath, device.logPath,
-                                        "Step : " + device.id + " has Crawled " + str(len(device.hasCrawledNodes)) + " nodes.")
+                                        "Step : " + device.id + " has Crawled " + str(
+                                            len(device.hasCrawledNodes)) + " nodes.")
             Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " there are " + str(
                 len(device.unCrawledNodes)) + " unCrawled nodes .")
             Saver.save_crawler_log_both(plan.logPath, device.logPath, "Step : " + device.id + " has Crawled " + str(
                 len(device.hasCrawledActivities)) + " activities .")
-            if device.crawlStatue == 'Running':
+
+            if device.crawlStatue == "Running":
                 device.update_crawl_statue('Passed')
-            if device.crawlStatue == "Passed":
                 plan.passedDevice += 1
             else:
                 plan.failedDevice += 1
     else:
         device.update_crawl_statue('DeviceExc')
+        del plan, app, device

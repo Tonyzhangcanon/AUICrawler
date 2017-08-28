@@ -80,4 +80,3 @@ for th in threads:
 plan.endTime = datetime.datetime.now()
 Saver.save_crawl_result(plan, app)
 MailSender.send_mail(plan)
-

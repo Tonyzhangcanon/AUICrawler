@@ -37,10 +37,22 @@ class Device:
         self.page_now = PageInfo.Page()
 
     def get_device_statue(self):
-        check_lock_command = "adb -s " + self.id + " shell dumpsys window policy|grep mShowingLockscreen"
-        check_lock_statue = os.popen(check_lock_command).read()
-        check_keyguard_command = "adb -s " + self.id + " shell dumpsys window policy|grep isStatusBarKeyguard"
-        check_keyguard_statue = os.popen(check_keyguard_command).read()
+        try:
+            check_lock_command = "adb -s " + self.id + " shell dumpsys window policy | grep mShowingLockscreen"
+            check_lock_statue = os.popen(check_lock_command).read()
+        except Exception, e:
+            Saver.save_crawler_log(self.logPath.logPath, str(e))
+            check_lock_command = "adb -s " + self.id + " shell dumpsys window policy | findstr mShowingLockscreen"
+            check_lock_statue = os.popen(check_lock_command).read()
+            del e
+        try:
+            check_keyguard_command = "adb -s " + self.id + " shell dumpsys window policy | grep isStatusBarKeyguard"
+            check_keyguard_statue = os.popen(check_keyguard_command).read()
+        except Exception, e:
+            Saver.save_crawler_log(self.logPath, str(e))
+            check_keyguard_command = "adb -s " + self.id + " shell dumpsys window policy | findstr isStatusBarKeyguard"
+            check_keyguard_statue = os.popen(check_keyguard_command).read()
+            del e
         if check_lock_statue == "" and check_keyguard_statue == "":
             return "unConnect/powerOff"
         else:
@@ -55,14 +67,17 @@ class Device:
             check_lock_statue = check_lock_statue[index1 + len(str1):index2 - 1]
             check_keyguard_statue = check_keyguard_statue[index3 + len(str3):index4 - 4]
             if check_lock_statue != 'true' and check_keyguard_statue != 'true':
+                del check_lock_command, check_keyguard_statue, check_lock_statue, check_keyguard_command, str1, str2, str3, str4, index1, index2, index3, index4
                 return "unlock"
             else:
+                del check_lock_command, check_keyguard_statue, check_lock_statue, check_keyguard_command, str1, str2, str3, str4, index1, index2, index3, index4
                 return "screenlocked"
 
     def create_device_folder(self, plan):
         path = plan.logPath + '/' + self.id
         if not os.path.exists(path):
             os.makedirs(path)
+        del plan
         return path
 
     def get_screen_resolution(self):
@@ -77,9 +92,11 @@ class Device:
                 r = re.findall(r'\d+', line)
                 x = r[0]
                 y = r[1]
+                del r
         resolution.append(x)
         resolution.append(y)
         Saver.save_crawler_log(self.logPath, resolution)
+        del command, result, x, y
         return resolution
 
     def create_screenshot_folder(self):
@@ -93,27 +110,21 @@ class Device:
         # linux:
         # adb shell cat /system/build.prop | grep "product"
         # windows
-        # adb -s 84B5T15A10010101 shell cat /system/build.prop | findstr "product"
+        # adb shell cat /system/build.prop | findstr "product"
         device_name = ''
         try:
             command = 'adb -s ' + self.id + ' shell cat /system/build.prop | grep "product" '
             result = os.popen(command).readlines()
-            for line in result:
-                key = 'ro.product.model='
-                if key in line:
-                    device_name = line[line.find(key) + len(key):-2]
-                    break
-            Saver.save_crawler_log(self.logPath, "device name : " + device_name)
         except Exception, e:
             print (e)
             command = 'adb -s ' + self.id + ' shell cat /system/build.prop | findstr "product" '
             result = os.popen(command).readlines()
-            for line in result:
-                key = 'ro.product.model='
-                if key in line:
-                    device_name = line[line.find(key) + len(key):-2]
-                    del key
-                    break
+        for line in result:
+            key = 'ro.product.model='
+            if key in line:
+                device_name = line[line.find(key) + len(key):-2]
+                del key
+                break
             Saver.save_crawler_log(self.logPath, "device name : " + device_name)
         del command, result
         return device_name
@@ -122,6 +133,7 @@ class Device:
         command = 'adb -s ' + self.id + ' shell getprop ro.product.model'
         model = os.popen(command).read()
         Saver.save_crawler_log(self.logPath, "device model : " + model)
+        del command
         return model
 
     def get_device_sys_version(self):
@@ -183,13 +195,16 @@ class Device:
 
     def is_in_hascrawled_nodes(self, node_info):
         if node_info in self.hasCrawledNodes:
+            del node_info
             return True
         else:
+            del node_info
             return False
 
     def update_crawl_page(self, nodes_info_list):
         if nodes_info_list not in self.hasCrawledPage:
             self.hasCrawledPage.append(nodes_info_list)
+        del nodes_info_list
 
     def update_begin_crawl_time(self):
         self.beginCrawlTime = datetime.datetime.now()
@@ -225,11 +240,12 @@ class Device:
                         i.putpixel((bounds[0] + 1 + w, y), (255, 0, 0))
                         i.putpixel((bounds[2] - 1 - w, y), (255, 0, 0))
                 i.save(local_png)
-                del get_screenshot_command, activity, resource_id, location, pull_screenshot_command, local_png, i
-                del node, model, bounds
+                del get_screenshot_command, activity, resource_id, location, pull_screenshot_command, local_png, i, node, model, bounds
                 gc.collect()
             except Exception, e:
                 print (str(e))
+                del node, model
+                gc.collect()
                 Saver.save_crawler_log(self.logPath, "save screen error")
 
     def save_screen_jump_out(self, package, activity):
@@ -248,6 +264,8 @@ class Device:
                 gc.collect()
             except Exception, e:
                 print (str(e))
+                del package, activity
+                gc.collect()
                 Saver.save_crawler_log(self, "save screen error")
 
     def save_make_error_node_screen(self, node):
@@ -259,8 +277,8 @@ class Device:
             resource_id = resource_id[resource_id.find('/') + 1:]
             location = node.location
             local_png = self.screenshotPath + '/' + str(self.saveScreenNum) + '-' + str(
-                    activity) + '-' + str(
-                    resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
+                activity) + '-' + str(
+                resource_id) + '-' + str(location[0]) + '-' + str(location[1]) + '.png'
             pull_screenshot_command = 'adb -s ' + self.id + ' pull /sdcard/screenshot.png ' + local_png
             os.system(get_screenshot_command)
             os.system(pull_screenshot_command)
@@ -275,13 +293,10 @@ class Device:
                     i.putpixel((bounds[0] + 1 + w, y), (255, 0, 0))
                     i.putpixel((bounds[2] - 1 - w, y), (255, 0, 0))
             i.save(local_png)
-            del get_screenshot_command, activity, resource_id, location, pull_screenshot_command, local_png, i
-            del node, bounds
+            del get_screenshot_command, activity, resource_id, location, pull_screenshot_command, local_png, i, node, bounds
             gc.collect()
         except Exception, e:
             print (str(e))
+            del node
+            gc.collect()
             Saver.save_crawler_log(self.logPath, "save screen error")
-
-
-
-
