@@ -11,46 +11,46 @@ class App:
         self.apkPath = Setting.ApkPath
         Saver.save_crawler_log(plan.logPath, 'Apk Path : ' + self.apkPath)
 
-        self.appName = self.get_app_name()
+        self.appName = self.get_app_name(plan)
         Saver.save_crawler_log(plan.logPath, 'App Name : ' + self.appName)
 
-        self.versionCode = self.get_version_code()
+        self.versionCode = self.get_version_code(plan)
         Saver.save_crawler_log(plan.logPath, 'VersionCode : ' + self.versionCode)
 
-        self.versionName = self.get_version_name()
+        self.versionName = self.get_version_name(plan)
         Saver.save_crawler_log(plan.logPath, 'VersionName : ' + self.versionName)
 
-        self.packageName = self.get_package_name(self.apkPath)
+        self.packageName = self.get_package_name(plan, self.apkPath)
         Saver.save_crawler_log(plan.logPath, 'PackageName : ' + self.packageName)
 
-        self.launcherActivity = self.get_launcher_activity()
+        self.launcherActivity = self.get_launcher_activity(plan)
         Saver.save_crawler_log(plan.logPath, 'LauncherActivity : ' + self.launcherActivity)
 
-        self.mainActivity = self.get_main_activity()
+        self.mainActivity = self.get_main_activity(plan)
         Saver.save_crawler_log(plan.logPath, 'MainActivity : ' + self.mainActivity)
 
-        self.loginActivity = self.get_login_activity()
+        self.loginActivity = self.get_login_activity(plan)
         Saver.save_crawler_log(plan.logPath, 'LoginActivity : ' + self.loginActivity)
 
         self.testApkPath = Setting.TestApkPath
         Saver.save_crawler_log(plan.logPath, 'Test Apk Path : ' + self.testApkPath)
 
-        self.testPackageName = self.get_package_name(self.testApkPath)
+        self.testPackageName = self.get_package_name(plan, self.testApkPath)
         Saver.save_crawler_log(plan.logPath, 'Test Apk PackageName : ' + self.testPackageName)
 
-        self.initCasesList = self.get_init_cases()
+        self.initCasesList = self.get_init_cases(plan)
         Saver.save_crawler_log(plan.logPath, 'InitCaseList : ' + str(self.initCasesList))
 
-        self.firstClickViews = self.get_view_list(Setting.FirstClickViews)
+        self.firstClickViews = self.get_view_list(plan, Setting.FirstClickViews)
         Saver.save_crawler_log(plan.logPath, 'FirstClickViews : ' + str(self.firstClickViews))
 
-        self.backBtnViews = self.get_view_list(Setting.BackBtnViews)
+        self.backBtnViews = self.get_view_list(plan, Setting.BackBtnViews)
         Saver.save_crawler_log(plan.logPath, 'BackBtnViews : ' + str(self.backBtnViews))
 
-        self.unCrawlViews = self.get_unCrawlViews()
+        self.unCrawlViews = self.get_unCrawlViews(plan)
         Saver.save_crawler_log(plan.logPath, 'UnCrawlViews : ' + str(self.unCrawlViews))
 
-        self.loginViews = self.get_view_list(Setting.LoginViewList)
+        self.loginViews = self.get_view_list(plan, Setting.LoginViewList)
         Saver.save_crawler_log(plan.logPath, 'LoginViews : ' + str(self.loginViews))
 
         self.loginActivityEntry = None
@@ -58,11 +58,11 @@ class App:
         self.testRunner = Setting.TestRunner
         Saver.save_crawler_log(plan.logPath, 'TestRunner : ' + self.testRunner)
 
-        self.activities = self.get_all_activities()
+        self.activities = self.get_all_activities(plan)
 
         self.activityNum = str(len(self.activities))
 
-    def get_view_list(self, id_dict):
+    def get_view_list(self, plan, id_dict):
         try:
             id_list = id_dict[self.packageName]
             views = []
@@ -71,11 +71,14 @@ class App:
                     resource_id = self.packageName + ':id/' + device_id
                     views.append(resource_id)
                     del resource_id
+            del id_list, plan
             return views
-        except:
+        except Exception, e:
+            Saver.save_crawler_log(plan.logPath, str(e))
+            del id_dict, e, plan
             return []
 
-    def get_unCrawlViews(self):
+    def get_unCrawlViews(self, plan):
         try:
             unCrawlViews = []
             for key, value in Setting.UnCrawlViews[self.packageName].items():
@@ -85,12 +88,14 @@ class App:
                     del resource_id
                 if value == 'text':
                     unCrawlViews.append(key)
-                del key, value
+                del plan, key, value
             return unCrawlViews
-        except:
+        except Exception, e:
+            Saver.save_crawler_log(plan.logPath, str(e))
+            del plan, e
             return []
 
-    def get_app_name(self):
+    def get_app_name(self, plan):
         try:
             command = 'aapt dump badging ' + self.apkPath
             result = os.popen(command).readlines()
@@ -98,97 +103,115 @@ class App:
                 name_head = "application-label-zh-CN:'"
                 if name_head in line:
                     name = line[line.index(name_head) + len(name_head):len(line) - 2]
-                    del name_head
+                    del plan, name_head
                     return name
                 del line
-            del command, result
+            del plan, command, result
             return ''
-        except:
+        except Exception, e:
+            Saver.save_crawler_log(plan.logPath, str(e))
+            del plan, e
             return ""
 
     @staticmethod
-    def get_package_name(apk_path):
+    def get_package_name(plan, apk_path):
         try:
             command = 'aapt dump badging ' + apk_path
             result = os.popen(command).readlines()
+            end = "' "
+            package_head = "package: name='"
             for line in result:
-                package_head = "package: name='"
-                end = "' "
                 if package_head in line:
                     package_name = line[line.index(package_head) + len(package_head):line.index(end)]
-                    del command, result, package_head, end, apk_path
+                    del command, result, package_head, end, apk_path, line
                     return package_name
-            del command, result, apk_path
+                del line
+            del command, result, apk_path, end, package_head
             return ''
-        except:
-            del apk_path
+        except Exception, e:
+            Saver.save_crawler_log(plan.logPath, str(e))
+            del apk_path, e
             return ""
 
-    def get_version_code(self):
+    def get_version_code(self, plan):
         try:
             command = 'aapt dump badging ' + self.apkPath
             result = os.popen(command).readlines()
+            version_code_head = "versionCode='"
+            end = "' "
             for line in result:
-                version_code_head = "versionCode='"
-                end = "' "
                 if version_code_head in line:
                     line = line[line.index(version_code_head) + len(version_code_head):]
                     version_code = line[:line.index(end)]
-                    del command, result, version_code_head, line
+                    del plan, command, result, version_code_head, end, line
                     return version_code
-            del command, result
+                del line
+            del plan, command, result, version_code_head, end
             return ''
-        except:
+        except Exception, e:
+            Saver.save_crawler_log(plan.logPath, str(e))
+            del plan, e
             return ''
 
-    def get_version_name(self):
+    def get_version_name(self, plan):
         try:
             command = 'aapt dump badging ' + self.apkPath
             result = os.popen(command).readlines()
+            version_name_head = "versionName='"
+            end = "' "
             for line in result:
-                version_name_head = "versionName='"
-                end = "' "
                 if version_name_head in line:
                     line = line[line.index(version_name_head) + len(version_name_head):]
                     version_name = line[:line.index(end)]
-                    del command, result, line, version_name_head, end
+                    del plan, command, result, line, version_name_head, end
                     return version_name
-            del command, result
+                del line
+            del plan, command, result, version_name_head, end
             return ''
-        except:
+        except Exception, e:
+            Saver.save_crawler_log(plan.logPath, str(e))
+            del plan, e
             return ''
 
-    def get_launcher_activity(self):
+    def get_launcher_activity(self, plan):
         try:
             command = 'aapt dump badging ' + self.apkPath
             result = os.popen(command).readlines()
+            activity_head = "launchable-activity: name='"
+            end = "' "
             for line in result:
-                activity_head = "launchable-activity: name='"
-                end = "' "
                 if activity_head in line:
                     activity_name = line[line.index(activity_head) + len(activity_head):line.index(end)]
-                    del command, result, line, activity_head, end
+                    del plan, command, result, line, activity_head, end
                     return activity_name
-            del command, result
+            del plan, command, result, activity_head, end
             return ''
-        except:
+        except Exception, e:
+            Saver.save_crawler_log(plan.logPath, str(e))
+            del plan, e
             return ''
 
-    def get_main_activity(self):
+    def get_main_activity(self, plan):
         try:
             main_activity = Setting.AppMainActivity[self.packageName]
+            del plan
             return main_activity
-        except:
+        except Exception, e:
+            Saver.save_crawler_log(plan.logPath, str(e))
+            del plan, e
             return ''
 
-    def get_login_activity(self):
+    def get_login_activity(self, plan):
         try:
             login_activity = Setting.AppLoginActivity[self.packageName]
+            del plan
             return login_activity
-        except:
+        except Exception, e:
+            Saver.save_crawler_log(plan.logPath, str(e))
+            del plan, e
             return ''
 
-    def get_all_activities(self):
+    def get_all_activities(self, plan):
         try:
             activity_list = []
             command = 'aapt dump xmlstrings ' + self.apkPath + ' AndroidManifest.xml'
@@ -200,17 +223,24 @@ class App:
                     if activity != self.launcherActivity and activity not in activity_list:
                         activity_list.append(activity)
                     del line, index, activity
-            del command, result
+                del line
+            del plan, command, result
             return activity_list
-        except:
+        except Exception, e:
+            Saver.save_crawler_log(plan.logPath, str(e))
+            del plan, e
             return []
 
-    def get_init_cases(self):
+    def get_init_cases(self, plan):
         try:
             init_cases = Setting.InitCases[self.packageName]
+            del plan
             return init_cases
-        except:
+        except Exception, e:
+            Saver.save_crawler_log(plan.logPath, str(e))
+            del e, plan
             return []
 
     def update_loginactivity_entry(self, node):
         self.loginActivityEntry = node
+        del node
