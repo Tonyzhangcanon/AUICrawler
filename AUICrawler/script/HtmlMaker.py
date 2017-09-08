@@ -114,7 +114,7 @@ def mack_crawl_result_html(plan, app):
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.packageName + "</td>\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + app.activityNum + "</td>\n"
 
-    if len(Setting.JenkinsHost) != 0:
+    if len(Setting.JenkinsHost) != 0 and 'jobs/' in app.apkPath:
         index = app.apkPath.index('jobs/')
         apkpath_url = Setting.JenkinsHost + '/job/' + app.apkPath[index+5:]
         apkpath_url = apkpath_url.replace('workspace', 'ws')
@@ -161,7 +161,7 @@ def mack_crawl_result_html(plan, app):
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\"><span style =\"color: red;\">" + str(plan.failedDevice) + "</span></td>\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.runCaseTime) + "</td>\n" \
              "            <td align=\"center\" style=\"background: #f5f5dc;white-space: nowrap;\">" + str(plan.endTime) + "</td>\n"
-    if len(Setting.JenkinsHost) != 0:
+    if len(Setting.JenkinsHost) != 0 and 'jobs' in plan.logPath:
         index = plan.logPath.index('jobs')
         logPath_url = Setting.JenkinsHost + '/job/' + plan.logPath[index+5:]
         logPath_url = logPath_url.replace('workspace', 'ws')
@@ -289,7 +289,10 @@ def mack_crawl_result_html(plan, app):
         else:
             name = device.name + " " + device.model
         crawlActNum = str(len(device.hasCrawledActivities))
-        actCover = str(float(crawlActNum)/float(app.activityNum))
+        if app.activityNum != '0':
+            actCover = str(float(crawlActNum)/float(app.activityNum))
+        else:
+            actCover = '0'
         if len(actCover) == 3:
             actCover = actCover[2:] + "0%"
         elif len(actCover) == 4:
@@ -328,7 +331,7 @@ def mack_crawl_result_html(plan, app):
             result = "                   <span style ='color: red;'>\n" \
                      "                   " + device.crawlStatue + \
                      "\n                   </span>\n"
-        if len(Setting.JenkinsHost) != 0:
+        if len(Setting.JenkinsHost) != 0 and 'jobs/' in device.logPath:
             index = device.logPath.index('jobs/')
             log_url = Setting.JenkinsHost + '/job/' + device.logPath[index+5:]
             log_url = log_url.replace('workspace', 'ws')
@@ -404,7 +407,7 @@ def make_failed_result_html(plan, app):
     apkpath = "            <th style=\" color: #ffffff;font-weight: bold;text-align: center;background: #2674a6;white-space: nowrap;\">\n" \
               "                安装包位置" \
               "            </th>\n"
-    if len(Setting.JenkinsHost) != 0:
+    if len(Setting.JenkinsHost) != 0 and 'jobs/' in app.apkPath:
         index = app.apkPath.index('jobs/')
         apkpath_url = Setting.JenkinsHost + '/job/' + app.apkPath[index+5:]
         apkpath_url = apkpath_url.replace('workspace', 'ws')

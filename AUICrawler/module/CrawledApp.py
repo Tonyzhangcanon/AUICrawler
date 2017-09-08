@@ -61,6 +61,7 @@ class App:
         self.activities = self.get_all_activities(plan)
 
         self.activityNum = str(len(self.activities))
+        Saver.save_crawler_log(plan.logPath, 'Activity num  : ' + self.activityNum)
 
     def get_view_list(self, plan, id_dict):
         try:
