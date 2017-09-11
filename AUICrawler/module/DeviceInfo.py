@@ -40,7 +40,7 @@ class Device:
         try:
             check_lock_command = "adb -s " + self.id + " shell dumpsys window policy | grep mShowingLockscreen"
             check_lock_statue = os.popen(check_lock_command).read()
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(self.logPath.logPath, str(e))
             check_lock_command = "adb -s " + self.id + " shell dumpsys window policy | findstr mShowingLockscreen"
             check_lock_statue = os.popen(check_lock_command).read()
@@ -48,7 +48,7 @@ class Device:
         try:
             check_keyguard_command = "adb -s " + self.id + " shell dumpsys window policy | grep isStatusBarKeyguard"
             check_keyguard_statue = os.popen(check_keyguard_command).read()
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(self.logPath, str(e))
             check_keyguard_command = "adb -s " + self.id + " shell dumpsys window policy | findstr isStatusBarKeyguard"
             check_keyguard_statue = os.popen(check_keyguard_command).read()
@@ -107,26 +107,10 @@ class Device:
         return path
 
     def get_device_name(self):
-        # linux:
-        # adb shell cat /system/build.prop | grep "product"
-        # windows
-        # adb shell cat /system/build.prop | findstr "product"
-        device_name = ''
-        try:
-            command = 'adb -s ' + self.id + ' shell cat /system/build.prop | grep "product" '
-            result = os.popen(command).readlines()
-        except Exception, e:
-            print (e)
-            command = 'adb -s ' + self.id + ' shell cat /system/build.prop | findstr "product" '
-            result = os.popen(command).readlines()
-        for line in result:
-            key = 'ro.product.model='
-            if key in line:
-                device_name = line[line.find(key) + len(key):-2]
-                del key
-                break
-            Saver.save_crawler_log(self.logPath, "device name : " + device_name)
-        del command, result
+        command = 'adb -s ' + self.id + ' shell getprop ro.product.name'
+        device_name = os.popen(command).read()
+        Saver.save_crawler_log(self.logPath, 'device name : ' + device_name)
+        del command
         return device_name
 
     def get_device_model(self):
@@ -242,7 +226,7 @@ class Device:
                 i.save(local_png)
                 del get_screenshot_command, activity, resource_id, location, pull_screenshot_command, local_png, i, node, model, bounds
                 gc.collect()
-            except Exception, e:
+            except Exception as e:
                 print (str(e))
                 del node, model
                 gc.collect()
@@ -262,7 +246,7 @@ class Device:
                 self.jump_out_time += 1
                 del get_screenshot_command, local_png, pull_screenshot_command
                 gc.collect()
-            except Exception, e:
+            except Exception as e:
                 print (str(e))
                 del package, activity
                 gc.collect()
@@ -295,7 +279,7 @@ class Device:
             i.save(local_png)
             del get_screenshot_command, activity, resource_id, location, pull_screenshot_command, local_png, i, node, bounds
             gc.collect()
-        except Exception, e:
+        except Exception as e:
             print (str(e))
             del node
             gc.collect()
