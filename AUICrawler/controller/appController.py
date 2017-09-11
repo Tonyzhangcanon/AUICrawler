@@ -154,7 +154,7 @@ def keyboard_is_shown(device):
     result = os.popen(command).read()
     key = 'mInputShown='
     keyboard_status = result[result.index(key) + len(key):result.index(key) + len(key) + 5]
-    if keyboard_status == 'true':
+    if 'true' in keyboard_status:
         Saver.save_crawler_log(device.logPath, "keyboard is shown ")
         del device, command, result, key, keyboard_status
         return True
