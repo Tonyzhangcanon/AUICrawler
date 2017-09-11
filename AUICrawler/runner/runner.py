@@ -50,8 +50,6 @@ def crawl_clickable_nodes(plan, app, device, page_before_run, page_now, init):
                 page_now = crawl_init_nodes(plan, app, device, page_now)
             else:
                 page_now = crawl_main_nodes(plan, app, device, page_now)
-        else:
-            page_now = page_after_operation
         # if page no crawlable nodes , back to last Page, until has crawlable nodes, if back time >3, break
         page_now = pageController.recover_page_to_crawlable(plan, app, device, page_now)
         del node
@@ -91,8 +89,6 @@ def crawl_longclickable_nodes(plan, app, device, page_before_run, page_now, init
                 page_now = crawl_init_nodes(plan, app, device, page_now)
             else:
                 page_now = crawl_main_nodes(plan, app, device, page_now)
-        else:
-            page_now = page_after_operation
         # if page no crawlable nodes , back to last Page, until has crawlable nodes, if back time >3, break
         page_now = pageController.recover_page_to_crawlable(plan, app, device, page_now)
         del node
@@ -133,8 +129,6 @@ def crawl_edittext(plan, app, device, page_before_run, page_now, init):
                 page_now = crawl_init_nodes(plan, app, device, page_now)
             else:
                 page_now = crawl_main_nodes(plan, app, device, page_now)
-        else:
-            page_now = page_after_operation
         # if page no crawlable nodes , back to last Page, until has crawlable nodes, if back time >3, break
         page_now = pageController.recover_page_to_crawlable(plan, app, device, page_now)
         del node
@@ -189,8 +183,6 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
                 page_now.add_entry(node)
                 # deep run
                 page_now = crawl_nodes_in_an_activity(plan, app, device, activity, page_now, page_now)
-            else:
-                page_now = page_after_operation
             # if page no crawlable nodes , back to last Page, until has crawlable nodes, if back time >3, break
             page_now = pageController.recover_page_to_crawlable(plan, app, device, page_now)
     if page_need_crawl.longClickableNodesNum > 0:
@@ -225,8 +217,6 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
                 page_now.add_entry(node)
                 # deep run
                 page_now = crawl_nodes_in_an_activity(plan, app, device, activity, page_now, page_now)
-            else:
-                page_now = page_after_operation
             # if page no crawlable nodes , back to last Page, until has crawlable nodes, if back time >3, break
             page_now = pageController.recover_page_to_crawlable(plan, app, device, page_now)
     if page_need_crawl.editTextsNum > 0:
@@ -262,8 +252,6 @@ def crawl_nodes_in_an_activity(plan, app, device, activity, page_need_crawl, pag
                 page_now.add_entry(node)
                 # deep run
                 page_now = crawl_nodes_in_an_activity(plan, app, device, activity, page_now, page_now)
-            else:
-                page_now = page_after_operation
             # if page no crawlable nodes , back to last Page, until has crawlable nodes, if back time >3, break
             page_now = pageController.recover_page_to_crawlable(plan, app, device, page_now)
     del plan, app, device, activity, page_need_crawl
