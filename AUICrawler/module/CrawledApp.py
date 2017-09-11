@@ -74,7 +74,7 @@ class App:
                     del resource_id
             del id_list, plan
             return views
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
             del id_dict, e, plan
             return []
@@ -91,7 +91,7 @@ class App:
                     unCrawlViews.append(key)
                 del plan, key, value
             return unCrawlViews
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
             del plan, e
             return []
@@ -109,7 +109,7 @@ class App:
                 del line
             del plan, command, result
             return ''
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
             del plan, e
             return ""
@@ -129,7 +129,7 @@ class App:
                 del line
             del command, result, apk_path, end, package_head
             return ''
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
             del apk_path, e
             return ""
@@ -149,7 +149,7 @@ class App:
                 del line
             del plan, command, result, version_code_head, end
             return ''
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
             del plan, e
             return ''
@@ -169,7 +169,7 @@ class App:
                 del line
             del plan, command, result, version_name_head, end
             return ''
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
             del plan, e
             return ''
@@ -187,7 +187,7 @@ class App:
                     return activity_name
             del plan, command, result, activity_head, end
             return ''
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
             del plan, e
             return ''
@@ -197,7 +197,7 @@ class App:
             main_activity = Setting.AppMainActivity[self.packageName]
             del plan
             return main_activity
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
             del plan, e
             return ''
@@ -207,7 +207,7 @@ class App:
             login_activity = Setting.AppLoginActivity[self.packageName]
             del plan
             return login_activity
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
             del plan, e
             return ''
@@ -227,7 +227,7 @@ class App:
                 del line
             del plan, command, result
             return activity_list
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
             del plan, e
             return []
@@ -237,7 +237,7 @@ class App:
             init_cases = Setting.InitCases[self.packageName]
             del plan
             return init_cases
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
             del e, plan
             return []

@@ -28,7 +28,7 @@ def send_mail(plan):
         s.close()
         del plan, me, msg, s
         return True
-    except Exception, e:
+    except Exception as e:
         print(str(e))
         del plan, me, msg
         return False
@@ -72,7 +72,7 @@ def send_failed_mail_first(plan, app, device):
         s.close()
         del plan, app, device, file_name, me, main_msg, text, msg, data, ctype, encoding, maintype, subtype, file_msg, basename, s
         return True
-    except Exception, e:
+    except Exception as e:
         print(str(e))
         del plan, app, device, file_name, me, main_msg, text, msg, data, ctype, encoding, maintype, subtype, file_msg, basename, e
         return False
@@ -123,7 +123,7 @@ def send_failed_mail_necessary(plan, app, device, node):
         s.close()
         del plan, app, device, file_name, me, main_msg, text, msg, data, ctype, encoding, maintype, subtype, file_msg, s
         return True
-    except Exception, e:
+    except Exception as e:
         print(str(e))
         del plan, app, device, file_name, me, main_msg, text, msg, data, ctype, encoding, maintype, subtype, file_msg, e
         return False
@@ -150,7 +150,7 @@ def send_failed_mail_un_necessary(plan, app, device):
         s.close()
         del plan, app, device, me, main_msg, text, msg, s
         return True
-    except Exception, e:
+    except Exception as e:
         print(str(e))
         del plan, app, device, me, main_msg, text, msg, e
         return False

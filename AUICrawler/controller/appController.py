@@ -19,7 +19,7 @@ def install_app(device, apk_path):
             command = 'adb -s ' + device.id + " install -r " + apk_path
             os.system(command)
             del device, apk_path, command
-    except Exception, e:
+    except Exception as e:
         Saver.save_crawler_log(device.logPath, str(e))
         del device, apk_path, e
         Saver.save_crawler_log(device.logPath, 'install app catch exception')
@@ -31,7 +31,7 @@ def uninstall_app(device, package_name):
         command = 'adb -s ' + device.id + " uninstall " + package_name
         os.system(command)
         del device, package_name, command
-    except Exception, e:
+    except Exception as e:
         Saver.save_crawler_log(device.logPath, str(e))
         del device, package_name
         Saver.save_crawler_log(device.logPath, 'uninstall app catch exception')
@@ -98,7 +98,7 @@ def start_activity(device, packagename, activity):
             del start_activity_time
         del device, packagename, activity, time1, command
         return False
-    except Exception, e:
+    except Exception as e:
         Saver.save_crawler_log(device.logPath, str(e))
         del device, packagename, activity, e, time1, command
         return False

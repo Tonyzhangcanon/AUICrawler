@@ -40,7 +40,7 @@ class Device:
         try:
             check_lock_command = "adb -s " + self.id + " shell dumpsys window policy | grep mShowingLockscreen"
             check_lock_statue = os.popen(check_lock_command).read()
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(self.logPath.logPath, str(e))
             check_lock_command = "adb -s " + self.id + " shell dumpsys window policy | findstr mShowingLockscreen"
             check_lock_statue = os.popen(check_lock_command).read()
@@ -48,7 +48,7 @@ class Device:
         try:
             check_keyguard_command = "adb -s " + self.id + " shell dumpsys window policy | grep isStatusBarKeyguard"
             check_keyguard_statue = os.popen(check_keyguard_command).read()
-        except Exception, e:
+        except Exception as e:
             Saver.save_crawler_log(self.logPath, str(e))
             check_keyguard_command = "adb -s " + self.id + " shell dumpsys window policy | findstr isStatusBarKeyguard"
             check_keyguard_statue = os.popen(check_keyguard_command).read()
@@ -115,7 +115,7 @@ class Device:
         try:
             command = 'adb -s ' + self.id + ' shell cat /system/build.prop | grep "product" '
             result = os.popen(command).readlines()
-        except Exception, e:
+        except Exception as e:
             print (e)
             command = 'adb -s ' + self.id + ' shell cat /system/build.prop | findstr "product" '
             result = os.popen(command).readlines()
@@ -242,7 +242,7 @@ class Device:
                 i.save(local_png)
                 del get_screenshot_command, activity, resource_id, location, pull_screenshot_command, local_png, i, node, model, bounds
                 gc.collect()
-            except Exception, e:
+            except Exception as e:
                 print (str(e))
                 del node, model
                 gc.collect()
@@ -262,7 +262,7 @@ class Device:
                 self.jump_out_time += 1
                 del get_screenshot_command, local_png, pull_screenshot_command
                 gc.collect()
-            except Exception, e:
+            except Exception as e:
                 print (str(e))
                 del package, activity
                 gc.collect()
@@ -295,7 +295,7 @@ class Device:
             i.save(local_png)
             del get_screenshot_command, activity, resource_id, location, pull_screenshot_command, local_png, i, node, bounds
             gc.collect()
-        except Exception, e:
+        except Exception as e:
             print (str(e))
             del node
             gc.collect()
