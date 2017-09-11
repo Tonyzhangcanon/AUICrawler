@@ -107,26 +107,10 @@ class Device:
         return path
 
     def get_device_name(self):
-        # linux:
-        # adb shell cat /system/build.prop | grep "product"
-        # windows
-        # adb shell cat /system/build.prop | findstr "product"
-        device_name = ''
-        try:
-            command = 'adb -s ' + self.id + ' shell cat /system/build.prop | grep "product" '
-            result = os.popen(command).readlines()
-        except Exception as e:
-            print (e)
-            command = 'adb -s ' + self.id + ' shell cat /system/build.prop | findstr "product" '
-            result = os.popen(command).readlines()
-        for line in result:
-            key = 'ro.product.model='
-            if key in line:
-                device_name = line[line.find(key) + len(key):-2]
-                del key
-                break
-            Saver.save_crawler_log(self.logPath, "device name : " + device_name)
-        del command, result
+        command = 'adb -s ' + self.id + ' shell getprop ro.product.name'
+        device_name = os.popen(command).read()
+        Saver.save_crawler_log(self.logPath, 'device name : ' + device_name)
+        del command
         return device_name
 
     def get_device_model(self):
