@@ -28,7 +28,7 @@ def get_top_activity_info(device):
     try:
         command = 'adb -s ' + device.id + ' shell dumpsys activity | grep "mResumedActivity"'
         result = os.popen(command).read()
-    except Exception, e:
+    except Exception as e:
         print (str(e))
         command = 'adb -s ' + device.id + ' shell dumpsys activity | findstr "mResumedActivity"'
         result = os.popen(command).read()
@@ -67,7 +67,7 @@ def remove_uidump_xml_file(device):
         remove_xml_file = device.logPath + '/Uidump.xml'
         os.remove(remove_xml_file)
         del remove_xml_file
-    except Exception, e:
+    except Exception as e:
         print (str(e))
         Saver.save_crawler_log(device.logPath, "no uidump xml")
     del device
@@ -81,7 +81,7 @@ def get_nodes_list(device):
         nodes = root.getElementsByTagName('node')
         del dom, root, device
         return nodes
-    except Exception, e:
+    except Exception as e:
         print (str(e))
         del device
         return ''
@@ -109,7 +109,7 @@ def get_page_info(plan, app, device):
             get_uidump_xml_file(device)
             dom = xml.dom.minidom.parse(device.logPath + '/Uidump.xml')
             result = True
-        except Exception, e:
+        except Exception as e:
             t += 1
             print (str(e))
             result = False
@@ -130,7 +130,7 @@ def get_page_info(plan, app, device):
         page = appController.close_sys_alert(plan, app, device, page)
         del result, dom, root, nodes, info, plan, app, device, t
         return page
-    except Exception, e:
+    except Exception as e:
         print (str(e))
         del plan, app, device, t
         return page

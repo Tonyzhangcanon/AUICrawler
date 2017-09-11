@@ -27,7 +27,7 @@ def send_mail(plan):
         s.sendmail(me, Setting.Result_Mail_To_List, msg.as_string())
         s.close()
         return True
-    except Exception, e:
+    except Exception as e:
         print(str(e))
         return False
 
@@ -69,7 +69,7 @@ def send_failed_mail_first(plan, app, device):
         s.sendmail(me, Setting.Failed_Mail_To_List, main_msg.as_string())
         s.close()
         return True
-    except Exception, e:
+    except Exception as e:
         print(str(e))
         return False
 
