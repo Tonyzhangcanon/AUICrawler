@@ -223,7 +223,7 @@ class App:
                     activity = line[index + len(': '):len(line) - 1]
                     if activity != self.launcherActivity and activity not in activity_list:
                         activity_list.append(activity)
-                    del line, index, activity
+                    del index, activity
                 del line
             del plan, command, result
             return activity_list
