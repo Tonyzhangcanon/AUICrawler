@@ -273,7 +273,10 @@ def mack_crawl_result_html(plan, app):
         else:
             name = device.name + " " + device.model
         crawlActNum = str(len(device.hasCrawledActivities))
-        actCover = str(float(crawlActNum)/float(app.activityNum))
+        if app.activityNum != 0:
+            actCover = str(float(crawlActNum)/float(app.activityNum))
+        else:
+            actCover = "0%"
         if len(actCover) == 3:
             actCover = actCover[2:] + "0%"
         elif len(actCover) == 4:
