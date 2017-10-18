@@ -74,6 +74,10 @@ class Device:
                 return "screenlocked"
 
     def create_device_folder(self, plan):
+        if '.' in self.id:
+            self.id = self.id.replace('.', '_')
+        if ':' in self.id:
+            self.id = self.id.replace(':', '_')
         path = plan.logPath + '/' + self.id
         if not os.path.exists(path):
             os.makedirs(path)
