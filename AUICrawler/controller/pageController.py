@@ -12,6 +12,7 @@ from config import Setting
 import appController
 import nodeController
 import xml.dom.minidom
+import platform
 
 
 def get_top_activity_info(device):
@@ -25,13 +26,11 @@ def get_top_activity_info(device):
     activity = ''
     # command = 'adb -s ' + device.id + ' shell dumpsys activity | grep "mFocusedActivity"'
     # sometime mResumedActivity is Right
-    try:
+    if platform.system() != 'Windows':
         command = 'adb -s ' + device.id + ' shell dumpsys activity | grep "mResumedActivity"'
-        result = os.popen(command).read()
-    except Exception as e:
-        print (str(e))
+    else:
         command = 'adb -s ' + device.id + ' shell dumpsys activity | findstr "mResumedActivity"'
-        result = os.popen(command).read()
+    result = os.popen(command).read()
     if 'u0' not in result and ' com.' not in result:
         result = os.popen(command).read()
     if 'u0 ' in result:
