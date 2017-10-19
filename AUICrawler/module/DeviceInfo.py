@@ -8,6 +8,7 @@ from config import Setting
 import PageInfo
 from PIL import Image
 import gc
+import platform
 
 
 class Device:
@@ -37,22 +38,14 @@ class Device:
         self.page_now = PageInfo.Page()
 
     def get_device_statue(self):
-        try:
+        if platform.system() != "Windows":
             check_lock_command = "adb -s " + self.id + " shell dumpsys window policy | grep mShowingLockscreen"
-            check_lock_statue = os.popen(check_lock_command).read()
-        except Exception as e:
-            Saver.save_crawler_log(self.logPath.logPath, str(e))
-            check_lock_command = "adb -s " + self.id + " shell dumpsys window policy | findstr mShowingLockscreen"
-            check_lock_statue = os.popen(check_lock_command).read()
-            del e
-        try:
             check_keyguard_command = "adb -s " + self.id + " shell dumpsys window policy | grep isStatusBarKeyguard"
-            check_keyguard_statue = os.popen(check_keyguard_command).read()
-        except Exception as e:
-            Saver.save_crawler_log(self.logPath, str(e))
+        else:
+            check_lock_command = "adb -s " + self.id + " shell dumpsys window policy | findstr mShowingLockscreen"
             check_keyguard_command = "adb -s " + self.id + " shell dumpsys window policy | findstr isStatusBarKeyguard"
-            check_keyguard_statue = os.popen(check_keyguard_command).read()
-            del e
+        check_lock_statue = os.popen(check_lock_command).read()
+        check_keyguard_statue = os.popen(check_keyguard_command).read()
         if check_lock_statue == "" and check_keyguard_statue == "":
             return "unConnect/powerOff"
         else:
