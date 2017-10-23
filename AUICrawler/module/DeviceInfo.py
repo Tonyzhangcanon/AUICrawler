@@ -67,13 +67,13 @@ class Device:
 
     def create_device_folder(self, plan):
         if '.' in self.id:
-            self.id = self.id.replace('.', '_')
+            deviceid = self.id.replace('.', '_')
         if ':' in self.id:
-            self.id = self.id.replace(':', '_')
-        path = plan.logPath + '/' + self.id
+            deviceid = self.id.replace(':', '_')
+        path = plan.logPath + '/' + deviceid
         if not os.path.exists(path):
             os.makedirs(path)
-        del plan
+        del plan,deviceid
         return path
 
     def get_screen_resolution(self):
