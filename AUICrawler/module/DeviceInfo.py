@@ -66,14 +66,15 @@ class Device:
                 return "screenlocked"
 
     def create_device_folder(self, plan):
-        if '.' in self.id:
-            deviceid = self.id.replace('.', '_')
-        if ':' in self.id:
-            deviceid = self.id.replace(':', '_')
+        deviceid = self.id
+        if '.' in deviceid:
+            deviceid = deviceid.replace('.', '_')
+        if ':' in deviceid:
+            deviceid = deviceid.replace(':', '_')
         path = plan.logPath + '/' + deviceid
         if not os.path.exists(path):
             os.makedirs(path)
-        del plan,deviceid
+        del plan, deviceid
         return path
 
     def get_screen_resolution(self):
