@@ -80,13 +80,13 @@ class Device:
 
     def get_screen_resolution(self):
         Saver.save_crawler_log(self.logPath, "Step : get screen resolution")
-        command = 'adb -s ' + self.id + ' shell wm size'
+        command = 'adb -s ' + self.id + ' shell dumpsys window'
         resolution = []
         result = os.popen(command).readlines()
         x = ''
         y = ''
         for line in result:
-            if 'Physical size: ' in line:
+            if 'init=' in line:
                 r = re.findall(r'\d+', line)
                 x = r[0]
                 y = r[1]
