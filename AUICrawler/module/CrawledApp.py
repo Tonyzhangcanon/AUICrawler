@@ -89,7 +89,7 @@ class App:
                     del resource_id
                 if value == 'text':
                     unCrawlViews.append(key)
-                del plan, key, value
+                del key, value
             return unCrawlViews
         except Exception as e:
             Saver.save_crawler_log(plan.logPath, str(e))
